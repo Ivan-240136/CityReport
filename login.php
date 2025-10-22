@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 session_start();
 require_once __DIR__ . '/conexion.php'; 
 
@@ -9,31 +11,32 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $p = $_POST['p'] ?? '';
 
     if ($u !== '' && $p !== '') {
-        $sql = "SELECT id, usuario, contrasena, id_rol, estado
-                FROM usuarios
-                WHERE usuario = ? LIMIT 1";
-        $stm = $mysqli->prepare($sql);
-        if ($stm) {
-            $stm->bind_param('s', $u);
-            $stm->execute();
-            $res = $stm->get_result();
+        try {
+            $sql = 'SELECT id, usuario, contrasena, id_rol, estado
+                    FROM usuarios
+                    WHERE LOWER(usuario) = LOWER(:u)
+                    LIMIT 1';
+            $stm = $conn->prepare($sql);
+            $stm->execute([':u' => $u]);
+            $row = $stm->fetch(PDO::FETCH_ASSOC);
 
-            if ($res && $res->num_rows === 1) {
-                $row = $res->fetch_assoc();
+            $credencialesOK = $row && hash_equals((string)$row['contrasena'], (string)$p);
+            $activo         = $row && (int)$row['estado'] === 1;
 
-                if ((int)$row['estado'] === 1 && $p === $row['contrasena']) {
-                    session_regenerate_id(true);
-                    $_SESSION['user'] = [
-                        'id'      => (int)$row['id'],
-                        'usuario' => $row['usuario'],
-                        'id_rol'  => (int)$row['id_rol']
-                    ];
-                    header('Location: index.php');
-                    exit;
-                }
+            if ($credencialesOK && $activo) {
+                session_regenerate_id(true);
+                $_SESSION['user'] = [
+                    'id'      => (int)$row['id'],
+                    'usuario' => (string)$row['usuario'],
+                    'id_rol'  => (int)$row['id_rol'],
+                ];
+                header('Location: index.php');
+                exit;
             }
+        } catch (Throwable $e) {
         }
     }
+
     header('Location: login.php?e=1');
     exit;
 }
@@ -43,6 +46,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <head>
   <meta charset="utf-8">
   <title>Acceder</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <style>
     body{font-family:system-ui;background:#0f3245;margin:0}
     .card{max-width:420px;margin:70px auto;background:#0b3a4b;color:#fff;padding:24px;border-radius:12px}
@@ -55,10 +59,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <body>
   <div class="card">
     <h2>Login</h2>
-    <?php if($err==='1'): ?>
+    <?php if ($err === '1'): ?>
       <div class="msg">Usuario/contraseña inválidos o cuenta inactiva.</div>
     <?php endif; ?>
-    <form method="post" action="login.php">
+    <form method="post" action="login.php" autocomplete="off">
       <label>Usuario</label>
       <input type="text" name="u" required>
       <label>Contraseña</label>

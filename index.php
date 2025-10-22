@@ -1,5 +1,15 @@
 <?php
-require_once 'auth.php'; 
+declare(strict_types=1);
+
+session_start();
+require_once __DIR__ . '/conexion.php'; 
+
+if (!isset($_SESSION['user']) || !is_array($_SESSION['user'])) {
+    header('Location: login.php');
+    exit;
+}
+
+$usuario = htmlspecialchars((string)($_SESSION['user']['usuario'] ?? ''), ENT_QUOTES, 'UTF-8');
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -25,15 +35,14 @@ require_once 'auth.php';
   <ul>
     <li><a href="index.php" class="activo">Inicio</a></li>
     <li><a href="panel/dashboard.php">Panel</a></li>
-    <li><a href="logout.php">Cerrar sesión (<?=htmlspecialchars($_SESSION['user']['usuario'])?>)</a></li>
+    <li><a href="logout.php">Cerrar sesión (<?= $usuario ?>)</a></li>
   </ul>
 </nav>
 
 <main class="principal">
   <div class="contenedor">
     <h2>Bienvenido a CityReport</h2>
-    <p>Has iniciado sesión como <strong><?=htmlspecialchars($_SESSION['user']['usuario'])?></strong> 
-      </p>
+    <p>Has iniciado sesión como <strong><?= $usuario ?></strong></p>
 
     <div class="botones">
       <a href="panel/dashboard.php" class="btn">Ir al Panel</a>
