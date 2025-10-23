@@ -18,7 +18,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             'id_rol' => $user['id_rol'],
         ];
         header('Location: index.php'); 
-        exit; /
+        exit;  <!-- Aquí se corrigió -->
     } else {
         $err = 'Usuario o contraseña incorrectos';
     }
