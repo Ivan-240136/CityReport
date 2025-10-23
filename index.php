@@ -1,57 +1,35 @@
 <?php
-declare(strict_types=1);
-
 session_start();
-require_once __DIR__ . '/conexion.php'; // Asegúrate de que conexión está incluida
 
-if (!isset($_SESSION['user']) || !is_array($_SESSION['user'])) {
-    header('Location: login.php');
+if (!isset($_SESSION['user'])) {
+    header('Location: login.php'); 
     exit;
 }
 
-$usuario = htmlspecialchars((string)($_SESSION['user']['usuario'] ?? ''), ENT_QUOTES, 'UTF-8');
+$usuario = $_SESSION['user']['usuario']; 
 ?>
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>CityReport | Inicio</title>
-  <link rel="stylesheet" href="css/estilos.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bienvenido</title>
+    <style>
+        body { font-family: Arial, sans-serif; background-color: #f4f4f4; margin: 0; padding: 0; }
+        .container { max-width: 600px; margin: 100px auto; background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); }
+        h2 { text-align: center; }
+        .welcome { text-align: center; font-size: 18px; }
+        .logout { text-align: center; margin-top: 20px; }
+    </style>
 </head>
 <body>
-
-<header class="encabezado">
-  <div class="contenedor">
-    <div class="logo-wrap">
-      <img src="img/logo_city.png" alt="Logo CityReport" class="logo">
+    <div class="container">
+        <h2>Bienvenido a CityReport</h2>
+        <p class="welcome">Hola, <?= htmlspecialchars($usuario) ?>. Has iniciado sesión correctamente.</p>
+        <div class="logout">
+            <a href="logout.php">Cerrar sesión</a>
+        </div>
     </div>
-    <h1>CityReport</h1>
-    <p class="subtitulo">Sistema de Reportes Urbanos</p>
-  </div>
-</header>
-
-<nav class="menu">
-  <ul>
-    <li><a href="index.php" class="activo">Inicio</a></li>
-    <li><a href="panel/dashboard.php">Panel</a></li>
-    <li><a href="logout.php">Cerrar sesión (<?= $usuario ?>)</a></li>
-  </ul>
-</nav>
-
-<main class="principal">
-  <div class="contenedor">
-    <h2>Bienvenido a CityReport</h2>
-    <p>Has iniciado sesión como <strong><?= $usuario ?></strong></p>
-
-    <div class="botones">
-      <a href="panel/dashboard.php" class="btn">Ir al Panel</a>
-    </div>
-  </div>
-</main>
-
-<footer class="pie">
-  <p>© 2025 CityReport | Proyecto Integrador UTXJ</p>
-</footer>
 </body>
 </html>

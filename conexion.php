@@ -1,19 +1,14 @@
 <?php
-define('SUPABASE_URL', getenv('SUPABASE_URL')); 
-define('SUPABASE_ANON_KEY', getenv('SUPABASE_ANON_KEY')); 
+define('DB_HOST', 'localhost'); 
+define('DB_NAME', 'tu_base_de_datos');
+define('DB_USER', 'tu_usuario');
+define('DB_PASS', 'tu_contraseña');
 
-function supabaseConnect() {
-    $url = SUPABASE_URL . '/rest/v1/';
-    $headers = [
-        'apikey' => SUPABASE_ANON_KEY,
-        'Authorization' => 'Bearer ' . SUPABASE_ANON_KEY,
-        'Content-Type' => 'application/json',
-    ];
-
-    return [
-        'url' => $url,
-        'headers' => $headers
-    ];
+try {
+    $conn = new PDO("mysql:host=" . DB_HOST . ";dbname=" . DB_NAME, DB_USER, DB_PASS);
+    $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+} catch (PDOException $e) {
+    die("Error de conexión: " . $e->getMessage());
 }
-
 ?>
+
