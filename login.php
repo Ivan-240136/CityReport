@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
-
 session_start();
+
 require_once __DIR__ . '/conexion.php'; 
 
 $err = $_GET['e'] ?? '';
@@ -12,6 +12,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if ($u !== '' && $p !== '') {
         try {
+           
             $sql = 'SELECT id, usuario, contrasena, id_rol, estado
                     FROM usuarios
                     WHERE LOWER(usuario) = LOWER(:u)
@@ -34,7 +35,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 exit;
             }
         } catch (Throwable $e) {
-        }
+        } 
     }
 
     header('Location: login.php?e=1');

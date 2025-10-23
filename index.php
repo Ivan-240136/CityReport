@@ -2,7 +2,7 @@
 declare(strict_types=1);
 
 session_start();
-require_once __DIR__ . '/conexion.php'; 
+require_once __DIR__ . '/conexion.php'; // Asegúrate de que conexión está incluida
 
 if (!isset($_SESSION['user']) || !is_array($_SESSION['user'])) {
     header('Location: login.php');
