@@ -7,20 +7,70 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $u = $_POST['usuario'];
     $p = $_POST['contrasena'];
 
-    $stmt = $conn->prepare('SELECT * FROM usuarios WHERE usuario = :usuario AND contrasena = :contrasena');
-    $stmt->execute([':usuario' => $u, ':contrasena' => $p]);
-    $user = $stmt->fetch();
+    $authenticated = false;
+    $user = null;
 
-    if ($user) {
+    // Si existe conexión a la DB (PG_*), validar contra la tabla local 'usuarios'
+    if (isset($conn) && $conn instanceof PDO) {
+        try {
+            $stmt = $conn->prepare('SELECT * FROM usuarios WHERE usuario = :usuario LIMIT 1');
+            $stmt->execute([':usuario' => $u]);
+            $row = $stmt->fetch(PDO::FETCH_ASSOC);
+
+            if ($row) {
+                $stored = $row['contrasena'] ?? '';
+                // Si la contraseña almacenada parece un hash (bcrypt / password_hash), usar password_verify
+                if (password_needs_rehash($stored, PASSWORD_DEFAULT) || strpos($stored, '$2y$') === 0 || strpos($stored, '$2b$') === 0) {
+                    // password_verify manejará hashes; si no coincide, falla
+                    if (password_verify($p, $stored)) {
+                        $authenticated = true;
+                        $user = $row;
+                    }
+                } else {
+                    // Comparación en texto plano (no recomendado), mantener compatibilidad
+                    if (hash_equals($stored, $p)) {
+                        $authenticated = true;
+                        $user = $row;
+                    }
+                }
+            }
+        } catch (Exception $e) {
+            error_log('Error al validar usuario en DB: ' . $e->getMessage());
+            // si falla la consulta, seguimos al flujo de Supabase Auth
+            $authenticated = false;
+            $user = null;
+        }
+    }
+
+    // Si no autenticó con la DB local, intentar con Supabase Auth (email/password)
+    if (!$authenticated) {
+        $auth = supabase_signin($u, $p);
+        if (isset($auth['access_token'])) {
+            $authenticated = true;
+            $user = $auth['user'] ?? supabase_get_user($auth['access_token']);
+            // guardar tokens también
+            $_SESSION['user_tokens'] = [
+                'access_token' => $auth['access_token'],
+                'refresh_token' => $auth['refresh_token'] ?? null,
+            ];
+        } else {
+            if (isset($auth['error'])) {
+                $err = $auth['message'] ?? $auth['error'];
+            } else {
+                $err = 'Usuario o contraseña incorrectos';
+            }
+        }
+    }
+
+    if ($authenticated && $user) {
+        // Normalizar lo que almacenamos en la sesión
         $_SESSION['user'] = [
-            'id' => $user['id'],
-            'usuario' => $user['usuario'],
-            'id_rol' => $user['id_rol'],
+            'id' => $user['id'] ?? $user['id_usuario'] ?? null,
+            'usuario' => $user['usuario'] ?? $user['email'] ?? $u,
         ];
+
         header('Location: index.php');
-        exit;  
-    } else {
-        $err = 'Usuario o contraseña incorrectos';
+        exit;
     }
 }
 ?>
