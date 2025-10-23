@@ -1,5 +1,4 @@
 <?php
-
 $host = getenv('DB_HOST');
 $port = getenv('DB_PORT') ?: '5432';
 $dbname = getenv('DB_NAME');
@@ -18,7 +17,8 @@ try {
     );
 
 } catch (PDOException $e) {
-    echo "Error de conexión: " . $e->getMessage();
-    exit;
+    error_log(" Error de conexión a la base de datos: " . $e->getMessage());
+    http_response_code(500);
+    exit(" Error interno del servidor. Contacte al administrador.");
 }
 ?>
