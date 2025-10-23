@@ -1,26 +1,24 @@
 <?php
-declare(strict_types=1);
 
-$host = 'db.ghywlqpirjqsmmlyomaw.supabase.co';
-$port = '5432';
-$dbname = 'postgres';
-$user = 'postgres';
-$password = 'City_report24';
+$host = getenv('DB_HOST');
+$port = getenv('DB_PORT') ?: '5432';
+$dbname = getenv('DB_NAME');
+$user = getenv('DB_USER');
+$password = getenv('DB_PASS');
 
 try {
     $conn = new PDO(
-        "pgsql:host={$host};port={$port};dbname={$dbname}",
+        "pgsql:host=$host;port=$port;dbname=$dbname;sslmode=require",
         $user,
         $password,
         [
-            PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,
-            PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
-            PDO::ATTR_PERSISTENT         => false,
-            PDO::ATTR_EMULATE_PREPARES   => false,
+            PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+            PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC
         ]
     );
-} catch (Throwable $e) {
-    error_log('[DB ERROR] ' . $e->getMessage());
-    http_response_code(500);
+
+} catch (PDOException $e) {
+    echo "Error de conexión: " . $e->getMessage();
     exit;
 }
+?>
