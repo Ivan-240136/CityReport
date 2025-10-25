@@ -63,9 +63,9 @@
       }
 
       try {
-        // Buscar el usuario y contraseña en la tabla
+        // Buscar el usuario y contraseña en la tabla de backup
         const { data, error } = await supabase
-          .from('usuarios')
+          .from('backup_usuarios_20250820')
           .select('id, usuario')
           .eq('usuario', username)
           .eq('contrasena', password)
