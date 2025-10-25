@@ -63,22 +63,34 @@
       }
 
       try {
-        // Usar el nombre de usuario directamente como email en Supabase Auth
-        const { data, error } = await supabase.auth.signInWithPassword({ 
-          email: username, // si tus usuarios están creados con el nombre de usuario como email
-          password: password
-        });
+        // Buscar el usuario en la tabla usuarios de Supabase
+        const { data, error } = await supabase
+          .from('usuarios')
+          .select('*')
+          .eq('usuario', username)
+          .eq('contrasena', password)
+          .single();
 
         if (error) {
-          console.error('Error de login:', error);
+          console.error('Error de consulta:', error);
+          showError('Error al verificar credenciales');
+          return;
+        }
+
+        if (!data) {
           showError('Usuario o contraseña incorrectos');
           return;
         }
 
-        if (data?.user) {
-          console.log('Login exitoso:', data.user.email);
-          window.location.href = 'index.html';
-        }
+        // Guardar los datos del usuario en sessionStorage
+        sessionStorage.setItem('user', JSON.stringify({
+          id: data.id,
+          usuario: data.usuario
+        }));
+
+        console.log('Login exitoso como:', data.usuario);
+        window.location.href = 'index.html';
+        
       } catch (err) {
         console.error('Error completo:', err);
         showError('Error al intentar iniciar sesión');

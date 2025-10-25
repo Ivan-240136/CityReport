@@ -61,29 +61,24 @@
 
     const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-    async function checkSession() {
-      try {
-        const { data: { session }, error } = await supabase.auth.getSession();
-        if (error) {
-          console.error('Error getSession:', error);
-        }
-        if (!session) {
-          // No hay sesión -> volver a login
-          window.location.href = 'login.html';
-          return;
-        }
+    function checkSession() {
+      const userData = sessionStorage.getItem('user');
+      if (!userData) {
+        window.location.href = 'login.html';
+        return;
+      }
 
-        const user = session.user;
-        const email = user.email || user.user_metadata?.email || 'Usuario';
-        document.getElementById('saludo').textContent = `Hola, ${email}. Has iniciado sesión correctamente.`;
+      try {
+        const user = JSON.parse(userData);
+        document.getElementById('saludo').textContent = `Hola, ${user.usuario}. Has iniciado sesión correctamente.`;
       } catch (err) {
         console.error(err);
         window.location.href = 'login.html';
       }
     }
 
-    async function logout() {
-      await supabase.auth.signOut();
+    function logout() {
+      sessionStorage.removeItem('user');
       window.location.href = 'login.html';
     }
 
