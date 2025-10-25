@@ -214,13 +214,13 @@
         minute: '2-digit'
       }) : 'N/A';
 
-      const fechaReporte = reporte.fecha_reporte ? new Date(reporte.fecha_reporte).toLocaleDateString('es-MX', {
+      const fechaActualizado = reporte.updated_at ? new Date(reporte.updated_at).toLocaleDateString('es-MX', {
         year: 'numeric',
         month: 'long',
         day: 'numeric',
         hour: '2-digit',
         minute: '2-digit'
-      }) : 'N/A';
+      }) : null;
 
       details.innerHTML = `
         <div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(300px, 1fr));gap:20px">
@@ -280,8 +280,14 @@
                 <dd style="margin:4px 0 0">${fechaCreacion}</dd>
               </div>
               <div>
-                <dt style="color:#666;font-size:0.9em">Fecha del Reporte</dt>
-                <dd style="margin:4px 0 0">${fechaReporte}</dd>
+                <dt style="color:#666;font-size:0.9em">Última actualización</dt>
+                <dd style="margin:4px 0 0">${reporte.fecha_actualizacion ? new Date(reporte.fecha_actualizacion).toLocaleDateString('es-MX', {
+                  year: 'numeric',
+                  month: 'long',
+                  day: 'numeric',
+                  hour: '2-digit',
+                  minute: '2-digit'
+                }) : 'N/A'}</dd>
               </div>
             </dl>
           </div>
@@ -474,19 +480,18 @@
               <th>Clasificación</th>
               <th>Colonia</th>
               <th>Calle</th>
-              <th>Detalles</th>
-              <th>Fecha</th>
+              <th>Fecha de Creación</th>
               <th>Creado por</th>
-              <th>Imagen</th>
               <th>Estatus</th>
+              <th>Acciones</th>
             </tr>
           </thead>
           <tbody>`];
       
       rows.forEach(r => {
-        const fecha = r.fecha_reporte ? new Date(r.fecha_reporte).toLocaleDateString('es-MX', {
+        const fechaCreacion = r.creado_en ? new Date(r.creado_en).toLocaleDateString('es-MX', {
           year: 'numeric',
-          month: 'short',
+          month: 'long',
           day: 'numeric',
           hour: '2-digit',
           minute: '2-digit'
@@ -505,18 +510,41 @@
             <td>${clas}</td>
             <td>${col}</td>
             <td>${calle}</td>
-            <td>${r.detalles ? r.detalles.substring(0, 50) + (r.detalles.length > 50 ? '...' : '') : 'N/A'}</td>
-            <td>${fecha}</td>
+            <td>${fechaCreacion}</td>
             <td>${creadoPor}</td>
-            <td style="width:110px">
-              ${imagen ? 
-                `<img src="${imagen}" alt="imagen" class="thumb" onclick="event.stopPropagation(); showImagePreview('${imagen}')">` 
-                : '<span style="color:#8b98a6">-</span>'}
-            </td>
             <td>
               <span class="status-badge ${r.estatus?.toLowerCase() === 'pendiente' ? 'status-pendiente' : 'status-completado'}">
                 ${r.estatus || 'Pendiente'}
               </span>
+            </td>
+            <td style="display:flex;gap:8px;align-items:center">
+              <button onclick="event.stopPropagation(); showReporteDetails(${JSON.stringify(r).replace(/"/g, '&quot;')})" 
+                      style="background:none;border:none;cursor:pointer;color:#11606a;padding:6px;border-radius:4px;display:flex;align-items:center;gap:4px">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                  <circle cx="12" cy="12" r="3"></circle>
+                </svg>
+                Ver
+              </button>
+              <button onclick="event.stopPropagation(); window.location.href='reportes_editar.html?id=${r.id}'" 
+                      style="background:none;border:none;cursor:pointer;color:#2E86DE;padding:6px;border-radius:4px;display:flex;align-items:center;gap:4px">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                  <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                </svg>
+                Editar
+              </button>
+              ${imagen ? 
+                `<button onclick="event.stopPropagation(); showImagePreview('${imagen}')" 
+                         style="background:none;border:none;cursor:pointer;color:#6c2ea9;padding:6px;border-radius:4px;display:flex;align-items:center;gap:4px">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                    <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                    <polyline points="21 15 16 10 5 21"></polyline>
+                  </svg>
+                  Imagen
+                </button>` 
+                : ''}
             </td>
           </tr>`)
       })

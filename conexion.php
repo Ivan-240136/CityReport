@@ -171,11 +171,14 @@ if ($databaseUrl && $databaseUrl !== false) {
 
 if ($pg_host && $pg_db && $pg_user) {
     try {
+        // Usar sslmode=require para conexiones SSL sin verificación de certificado
         $dsn = "pgsql:host={$pg_host};port={$pg_port};dbname={$pg_db};sslmode=require";
         $conn = new PDO($dsn, $pg_user, $pg_pass);
         $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        error_log('Conexión PDO establecida correctamente');
     } catch (PDOException $e) {
         error_log('No se pudo conectar a Postgres: ' . $e->getMessage());
+        error_log('DSN usado: ' . preg_replace('/pass=([^;]+)/', 'pass=***', $dsn));
         $conn = null;
     }
 }
