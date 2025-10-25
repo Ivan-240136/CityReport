@@ -63,17 +63,17 @@
       }
 
       try {
-        // Buscar el usuario en la tabla usuarios de Supabase
+        // Buscar el usuario y contraseña en la tabla
         const { data, error } = await supabase
           .from('usuarios')
-          .select('*')
+          .select('id, usuario')
           .eq('usuario', username)
           .eq('contrasena', password)
           .single();
 
         if (error) {
-          console.error('Error de consulta:', error);
-          showError('Error al verificar credenciales');
+          console.error('Error:', error);
+          showError('Usuario o contraseña incorrectos');
           return;
         }
 
@@ -82,13 +82,13 @@
           return;
         }
 
-        // Guardar los datos del usuario en sessionStorage
+        // Login exitoso: guardar datos y redirigir
         sessionStorage.setItem('user', JSON.stringify({
           id: data.id,
           usuario: data.usuario
         }));
 
-        console.log('Login exitoso como:', data.usuario);
+        console.log('Bienvenido:', data.usuario);
         window.location.href = 'index.html';
         
       } catch (err) {
