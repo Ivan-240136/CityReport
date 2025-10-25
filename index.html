@@ -5,31 +5,58 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>CityReport - Inicio</title>
   <link rel="stylesheet" href="css/estilos.css">
+  <link rel="stylesheet" href="css/nav.css">
   <style>
     .welcome-box { max-width: 900px; margin: 40px auto; background: #fff; padding: 28px; border-radius: 12px; box-shadow: 0 6px 18px rgba(0,0,0,0.08); text-align: center; }
     .lead { color: #555; }
     .btn, .btn2 { display:inline-block; padding:10px 16px; border-radius:8px; text-decoration:none; margin:6px; }
-    .btn { background:#2f80ed; color:#fff }
+    .btn { background:var(--primary-700); color:#fff }
     .btn2 { background:#e2e8f0; color:#222 }
   </style>
 </head>
 <body>
-  <!-- Header: logos + single navigation -->
-  <header style="background:linear-gradient(180deg,#114b58,#0f5160);color:#fff;padding:18px 0;">
-    <div style="max-width:1200px;margin:0 auto;display:flex;align-items:center;gap:16px;padding:0 18px;">
-      <div style="display:flex;align-items:center;gap:12px;">
-        <a href="index.html"><img src="img/urbano.png" alt="Urbano" style="height:52px"></a>
-        <a href="index.html"><img src="img/logo_city.png" alt="CityReport" style="height:48px"></a>
+  <header class="main-header">
+    <div class="header-container">
+      <div class="logo-container">
+        <a href="index.html" class="logo-link">
+          <img src="img/urbano.png" alt="Urbano" class="logo-img">
+          <img src="img/logo_city.png" alt="CityReport" class="logo-img">
+        </a>
       </div>
-      <div style="flex:1;text-align:center">
-        <h1 style="margin:0;font-size:28px;">CityReport</h1>
-        <div style="font-size:13px;opacity:0.9">Panel de administración</div>
+      <div class="header-title">
+        <h1>CityReport</h1>
+        <div class="header-subtitle">
+          <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4" />
+          </svg>
+          Panel de administración
+        </div>
       </div>
-      <nav style="display:flex;gap:12px;align-items:center">
-        <a href="index.html" style="color:#dff3ff;padding:8px 12px;border-radius:8px;background:rgba(255,255,255,0.03);text-decoration:none">Inicio</a>
-        <a href="reportes_consultar.html" style="color:#dff3ff;text-decoration:none">Reportes</a>
-        <a href="estadisticas.html" style="color:#dff3ff;text-decoration:none">Estadísticas</a>
-        <a href="#" id="logout-link" style="color:#ffd; text-decoration:none">Cerrar sesión</a>
+      <nav class="main-nav">
+        <a href="index.html" class="nav-link active">
+          <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+          </svg>
+          <span>Inicio</span>
+        </a>
+        <a href="reportes_consultar.html" class="nav-link">
+          <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" />
+          </svg>
+          <span>Reportes</span>
+        </a>
+        <a href="estadisticas.html" class="nav-link">
+          <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+          </svg>
+          <span>Estadísticas</span>
+        </a>
+        <a href="#" id="logout-link" class="nav-link">
+          <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+          </svg>
+          <span>Cerrar sesión</span>
+        </a>
       </nav>
     </div>
   </header>

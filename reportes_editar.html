@@ -5,52 +5,95 @@
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>Editar Reporte - CityReport</title>
   <link rel="stylesheet" href="css/estilos.css">
-  <style>
-    .panel{max-width:1000px;margin:24px auto;background:#fff;padding:22px;border-radius:12px;box-shadow:0 10px 30px rgba(16,40,60,0.08)}
-    label{display:block;margin-top:12px;font-weight:600;color:#164a5a}
-    input,select,textarea{width:100%;padding:12px;border-radius:10px;border:1px solid #e6f0f6;background:#fbfdff}
-    .actions{display:flex;gap:10px;margin-top:16px}
-    button{padding:10px 14px;border-radius:8px;border:none;cursor:pointer}
-    #btnUpdate{background:linear-gradient(180deg,#11606a,#0d4f56);color:#fff}
-    #btnDelete{background:#fff;border:1px solid #e6eef5;color:#a33}
-    .thumb{width:140px;height:100px;object-fit:cover;border-radius:8px;border:1px solid #e6eef5}
-
-    /* Layout grid for the form */
-    .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;align-items:start}
-    .full{grid-column:1 / -1}
-    @media (max-width:820px){ .form-grid{grid-template-columns:1fr} }
-
-    /* Summary styling */
-    #summary { font-family: 'Segoe UI', sans-serif }
-    #summary-id{font-size:18px}
-    #summary-remitente{font-size:16px}
-    #summary-creado{font-size:13px;color:#0f5160}
-
-    /* Small helper for subtle labels */
-    .small-label{font-size:12px;color:#6b7b84;margin-bottom:6px}
-  </style>
+  <link rel="stylesheet" href="css/nav.css">
 </head>
 <body>
-  <header style="background:linear-gradient(180deg,#114b58,#0f5160);color:#fff;padding:18px 0;">
-    <div style="max-width:1200px;margin:0 auto;display:flex;align-items:center;gap:16px;padding:0 18px;">
-      <div style="display:flex;align-items:center;gap:12px;">
-        <a href="index.html"><img src="img/urbano.png" style="height:46px"></a>
-        <a href="index.html"><img src="img/logo_city.png" style="height:44px"></a>
+  <header class="main-header">
+    <div class="header-container">
+      <div class="logo-container">
+        <a href="index.html" class="logo-link">
+          <img src="img/urbano.png" alt="Urbano" class="logo-img">
+          <img src="img/logo_city.png" alt="City Report" class="logo-img">
+        </a>
       </div>
-      <div style="flex:1;text-align:center">
-        <h1 style="margin:0;font-size:26px;">Editar Reporte</h1>
+      <div class="header-title">
+        <h1>Editar Reporte</h1>
+        <div class="header-subtitle">
+          <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+          </svg>
+          Panel de edición
+        </div>
       </div>
-      <nav style="display:flex;gap:12px;align-items:center">
-        <a href="index.html" style="color:#dff3ff;text-decoration:none">Inicio</a>
-        <a href="reportes_consultar.html" style="color:#dff3ff;text-decoration:none">Reportes</a>
-        <a href="estadisticas.html" style="color:#dff3ff;text-decoration:none">Estadísticas</a>
-        <a href="#" id="logout-link" style="color:#ffd; text-decoration:none">Cerrar sesión</a>
+      <nav class="main-nav">
+        <a href="index.html" class="nav-link">
+          <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+          </svg>
+          <span>Inicio</span>
+        </a>
+        <a href="reportes_consultar.html" class="nav-link">
+          <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" />
+          </svg>
+          <span>Reportes</span>
+        </a>
+        <a href="estadisticas.html" class="nav-link">
+          <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+          </svg>
+          <span>Estadísticas</span>
+        </a>
+        <a href="#" id="logout-link" class="nav-link">
+          <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+          </svg>
+          <span>Cerrar sesión</span>
+        </a>
       </nav>
     </div>
   </header>
   <main>
     <div class="panel">
-      <div style="margin-bottom:12px"><a href="reportes_consultar.html">← Volver</a></div>
+      <div style="margin-bottom:12px;display:flex;align-items:center;justify-content:space-between;gap:12px">
+        <div><a href="#" id="back-link" style="text-decoration:none;color:#5b2b86;font-weight:600;display:inline-flex;align-items:center;gap:8px">
+          <svg class="icon small" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden>
+            <path d="M15 18l-6-6 6-6" stroke="#5b2b86" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          <span>Volver</span>
+        </a></div>
+        <div style="display:flex;gap:10px">
+          <a href="reportes_consultar.html" class="btn btn-secondary" style="text-decoration:none;display:inline-flex;align-items:center">Ver reportes</a>
+          <a href="index.html" class="btn btn-primary" style="text-decoration:none;display:inline-flex;align-items:center">Inicio</a>
+        </div>
+      </div>
+
+      <!-- Panel de búsqueda: buscar por ID o remitente y seleccionar para editar -->
+      <div id="searchPanel" style="margin-bottom:18px;padding:10px 0;border-bottom:1px solid #f1f6f9">
+        <div style="display:flex;gap:12px;align-items:center">
+          <input id="searchInput" class="search-input" type="text" placeholder="Buscar por ID o remitente...">
+          <button id="searchBtn" class="btn btn-primary" type="button">
+            <svg class="icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden>
+              <path d="M21 21l-4.35-4.35" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              <circle cx="11" cy="11" r="6" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            Buscar
+          </button>
+        </div>
+        <div id="resultsTable" style="margin-top:12px;display:none">
+          <table class="results-table" style="width:100%">
+            <thead>
+              <tr>
+                <th style="text-align:left;padding:8px;color:#6b7b84">ID</th>
+                <th style="text-align:left;padding:8px;color:#6b7b84">Remitente</th>
+                <th style="text-align:left;padding:8px;color:#6b7b84">Clasificación</th>
+                <th style="text-align:left;padding:8px;color:#6b7b84">Acción</th>
+              </tr>
+            </thead>
+            <tbody id="searchResults"></tbody>
+          </table>
+        </div>
+      </div>
 
       <!-- Resumen del reporte (limpio y profesional) -->
       <div id="summary" style="border-left:4px solid #11606a;padding:12px;margin-bottom:12px;background:#fbfdff;border-radius:6px;display:none">
@@ -70,7 +113,7 @@
         </div>
       </div>
 
-      <form id="formEdit">
+  <form id="formEdit" style="display:none">
         <input type="hidden" id="rid">
         <label>Remitente <input id="remitente"></label>
         <label>Clasificación <select id="clasificacion"></select></label>
@@ -79,8 +122,20 @@
         <label>Detalles <textarea id="detalles" rows="4"></textarea></label>
         <label>Estado <select id="estado"><option>Pendiente</option><option>En Proceso</option><option>Resuelto</option></select></label>
         <div class="actions">
-          <button id="btnUpdate" type="button">Actualizar</button>
-          <button id="btnDelete" type="button">Eliminar</button>
+          <button id="btnUpdate" type="button" class="btn btn-primary">
+            <svg class="icon small" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden>
+              <path d="M20 6L9 17l-5-5" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            Actualizar
+          </button>
+          <button id="btnDelete" type="button" class="btn btn-secondary">
+            <svg class="icon small" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden>
+              <path d="M3 6h18" stroke="#0f5160" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M8 6v12a2 2 0 0 0 2 2h4a2 2 0 0 0 2-2V6" stroke="#0f5160" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M10 11v6M14 11v6" stroke="#0f5160" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            Eliminar
+          </button>
         </div>
       </form>
         <div id="evidencias" style="margin-top:18px;display:none">
@@ -112,15 +167,127 @@
     async function loadOptions(){
       const { data: clas } = await supabase.from('clasificaciones').select('id,nombre').order('nombre');
       const { data: cols } = await supabase.from('colonias').select('id,nombre_colonia').order('nombre_colonia');
+      // poblar selects
       document.getElementById('clasificacion').innerHTML = (clas||[]).map(c=>`<option value="${c.id}">${c.nombre}</option>`).join('');
       document.getElementById('colonia').innerHTML = (cols||[]).map(c=>`<option value="${c.id}">${c.nombre_colonia}</option>`).join('');
+      // crear mapas rápidos para resolver ids a nombres en la tabla de resultados
+      window._clasMap = {};
+      (clas||[]).forEach(c=>{ window._clasMap[c.id] = c.nombre; });
+      window._colsMap = {};
+      (cols||[]).forEach(c=>{ window._colsMap[c.id] = c.nombre_colonia; });
     }
 
-    // carga opcional de lista reducida si necesitas buscar otros reportes
+    // carga opcional de lista reducida y configuración del panel de búsqueda
     async function loadTable(){
-      // ocultamos resumen/lista por ahora para una UI limpia
-      // si necesitas habilitar la lista, descomenta y ajusta según tu esquema
-      // tableWrap.style.display = 'none';
+      // mostrar panel de búsqueda
+      const panel = document.getElementById('searchPanel');
+      const resultsTable = document.getElementById('resultsTable');
+      const searchResults = document.getElementById('searchResults');
+      const searchInput = document.getElementById('searchInput');
+      const searchBtn = document.getElementById('searchBtn');
+
+      // función para mostrar resultados en la tabla
+      function displayResults(results){
+        if(!results || !results.length){
+          searchResults.innerHTML = `<tr><td colspan="4" style="padding:12px;text-align:center;color:#666">No se encontraron reportes</td></tr>`;
+          resultsTable.style.display = 'block';
+          return;
+        }
+        searchResults.innerHTML = results.map(r=>{
+          const nombre = r.remitente || 'N/A';
+          // resolver clasificación: buscar varios nombres de campo y mapear id->nombre si es numérico
+          const clasField = r.clasificacion_nombre || r.clasificacion || r.id_clasificacion || r.clasificacion_id || r.id_clas || '';
+          let clas = '';
+          if(clasField === null || clasField === undefined) clas = '';
+          else if(typeof clasField === 'number' || /^\d+$/.test(String(clasField))) {
+            clas = (window._clasMap && window._clasMap[clasField]) ? window._clasMap[clasField] : String(clasField);
+          } else {
+            clas = String(clasField);
+          }
+          return `
+            <tr style="border-bottom:1px solid #f1f6f9">
+              <td style="padding:8px">${r.id}</td>
+              <td style="padding:8px">${nombre}</td>
+              <td style="padding:8px">${clas}</td>
+            <td style="padding:8px">
+              <button class="btn-select" onclick="window.editarReporte('${r.id}')">
+                <svg class="icon small" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden>
+                  <path d="M3 21v-3.75L14.81 5.44a1.5 1.5 0 0 1 2.12 0l1.63 1.63a1.5 1.5 0 0 1 0 2.12L6.75 21H3z" stroke="#0f5160" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                Seleccionar
+              </button>
+            </td>
+            </tr>`
+        }).join('');
+        resultsTable.style.display = 'block';
+      }
+
+      // buscar por texto o id
+      async function performSearch(){
+        const q = searchInput.value.trim();
+        try{
+          let dbq = supabase.from('reportes').select('*');
+          if(!q){
+            // si vacío, cargar recientes
+            const { data, error } = await dbq.order('id', { ascending:false }).limit(10);
+            if(error) throw error;
+            displayResults(data || []);
+            return;
+          }
+          if(/^\d+$/.test(q)) dbq = dbq.eq('id', q);
+          else dbq = dbq.ilike('remitente', `%${q}%`);
+          const { data, error } = await dbq.order('id', { ascending:false }).limit(20);
+          if(error) throw error;
+          // intentar enriquecer con nombres (clasificaciones) si están disponibles
+          const enriched = (data||[]).map(r=>({ ...r, clasificacion_nombre: r.clasificacion_nombre || r.clasificacion || '' }));
+          displayResults(enriched);
+        }catch(err){
+          console.error('Error en búsqueda:', err);
+          searchResults.innerHTML = `<tr><td colspan="4" style="padding:12px;color:crimson">Error en búsqueda: ${err.message||err}</td></tr>`;
+          resultsTable.style.display = 'block';
+        }
+      }
+
+      // exponer función global para seleccionar y editar (con animación)
+      window.editarReporte = async function(id){
+        // cargar reporte y mostrar formulario de edición
+        await loadById(id);
+        // animar salida del panel y entrada del formulario
+        if(panel){
+          panel.classList.remove('animate-in');
+          panel.classList.add('fade-out');
+        }
+        const formEl = document.getElementById('formEdit');
+        // esperar la animación de salida (si existe) y luego ocultar
+        setTimeout(()=>{
+          if(panel) panel.style.display = 'none';
+          // mostrar y animar el formulario
+          formEl.style.display = 'block';
+          formEl.classList.remove('fade-out');
+          formEl.classList.add('animate-in');
+        }, 180);
+      }
+
+      // wiring eventos
+      searchBtn.addEventListener('click', performSearch);
+      searchInput.addEventListener('keypress', (e)=>{ if(e.key==='Enter'){ e.preventDefault(); performSearch(); } });
+
+      // "Volver": navegar una página atrás en el historial (fallback a reportes_consultar)
+      const backLink = document.getElementById('back-link');
+      if(backLink){
+        backLink.addEventListener('click', (ev)=>{
+          ev.preventDefault();
+          try{
+            if(window.history && window.history.length > 1){ window.history.back(); return; }
+          }catch(e){}
+          // fallback
+          window.location.href = 'reportes_consultar.html';
+        });
+      }
+
+  // carga inicial: mostrar últimos 10
+  if(panel) panel.classList.add('animate-in');
+  await performSearch();
     }
 
     function formatDateTime(d){
@@ -273,7 +440,11 @@
   if (!sessionStorage.getItem('user')) window.location.href='login.html';
   await loadOptions();
   await loadTable();
-  if (idParam) await loadById(idParam);
+  if (idParam) {
+    // si se pasó id en la URL, abrirlo en modo edición
+    if (typeof window.editarReporte === 'function') await window.editarReporte(idParam);
+    else await loadById(idParam);
+  }
   </script>
   <script>
     const logoutLink = document.getElementById('logout-link');

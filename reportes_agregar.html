@@ -5,66 +5,114 @@
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>Agregar Reporte - CityReport</title>
   <link rel="stylesheet" href="css/estilos.css">
-  <style>
-    .panel { max-width: 900px; margin: 32px auto; background: rgba(255,255,255,0.98); padding: 24px; border-radius: 12px; box-shadow: 0 8px 30px rgba(0,0,0,0.08); }
-    .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;align-items:start}
-    .full{grid-column:1 / -1}
-    @media (max-width:820px){ .form-grid{grid-template-columns:1fr} }
-    label{ display:block; font-weight:600; margin-bottom:6px; color:#164a5a }
-    input, select, textarea { width:100%; padding:10px; border-radius:8px; border:1px solid #e6f0f6; background:#fbfdff }
-    button.primary { background: linear-gradient(90deg,#0d6efd,#3aa0ff); color:#fff; padding:10px 16px; border-radius:8px; border:none; box-shadow:0 6px 18px rgba(13,110,253,0.12) }
-    .muted { color:#6b7b84; font-size:13px }
-    .hint { font-size:12px;color:#6b7b84;margin-top:6px }
-  </style>
+  <link rel="stylesheet" href="css/forms.css">
+  <link rel="stylesheet" href="css/tables.css">
+  <link rel="stylesheet" href="css/modals.css">
 </head>
 <body>
-  <header style="background:linear-gradient(180deg,#114b58,#0f5160);color:#fff;padding:18px 0;">
-    <div style="max-width:1200px;margin:0 auto;display:flex;align-items:center;gap:16px;padding:0 18px;">
-      <div style="display:flex;align-items:center;gap:12px;">
-        <a href="index.html"><img src="img/urbano.png" alt="Urbano" style="height:46px"></a>
-        <a href="index.html"><img src="img/logo_city.png" alt="CityReport" style="height:44px"></a>
+  <header class="header">
+    <div class="header-content">
+      <div class="header-logo">
+        <a href="index.html" class="logo-link">
+          <img src="img/urbano.png" alt="Urbano" class="logo-img">
+          <img src="img/logo_city.png" alt="CityReport" class="logo-img">
+        </a>
       </div>
-      <div style="flex:1;text-align:center">
-        <h1 style="margin:0;font-size:26px;">Agregar Reporte</h1>
+      <div class="header-title">
+        <h1>
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"/>
+          </svg>
+          Agregar Reporte
+        </h1>
       </div>
-      <nav style="display:flex;gap:12px;align-items:center">
-        <a href="index.html" style="color:#dff3ff;text-decoration:none">Inicio</a>
-        <a href="reportes_consultar.html" style="color:#dff3ff;text-decoration:none">Reportes</a>
-        <a href="estadisticas.html" style="color:#dff3ff;text-decoration:none">Estadísticas</a>
-        <a href="#" id="logout-link" style="color:#ffd; text-decoration:none">Cerrar sesión</a>
+      <nav class="header-nav">
+        <a href="index.html" class="nav-link">
+          <svg class="icon small" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
+          </svg>
+          Inicio
+        </a>
+        <a href="reportes_consultar.html" class="nav-link">
+          <svg class="icon small" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"/>
+          </svg>
+          Reportes
+        </a>
+        <a href="estadisticas.html" class="nav-link">
+          <svg class="icon small" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
+          </svg>
+          Estadísticas
+        </a>
+        <a href="#" id="logout-link" class="nav-link nav-link-logout">
+          <svg class="icon small" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
+          </svg>
+          Cerrar sesión
+        </a>
       </nav>
     </div>
   </header>
 
   <main>
     <div class="panel">
-      <form id="formAdd">
-        <div class="row">
-          <div class="col">
-            <label for="remitente">Remitente</label>
-            <input id="remitente" name="remitente" required>
+      <div style="margin-bottom:1rem">
+        <a href="index.html" class="btn btn-secondary btn-back animate-slide-in">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+          </svg>
+          Volver
+        </a>
+      </div>
 
-            <label for="clasificacion">Clasificación</label>
-            <select id="clasificacion" name="clasificacion" required></select>
-
-            <label for="colonia">Colonia</label>
-            <select id="colonia" name="colonia" required></select>
+      <form id="formAdd" class="animate-slide-in">
+        <div class="form-grid">
+          <div class="form-group">
+            <label for="remitente">Remitente <span class="text-danger">*</span></label>
+            <input id="remitente" name="remitente" class="form-control" required 
+                   placeholder="Nombre completo del remitente">
           </div>
 
-          <div class="col">
+          <div class="form-group">
+            <label for="clasificacion">Clasificación <span class="text-danger">*</span></label>
+            <select id="clasificacion" name="clasificacion" class="form-control" required>
+              <option value="">Seleccionar clasificación...</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="colonia">Colonia <span class="text-danger">*</span></label>
+            <select id="colonia" name="colonia" class="form-control" required>
+              <option value="">Seleccionar colonia...</option>
+            </select>
+          </div>
+
+          <div class="form-group">
             <label for="calle">Calle / Referencia</label>
-            <input id="calle" name="calle">
+            <input id="calle" name="calle" class="form-control" 
+                   placeholder="Dirección o punto de referencia">
+          </div>
 
-            <label for="detalles">Detalles</label>
-            <textarea id="detalles" name="detalles" rows="6"></textarea>
+          <div class="form-group full">
+            <label for="detalles">Detalles del reporte</label>
+            <textarea id="detalles" name="detalles" class="form-control" rows="6"
+                     placeholder="Describe los detalles del reporte..."></textarea>
+          </div>
 
-            <div style="margin-top:12px;display:flex;gap:8px;align-items:center">
-                  <button class="primary" type="submit">Agregar Reporte</button>
-                  <span class="hint">(Subida de imágenes: se implementará más adelante)</span>
-                  <!-- Mantener input oculto para futuro uso pero no activo -->
-                  <input type="file" id="imagen" accept="image/*" style="display:none">
-                  <a href="index.html" style="margin-left:auto;text-decoration:none">← Volver</a>
-                </div>
+          <!-- Input oculto para futuras imágenes -->
+          <input type="file" id="imagen" accept="image/*" style="display:none">
+          
+          <div class="form-group full">
+            <div class="d-flex justify-content-between align-items-center">
+              <button type="submit" class="btn btn-primary">
+                <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M12 4v16m-8-8h16"/>
+                </svg>
+                Agregar Reporte
+              </button>
+              <span class="hint">(Subida de imágenes: se implementará más adelante)</span>
+            </div>
           </div>
         </div>
       </form>

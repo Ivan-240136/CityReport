@@ -5,68 +5,101 @@
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>Estadísticas - CityReport</title>
   <link rel="stylesheet" href="css/estilos.css">
-  <style>
-    .wrap{max-width:1100px;margin:20px auto;padding:20px}
-    .topRow{display:flex;align-items:center;justify-content:space-between}
-    .cards{display:flex;gap:12px;margin-top:12px}
-    .card{flex:1;background:#0f5160;color:#fff;padding:18px;border-radius:6px;text-align:center}
-    .grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:16px}
-    .info{background:#fff;padding:12px;border-radius:6px;border:2px solid #0f5160}
-    .muted{color:#6b7d85}
-  </style>
+  <link rel="stylesheet" href="css/forms.css">
+  <link rel="stylesheet" href="css/tables.css">
+  <link rel="stylesheet" href="css/modals.css">
+  <link rel="stylesheet" href="css/stats.css">
+  <link rel="stylesheet" href="css/nav.css">
 </head>
 <body>
-  <header style="background:linear-gradient(180deg,#114b58,#0f5160);color:#fff;padding:18px 0;">
-    <div style="max-width:1200px;margin:0 auto;display:flex;align-items:center;gap:16px;padding:0 18px;">
-      <div style="display:flex;align-items:center;gap:12px;">
-        <a href="index.html"><img src="img/urbano.png" style="height:46px"></a>
-        <a href="index.html"><img src="img/logo_city.png" style="height:44px"></a>
+  <header class="main-header">
+    <div class="header-container">
+      <div class="logo-container">
+        <a href="index.html" class="logo-link">
+          <img src="img/urbano.png" alt="Urbano" class="logo-img">
+          <img src="img/logo_city.png" alt="City Report" class="logo-img">
+        </a>
       </div>
-      <div style="flex:1;text-align:center">
-        <h1 style="margin:0;font-size:26px;">Estadísticas</h1>
-      </div>
-      <nav style="display:flex;gap:12px;align-items:center">
-        <a href="index.html" style="color:#dff3ff;text-decoration:none">Inicio</a>
-        <a href="reportes_consultar.html" style="color:#dff3ff;text-decoration:none">Reportes</a>
-        <a href="estadisticas.html" style="color:#dff3ff;text-decoration:none">Estadísticas</a>
-        <a href="#" id="logout-link" style="color:#ffd; text-decoration:none">Cerrar sesión</a>
+      <h1 class="header-title">Estadísticas</h1>
+      <nav class="main-nav">
+        <a href="index.html" class="nav-link">
+          <svg class="nav-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+          </svg>
+          <span>Inicio</span>
+        </a>
+        <a href="reportes_consultar.html" class="nav-link">
+          <svg class="nav-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" />
+          </svg>
+          <span>Reportes</span>
+        </a>
+        <a href="estadisticas.html" class="nav-link active">
+          <svg class="nav-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+          </svg>
+          <span>Estadísticas</span>
+        </a>
+        <a href="#" id="logout-link" class="nav-link">
+          <svg class="nav-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+          </svg>
+          <span>Cerrar sesión</span>
+        </a>
       </nav>
     </div>
   </header>
 
   <main>
-    <div class="wrap">
-      <div class="topRow">
-        <div>
-          <div id="dateNow" class="muted"></div>
-          <h2>Estadísticas De City Report</h2>
+    <div class="stats-container">
+      <div class="stats-header">
+        <div class="stats-header-content">
+          <div id="dateNow" class="stats-date"></div>
+          <h2 class="stats-title">Panel de Estadísticas</h2>
         </div>
-        <div><a href="index.html">← Volver</a></div>
+        <a href="index.html" class="btn btn-ghost">
+          <svg class="icon-stats" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+          </svg>
+          Volver
+        </a>
       </div>
 
-      <div class="cards">
-        <div class="card" id="total">Total<br><strong id="totalVal">0</strong></div>
-        <div class="card" id="pendientes">Pendientes<br><strong id="pendVal">0</strong></div>
-        <div class="card" id="proceso">En proceso<br><strong id="procVal">0</strong></div>
-        <div class="card" id="resueltos">Resueltos<br><strong id="resVal">0</strong></div>
+      <div class="stats-cards">
+        <div class="stat-card total">
+          <span class="stat-label">Total de Reportes</span>
+          <p class="stat-value animate-count" id="totalVal">0</p>
+        </div>
+        <div class="stat-card pending">
+          <span class="stat-label">Pendientes</span>
+          <p class="stat-value animate-count" id="pendVal">0</p>
+        </div>
+        <div class="stat-card in-progress">
+          <span class="stat-label">En Proceso</span>
+          <p class="stat-value animate-count" id="procVal">0</p>
+        </div>
+        <div class="stat-card completed">
+          <span class="stat-label">Resueltos</span>
+          <p class="stat-value animate-count" id="resVal">0</p>
+        </div>
       </div>
 
-      <div class="grid">
-        <div class="info">
-          <h3 id="coloniaFreq">—</h3>
-          <p class="muted">Colonia más frecuente</p>
+      <div class="stats-grid">
+        <div class="info-card">
+          <p class="info-value" id="coloniaFreq">—</p>
+          <p class="info-label">Colonia más frecuente</p>
         </div>
-        <div class="info">
-          <h3 id="clasificacionFreq">—</h3>
-          <p class="muted">Reporte más común</p>
+        <div class="info-card">
+          <p class="info-value" id="clasificacionFreq">—</p>
+          <p class="info-label">Reporte más común</p>
         </div>
-        <div class="info">
-          <h3 id="picoDia">—</h3>
-          <p class="muted">Pico de actividad semanal</p>
+        <div class="info-card">
+          <p class="info-value" id="picoDia">—</p>
+          <p class="info-label">Pico de actividad semanal</p>
         </div>
-        <div class="info">
-          <h3 id="tasaRes">—</h3>
-          <p class="muted">Tasa De Resolución General</p>
+        <div class="info-card">
+          <p class="info-value" id="tasaRes">—</p>
+          <p class="info-label">Tasa De Resolución General</p>
         </div>
       </div>
 
