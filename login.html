@@ -25,8 +25,8 @@
     <div id="alert" class="error" style="display:none"></div>
 
     <form id="login-form">
-      <label for="usuario">Email</label>
-      <input id="usuario" name="usuario" type="text" placeholder="tu@correo.com" required>
+      <label for="usuario">Usuario</label>
+      <input id="usuario" name="usuario" type="text" placeholder="Nombre de usuario" required>
 
       <label for="contrasena">Contraseña</label>
       <input id="contrasena" name="contrasena" type="password" placeholder="********" required>
@@ -53,25 +53,35 @@
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
       alertEl.style.display = 'none';
-      const email = document.getElementById('usuario').value.trim();
+      
+      const username = document.getElementById('usuario').value.trim();
       const password = document.getElementById('contrasena').value;
 
-      if (!email || !password) {
-        showError('Completa email y contraseña.');
+      if (!username || !password) {
+        showError('Completa usuario y contraseña.');
         return;
       }
 
       try {
-        const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+        // Usar el nombre de usuario directamente como email en Supabase Auth
+        const { data, error } = await supabase.auth.signInWithPassword({ 
+          email: username, // si tus usuarios están creados con el nombre de usuario como email
+          password: password
+        });
+
         if (error) {
-          showError(error.message || 'Error al iniciar sesión');
+          console.error('Error de login:', error);
+          showError('Usuario o contraseña incorrectos');
           return;
         }
 
-        // Inicio correcto: redirigir a index.html
-        window.location.href = 'index.html';
+        if (data?.user) {
+          console.log('Login exitoso:', data.user.email);
+          window.location.href = 'index.html';
+        }
       } catch (err) {
-        showError(err.message || 'Error inesperado');
+        console.error('Error completo:', err);
+        showError('Error al intentar iniciar sesión');
       }
     });
 
