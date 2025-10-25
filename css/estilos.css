@@ -150,17 +150,70 @@ h1 {
   color: var(--azul);
 }
 
+.btn {
+  position: relative;
+  overflow: hidden;
+}
+
 .btn:hover {
   filter: brightness(1.1);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 15px rgba(21, 73, 101, 0.35);
 }
 
 .btn2:hover {
   filter: brightness(0.95);
+  transform: translateY(-2px);
 }
 
 .btn:active,
 .btn2:active {
   transform: scale(0.98);
+}
+
+/* Efecto de onda al hacer clic */
+.btn::after {
+  content: '';
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+  background-image: radial-gradient(circle, #fff 10%, transparent 10.01%);
+  background-repeat: no-repeat;
+  background-position: 50%;
+  transform: scale(10, 10);
+  opacity: 0;
+  transition: transform .5s, opacity 1s;
+}
+
+.btn:active::after {
+  transform: scale(0, 0);
+  opacity: .3;
+  transition: 0s;
+}
+
+/* Animaciones para campos de formulario */
+.form-control {
+  transition: all 0.3s ease;
+  border: 2px solid transparent;
+}
+
+.form-control:focus {
+  border-color: var(--azul);
+  box-shadow: 0 0 0 0.2rem rgba(21, 73, 101, 0.25);
+  transform: translateY(-1px);
+}
+
+/* Animaciones para tarjetas */
+.card {
+  transition: all 0.3s ease;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 20px rgba(0,0,0,0.1);
 }
 
 .pie {

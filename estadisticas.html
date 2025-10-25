@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Estadísticas - CityReport</title>
+  <link rel="stylesheet" href="css/estilos.css">
+  <style>
+    .wrap{max-width:1100px;margin:20px auto;padding:20px}
+    .topRow{display:flex;align-items:center;justify-content:space-between}
+    .cards{display:flex;gap:12px;margin-top:12px}
+    .card{flex:1;background:#0f5160;color:#fff;padding:18px;border-radius:6px;text-align:center}
+    .grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:16px}
+    .info{background:#fff;padding:12px;border-radius:6px;border:2px solid #0f5160}
+    .muted{color:#6b7d85}
+  </style>
+</head>
+<body>
+  <header style="background:linear-gradient(180deg,#114b58,#0f5160);color:#fff;padding:18px 0;">
+    <div style="max-width:1200px;margin:0 auto;display:flex;align-items:center;gap:16px;padding:0 18px;">
+      <div style="display:flex;align-items:center;gap:12px;">
+        <a href="index.html"><img src="img/urbano.png" style="height:46px"></a>
+        <a href="index.html"><img src="img/logo_city.png" style="height:44px"></a>
+      </div>
+      <div style="flex:1;text-align:center">
+        <h1 style="margin:0;font-size:26px;">Estadísticas</h1>
+      </div>
+      <nav style="display:flex;gap:12px;align-items:center">
+        <a href="index.html" style="color:#dff3ff;text-decoration:none">Inicio</a>
+        <a href="reportes_consultar.html" style="color:#dff3ff;text-decoration:none">Reportes</a>
+        <a href="estadisticas.html" style="color:#dff3ff;text-decoration:none">Estadísticas</a>
+        <a href="#" id="logout-link" style="color:#ffd; text-decoration:none">Cerrar sesión</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <div class="wrap">
+      <div class="topRow">
+        <div>
+          <div id="dateNow" class="muted"></div>
+          <h2>Estadísticas De City Report</h2>
+        </div>
+        <div><a href="index.html">← Volver</a></div>
+      </div>
+
+      <div class="cards">
+        <div class="card" id="total">Total<br><strong id="totalVal">0</strong></div>
+        <div class="card" id="pendientes">Pendientes<br><strong id="pendVal">0</strong></div>
+        <div class="card" id="proceso">En proceso<br><strong id="procVal">0</strong></div>
+        <div class="card" id="resueltos">Resueltos<br><strong id="resVal">0</strong></div>
+      </div>
+
+      <div class="grid">
+        <div class="info">
+          <h3 id="coloniaFreq">—</h3>
+          <p class="muted">Colonia más frecuente</p>
+        </div>
+        <div class="info">
+          <h3 id="clasificacionFreq">—</h3>
+          <p class="muted">Reporte más común</p>
+        </div>
+        <div class="info">
+          <h3 id="picoDia">—</h3>
+          <p class="muted">Pico de actividad semanal</p>
+        </div>
+        <div class="info">
+          <h3 id="tasaRes">—</h3>
+          <p class="muted">Tasa De Resolución General</p>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <script type="module">
+    import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
+    const SUPABASE_URL = 'https://ghywlqpirjqsmmlyomaw.supabase.co';
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdoeXdscXBpcmpxc21tbHlvbWF3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTk4MTYwMTYsImV4cCI6MjA3NTM5MjAxNn0.v8fs-lpmWu7cmqM45wKvsFNaHJxcJro4dSxknDWgVGI';
+    const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    if (!sessionStorage.getItem('user')) window.location.href='login.html';
+
+    document.getElementById('dateNow').textContent = new Date().toLocaleString();
+
+    async function loadStats(){
+      const { data: total } = await supabase.from('reportes').select('id', { count: 'exact' });
+      const { data: pend } = await supabase.from('reportes').select('id', { count: 'exact' }).eq('estado','Pendiente');
+      const { data: proc } = await supabase.from('reportes').select('id', { count: 'exact' }).eq('estado','En Proceso');
+      const { data: res } = await supabase.from('reportes').select('id', { count: 'exact' }).eq('estado','Resuelto');
+      document.getElementById('totalVal').textContent = total?.length || 0;
+      document.getElementById('pendVal').textContent = pend?.length || 0;
+      document.getElementById('procVal').textContent = proc?.length || 0;
+      document.getElementById('resVal').textContent = res?.length || 0;
+
+      // colonia mas frecuente
+      const { data: byCol } = await supabase.from('reportes').select('colonia_id, count:id').group('colonia_id').order('count', {ascending:false}).limit(1);
+      if (byCol && byCol.length) {
+        const { data: colName } = await supabase.from('colonias').select('nombre_colonia').eq('id', byCol[0].colonia_id).single();
+        document.getElementById('coloniaFreq').textContent = colName?.nombre_colonia || '—';
+      }
+
+      // clasificacion mas comun
+      const { data: byClas } = await supabase.from('reportes').select('clasificacion_id, count:id').group('clasificacion_id').order('count', {ascending:false}).limit(1);
+      if (byClas && byClas.length) {
+        const { data: cName } = await supabase.from('clasificaciones').select('nombre').eq('id', byClas[0].clasificacion_id).single();
+        document.getElementById('clasificacionFreq').textContent = cName?.nombre || '—';
+      }
+
+      // pico semanal: dia de la semana con mas reportes (0-6)
+      const { data: days } = await supabase.rpc('reportes_dia_semana');
+      if (days && days.length) document.getElementById('picoDia').textContent = days[0].dia || '—';
+
+      // tasa resolucion
+      const totalCount = total?.length||0; const resCount = res?.length||0;
+      document.getElementById('tasaRes').textContent = totalCount? Math.round((resCount/totalCount)*100) + '%' : '0%';
+    }
+
+    loadStats();
+  </script>
+  <script>
+    const logoutLink = document.getElementById('logout-link');
+    if (logoutLink) logoutLink.addEventListener('click', (e)=>{ e.preventDefault(); sessionStorage.removeItem('user'); window.location.href='login.html'; });
+  </script>
+</body>
+</html>

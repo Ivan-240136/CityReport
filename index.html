@@ -14,37 +14,59 @@
   </style>
 </head>
 <body>
-  <header class="encabezado">
-    <div class="contenedor">
-      <a class="logo-wrap" href="index.html">
-        <img src="img/logo_city.png" alt="CityReport" class="logo" style="height:44px">
-      </a>
-      <h1>CityReport</h1>
-      <p class="subtitulo">Panel de administración</p>
+  <!-- Header: logos + single navigation -->
+  <header style="background:linear-gradient(180deg,#114b58,#0f5160);color:#fff;padding:18px 0;">
+    <div style="max-width:1200px;margin:0 auto;display:flex;align-items:center;gap:16px;padding:0 18px;">
+      <div style="display:flex;align-items:center;gap:12px;">
+        <a href="index.html"><img src="img/urbano.png" alt="Urbano" style="height:52px"></a>
+        <a href="index.html"><img src="img/logo_city.png" alt="CityReport" style="height:48px"></a>
+      </div>
+      <div style="flex:1;text-align:center">
+        <h1 style="margin:0;font-size:28px;">CityReport</h1>
+        <div style="font-size:13px;opacity:0.9">Panel de administración</div>
+      </div>
+      <nav style="display:flex;gap:12px;align-items:center">
+        <a href="index.html" style="color:#dff3ff;padding:8px 12px;border-radius:8px;background:rgba(255,255,255,0.03);text-decoration:none">Inicio</a>
+        <a href="reportes_consultar.html" style="color:#dff3ff;text-decoration:none">Reportes</a>
+        <a href="estadisticas.html" style="color:#dff3ff;text-decoration:none">Estadísticas</a>
+        <a href="#" id="logout-link" style="color:#ffd; text-decoration:none">Cerrar sesión</a>
+      </nav>
     </div>
   </header>
 
-  <nav class="menu">
-    <ul>
-      <li><a class="activo" href="index.html">Inicio</a></li>
-      <li><a href="#">Reportes</a></li>
-      <li><a href="#">Usuarios</a></li>
-      <li><a id="logout-link" href="#">Cerrar sesión</a></li>
-    </ul>
-  </nav>
-
   <main class="principal">
-    <div class="welcome-box">
-      <h2>Bienvenido a CityReport</h2>
-      <p id="saludo" class="lead">Cargando...</p>
-      <div id="acciones" style="justify-content:center; margin-top:18px; display:flex; gap:10px; align-items:center;">
-        <a class="btn" href="#">Ver reportes</a>
-        <a class="btn2" href="#">Crear reporte</a>
+    <section style="max-width:1100px;margin:26px auto;display:grid;grid-template-columns:1fr 360px;gap:18px;align-items:start">
+      <div style="background:rgba(255,255,255,0.06);padding:20px;border-radius:12px;backdrop-filter:blur(6px);box-shadow:0 6px 18px rgba(0,0,0,0.08)">
+        <h2 style="text-align:center">Bienvenido a CityReport</h2>
+        <p id="saludo" class="lead">Cargando...</p>
+
+        <div style="display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin-top:18px">
+          <a class="btn" href="reportes_consultar.html">Ver reportes</a>
+          <a class="btn" href="reportes_agregar.html">Crear reporte</a>
+          <a class="btn" href="reportes_editar.html">Editar reportes</a>
+        </div>
+        
+        <div style="margin-top:18px;text-align:center">
+          <a id="logout-btn" class="btn2" href="#">Cerrar sesión</a>
+        </div>
       </div>
-      <div style="margin-top:18px;">
-        <a id="logout-btn" class="btn2" href="#">Cerrar sesión</a>
-      </div>
-    </div>
+
+      <aside style="padding:18px;background:rgba(255,255,255,0.06);border-radius:12px;backdrop-filter:blur(6px);">
+        <div style="display:flex;align-items:center;gap:12px;justify-content:space-between">
+          <img src="img/urbano.png" alt="Urbano" style="height:56px">
+          <img src="img/logo_city.png" alt="CityReport" style="height:56px">
+        </div>
+        <div style="margin-top:16px">
+          <h3 style="margin:0 0 8px 0">Accesos rápidos</h3>
+          <ul style="list-style:none;padding:0;margin:0;display:grid;grid-template-columns:1fr;gap:8px">
+            <li><a href="reportes_agregar.html" class="btn2" style="display:block;text-align:center">+ Agregar Reporte</a></li>
+            <li><a href="reportes_consultar.html" class="btn2" style="display:block;text-align:center">🔎 Consultar Reporte</a></li>
+            <li><a href="reportes_editar.html" class="btn2" style="display:block;text-align:center">✏️ Editar Reporte</a></li>
+            <li><a href="estadisticas.html" class="btn2" style="display:block;text-align:center">📊 Estadísticas</a></li>
+          </ul>
+        </div>
+      </aside>
+    </section>
   </main>
 
   <footer class="pie">

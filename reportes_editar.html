@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Editar Reporte - CityReport</title>
+  <link rel="stylesheet" href="css/estilos.css">
+  <style>
+    .panel{max-width:1000px;margin:24px auto;background:#fff;padding:18px;border-radius:10px;box-shadow:0 8px 24px rgba(0,0,0,0.12)}
+    label{display:block;margin-top:8px;font-weight:600;color:#164a5a}
+    input,select,textarea{width:100%;padding:10px;border-radius:8px;border:1px solid #cfdde6}
+    .actions{display:flex;gap:8px;margin-top:12px}
+  </style>
+</head>
+<body>
+  <header style="background:linear-gradient(180deg,#114b58,#0f5160);color:#fff;padding:18px 0;">
+    <div style="max-width:1200px;margin:0 auto;display:flex;align-items:center;gap:16px;padding:0 18px;">
+      <div style="display:flex;align-items:center;gap:12px;">
+        <a href="index.html"><img src="img/urbano.png" style="height:46px"></a>
+        <a href="index.html"><img src="img/logo_city.png" style="height:44px"></a>
+      </div>
+      <div style="flex:1;text-align:center">
+        <h1 style="margin:0;font-size:26px;">Editar Reporte</h1>
+      </div>
+      <nav style="display:flex;gap:12px;align-items:center">
+        <a href="index.html" style="color:#dff3ff;text-decoration:none">Inicio</a>
+        <a href="reportes_consultar.html" style="color:#dff3ff;text-decoration:none">Reportes</a>
+        <a href="estadisticas.html" style="color:#dff3ff;text-decoration:none">Estadísticas</a>
+        <a href="#" id="logout-link" style="color:#ffd; text-decoration:none">Cerrar sesión</a>
+      </nav>
+    </div>
+  </header>
+  <main>
+    <div class="panel">
+      <div style="margin-bottom:12px"><a href="reportes_consultar.html">← Volver</a></div>
+
+      <div id="tableWrap" style="max-height:220px;overflow:auto;border:1px solid #dfeef7;padding:6px;margin-bottom:12px"></div>
+
+      <form id="formEdit">
+        <input type="hidden" id="rid">
+        <label>Remitente <input id="remitente"></label>
+        <label>Clasificación <select id="clasificacion"></select></label>
+        <label>Colonia <select id="colonia"></select></label>
+        <label>Calle <input id="calle"></label>
+        <label>Detalles <textarea id="detalles" rows="4"></textarea></label>
+        <label>Estado <select id="estado"><option>Pendiente</option><option>En Proceso</option><option>Resuelto</option></select></label>
+        <div class="actions">
+          <button id="btnUpdate" type="button">Actualizar</button>
+          <button id="btnDelete" type="button">Eliminar</button>
+        </div>
+      </form>
+      <div id="msg" style="margin-top:10px;color:crimson"></div>
+    </div>
+  </main>
+
+  <script type="module">
+    import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
+    const SUPABASE_URL = 'https://ghywlqpirjqsmmlyomaw.supabase.co';
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdoeXdscXBpcmpxc21tbHlvbWF3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTk4MTYwMTYsImV4cCI6MjA3NTM5MjAxNn0.v8fs-lpmWu7cmqM45wKvsFNaHJxcJro4dSxknDWgVGI';
+    const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    if (!sessionStorage.getItem('user')) window.location.href='login.html';
+
+    const params = new URLSearchParams(location.search);
+    const idParam = params.get('id');
+
+    const tableWrap = document.getElementById('tableWrap');
+    const form = document.getElementById('formEdit');
+    const msg = document.getElementById('msg');
+
+    async function loadOptions(){
+      const { data: clas } = await supabase.from('clasificaciones').select('id,nombre').order('id');
+      const { data: cols } = await supabase.from('colonias').select('id,nombre_colonia').order('nombre_colonia');
+      document.getElementById('clasificacion').innerHTML = (clas||[]).map(c=>`<option value="${c.id}">${c.nombre}</option>`).join('');
+      document.getElementById('colonia').innerHTML = (cols||[]).map(c=>`<option value="${c.id}">${c.nombre_colonia}</option>`).join('');
+    }
+
+    async function loadTable(){
+      const { data } = await supabase.from('reportes').select('id,remitente,clasificacion_id,colonia_id,calle,detalles,fecha_reporte,estado').order('id', {ascending:false});
+      tableWrap.innerHTML = '<table style="width:100%"><thead><tr><th>ID</th><th>Remitente</th><th>Clasificación</th><th>Colonia</th><th>Estado</th></tr></thead><tbody>' + (data||[]).map(r=>`<tr data-id="${r.id}"><td>${r.id}</td><td>${r.remitente}</td><td>${r.clasificacion_id}</td><td>${r.colonia_id}</td><td>${r.estado}</td></tr>`).join('') + '</tbody></table>';
+      tableWrap.querySelectorAll('tbody tr').forEach(tr=>tr.addEventListener('dblclick', ()=>{ loadById(tr.dataset.id); }));
+    }
+
+    async function loadById(id){
+      const { data, error } = await supabase.from('reportes').select('*').eq('id', id).single();
+      if (error) { msg.textContent='Error al cargar'; return; }
+      document.getElementById('rid').value = data.id;
+      document.getElementById('remitente').value = data.remitente;
+      document.getElementById('clasificacion').value = data.clasificacion_id;
+      document.getElementById('colonia').value = data.colonia_id;
+      document.getElementById('calle').value = data.calle;
+      document.getElementById('detalles').value = data.detalles;
+      document.getElementById('estado').value = data.estado;
+      window.scrollTo({top:0,behavior:'smooth'});
+    }
+
+    document.getElementById('btnUpdate').addEventListener('click', async ()=>{
+      const id = document.getElementById('rid').value;
+      if (!id) { msg.textContent='Selecciona un reporte primero'; return; }
+      const remitente = document.getElementById('remitente').value;
+      const clasificacion = document.getElementById('clasificacion').value;
+      const colonia = document.getElementById('colonia').value;
+      const calle = document.getElementById('calle').value;
+      const detalles = document.getElementById('detalles').value;
+      const estado = document.getElementById('estado').value;
+      const { error } = await supabase.from('reportes').update({ remitente, clasificacion_id:clasificacion, colonia_id:colonia, calle, detalles, estado }).eq('id', id);
+      if (error) { msg.textContent='Error al actualizar'; console.error(error); return; }
+      msg.style.color='green'; msg.textContent='Actualizado'; loadTable();
+    });
+
+    document.getElementById('btnDelete').addEventListener('click', async ()=>{
+      const id = document.getElementById('rid').value;
+      if (!id) { msg.textContent='Selecciona un reporte primero'; return; }
+      if (!confirm('¿Eliminar este reporte?')) return;
+      const { error } = await supabase.from('reportes').delete().eq('id', id);
+      if (error) { msg.textContent='Error al eliminar'; console.error(error); return; }
+      msg.style.color='green'; msg.textContent='Eliminado'; form.reset(); loadTable();
+    });
+
+    // init
+    if (!sessionStorage.getItem('user')) window.location.href='login.html';
+    await loadOptions();
+    await loadTable();
+    if (idParam) loadById(idParam);
+  </script>
+  <script>
+    const logoutLink = document.getElementById('logout-link');
+    if (logoutLink) logoutLink.addEventListener('click', (e)=>{ e.preventDefault(); sessionStorage.removeItem('user'); window.location.href='login.html'; });
+  </script>
+</body>
+</html>

@@ -1,0 +1,168 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Consultar Reportes - CityReport</title>
+  <link rel="stylesheet" href="css/estilos.css">
+  <style>
+    .panel{max-width:1100px;margin:28px auto;background:#fff;padding:20px;border-radius:10px;box-shadow:0 8px 30px rgba(0,0,0,0.12)}
+    table{width:100%;border-collapse:collapse}
+    th,td{padding:10px;border-bottom:1px solid #e6eef5;text-align:left}
+    tr:hover{background:#f7fbff}
+    .actions{display:flex;gap:8px}
+    .searchRow{display:flex;gap:8px;align-items:center;margin-bottom:12px}
+  </style>
+</head>
+<body>
+  <header style="background:linear-gradient(180deg,#114b58,#0f5160);color:#fff;padding:18px 0;">
+    <div style="max-width:1200px;margin:0 auto;display:flex;align-items:center;gap:16px;padding:0 18px;">
+      <div style="display:flex;align-items:center;gap:12px;">
+        <a href="index.html"><img src="img/urbano.png" alt="Urbano" style="height:46px"></a>
+        <a href="index.html"><img src="img/logo_city.png" alt="CityReport" style="height:44px"></a>
+      </div>
+      <div style="flex:1;text-align:center">
+        <h1 style="margin:0;font-size:26px;">Consultar Reportes</h1>
+      </div>
+      <nav style="display:flex;gap:12px;align-items:center">
+        <a href="index.html" style="color:#dff3ff;text-decoration:none">Inicio</a>
+        <a href="reportes_consultar.html" style="color:#dff3ff;text-decoration:none">Reportes</a>
+        <a href="estadisticas.html" style="color:#dff3ff;text-decoration:none">Estadísticas</a>
+        <a href="#" id="logout-link" style="color:#ffd; text-decoration:none">Cerrar sesión</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <div class="panel">
+      <div style="margin-bottom:10px"><a href="index.html">← Volver</a></div>
+      <div class="searchRow">
+        <input id="q" placeholder="Buscar por id o remitente...">
+        <button id="btnSearch">Buscar</button>
+        <a href="reportes_agregar.html">+ Agregar reporte</a>
+      </div>
+      <div id="list"></div>
+    </div>
+  </main>
+
+  <script type="module">
+    import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
+    const SUPABASE_URL = 'https://ghywlqpirjqsmmlyomaw.supabase.co';
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdoeXdscXBpcmpxc21tbHlvbWF3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTk4MTYwMTYsImV4cCI6MjA3NTM5MjAxNn0.v8fs-lpmWu7cmqM45wKvsFNaHJxcJro4dSxknDWgVGI';
+    const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    if (!sessionStorage.getItem('user')) window.location.href = 'login.html';
+
+    const list = document.getElementById('list');
+    const q = document.getElementById('q');
+    const btn = document.getElementById('btnSearch');
+
+    async function loadAll() {
+      const { data, error } = await supabase
+        .from('public.reportes')
+        .select(`
+          id, 
+          remitente, 
+          detalles, 
+          fecha_reporte, 
+          estado,
+          public.clasificaciones (
+            id,
+            nombre
+          ),
+          public.colonias (
+            id,
+            nombre_colonia
+          )
+        `)
+        .order('id', {ascending:false});
+      if (error) { list.innerHTML = '<div style="color:crimson">Error cargando datos</div>'; console.error(error); return; }
+      renderTable(data||[]);
+    }
+
+    function renderTable(rows) {
+      if (!rows.length) { list.innerHTML = '<div>No hay reportes</div>'; return; }
+      const html = ['<table><thead><tr><th>ID</th><th>Remitente</th><th>Clasificación</th><th>Colonia</th><th>Detalles</th><th>Fecha</th><th>Estado</th></tr></thead><tbody>'];
+      rows.forEach(r=>{
+        html.push(`<tr data-id="${r.id}">
+          <td>${r.id}</td>
+          <td>${r.remitente}</td>
+          <td>${r.clasificaciones?.nombre || 'N/A'}</td>
+          <td>${r.colonias?.nombre_colonia || 'N/A'}</td>
+          <td>${r.detalles}</td>
+          <td>${r.fecha_reporte}</td>
+          <td>${r.estado}</td>
+        </tr>`)
+      })
+      html.push('</tbody></table>');
+      list.innerHTML = html.join('');
+
+      // attach double click
+      document.querySelectorAll('#list tbody tr').forEach(tr=>{
+        tr.addEventListener('dblclick', ()=>{
+          const id = tr.getAttribute('data-id');
+          window.location.href = `reportes_editar.html?id=${id}`;
+        });
+      });
+    }
+
+    btn.addEventListener('click', async ()=>{
+      const v = q.value.trim();
+      if (!v) { loadAll(); return; }
+      // if numeric search by id
+      if (/^\d+$/.test(v)) {
+        const { data, error } = await supabase
+          .from('public.reportes')
+          .select(`
+            id, 
+            remitente, 
+            detalles, 
+            fecha_reporte, 
+            estado,
+            public.clasificaciones (
+              id,
+              nombre
+            ),
+            public.colonias (
+              id,
+              nombre_colonia
+            )
+          `)
+          .eq('id', parseInt(v))
+          .limit(1);
+        if (error) { list.innerHTML = '<div style="color:crimson">Error</div>'; return; }
+        renderTable(data||[]);
+      } else {
+        const { data, error } = await supabase
+          .from('public.reportes')
+          .select(`
+            id, 
+            remitente, 
+            detalles, 
+            fecha_reporte, 
+            estado,
+            public.clasificaciones (
+              id,
+              nombre
+            ),
+            public.colonias (
+              id,
+              nombre_colonia
+            )
+          `)
+          .ilike('remitente', `%${v}%`)
+          .order('id', {ascending:false});
+        if (error) { list.innerHTML = '<div style="color:crimson">Error</div>'; return; }
+        renderTable(data||[]);
+      }
+    });
+
+    loadAll();
+  </script>
+  <script>
+    // attach logout link
+    const logoutLink = document.getElementById('logout-link');
+    if (logoutLink) logoutLink.addEventListener('click', (e)=>{ e.preventDefault(); sessionStorage.removeItem('user'); window.location.href='login.html'; });
+  </script>
+</body>
+</html>
