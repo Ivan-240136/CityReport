@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>CityReport - Inicio</title>
+  <link rel="stylesheet" href="css/estilos.css">
+  <style>
+    .welcome-box { max-width: 900px; margin: 40px auto; background: #fff; padding: 28px; border-radius: 12px; box-shadow: 0 6px 18px rgba(0,0,0,0.08); text-align: center; }
+    .lead { color: #555; }
+    .btn, .btn2 { display:inline-block; padding:10px 16px; border-radius:8px; text-decoration:none; margin:6px; }
+    .btn { background:#2f80ed; color:#fff }
+    .btn2 { background:#e2e8f0; color:#222 }
+  </style>
+</head>
+<body>
+  <header class="encabezado">
+    <div class="contenedor">
+      <a class="logo-wrap" href="index.html">
+        <img src="img/logo_city.png" alt="CityReport" class="logo" style="height:44px">
+      </a>
+      <h1>CityReport</h1>
+      <p class="subtitulo">Panel de administración</p>
+    </div>
+  </header>
+
+  <nav class="menu">
+    <ul>
+      <li><a class="activo" href="index.html">Inicio</a></li>
+      <li><a href="#">Reportes</a></li>
+      <li><a href="#">Usuarios</a></li>
+      <li><a id="logout-link" href="#">Cerrar sesión</a></li>
+    </ul>
+  </nav>
+
+  <main class="principal">
+    <div class="welcome-box">
+      <h2>Bienvenido a CityReport</h2>
+      <p id="saludo" class="lead">Cargando...</p>
+      <div id="acciones" style="justify-content:center; margin-top:18px; display:flex; gap:10px; align-items:center;">
+        <a class="btn" href="#">Ver reportes</a>
+        <a class="btn2" href="#">Crear reporte</a>
+      </div>
+      <div style="margin-top:18px;">
+        <a id="logout-btn" class="btn2" href="#">Cerrar sesión</a>
+      </div>
+    </div>
+  </main>
+
+  <footer class="pie">
+    <div class="contenedor">&copy; <span id="year"></span> CityReport — Todos los derechos reservados</div>
+  </footer>
+
+  <script type="module">
+    import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
+
+  // Valores tomados de .env (anon key para uso en frontend)
+  const SUPABASE_URL = 'https://ghywlqpirjqsmmlyomaw.supabase.co';
+  const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdoeXdscXBpcmpxc21tbHlvbWF3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTk4MTYwMTYsImV4cCI6MjA3NTM5MjAxNn0.v8fs-lpmWu7cmqM45wKvsFNaHJxcJro4dSxknDWgVGI';
+    // --------------------------------------------------------
+
+    const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    async function checkSession() {
+      try {
+        const { data: { session }, error } = await supabase.auth.getSession();
+        if (error) {
+          console.error('Error getSession:', error);
+        }
+        if (!session) {
+          // No hay sesión -> volver a login
+          window.location.href = 'login.html';
+          return;
+        }
+
+        const user = session.user;
+        const email = user.email || user.user_metadata?.email || 'Usuario';
+        document.getElementById('saludo').textContent = `Hola, ${email}. Has iniciado sesión correctamente.`;
+      } catch (err) {
+        console.error(err);
+        window.location.href = 'login.html';
+      }
+    }
+
+    async function logout() {
+      await supabase.auth.signOut();
+      window.location.href = 'login.html';
+    }
+
+    document.getElementById('logout-btn').addEventListener('click', (e) => { e.preventDefault(); logout(); });
+    document.getElementById('logout-link').addEventListener('click', (e) => { e.preventDefault(); logout(); });
+
+    document.getElementById('year').textContent = new Date().getFullYear();
+    checkSession();
+  </script>
+</body>
+</html>

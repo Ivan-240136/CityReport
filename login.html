@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Iniciar sesión - CityReport</title>
+  <link rel="stylesheet" href="css/estilos.css">
+  <style>
+    body { font-family: Arial, sans-serif; background-color: #f4f4f4; margin: 0; padding: 0; }
+    .container { max-width: 420px; margin: 100px auto; background: #fff; padding: 22px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08); }
+    h2 { text-align: center; margin-bottom: 6px; }
+    .muted { color: #666; text-align:center; font-size:0.9rem; margin-bottom:12px }
+    label { display:block; margin-top:10px; font-weight:600 }
+    input[type="text"], input[type="password"] { width:100%; padding:10px; margin-top:6px; border-radius:6px; border:1px solid #ddd }
+    button { width:100%; padding:10px; margin-top:16px; border-radius:6px; background:#2f80ed; color:#fff; border:none; cursor:pointer }
+    .error { color:#c0392b; text-align:center; margin-top:10px }
+    .note { font-size:0.85rem; color:#444; margin-top:10px; text-align:center }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>CityReport</h2>
+    <p class="muted">Inicia sesión para acceder al panel</p>
+
+    <div id="alert" class="error" style="display:none"></div>
+
+    <form id="login-form">
+      <label for="usuario">Email</label>
+      <input id="usuario" name="usuario" type="text" placeholder="tu@correo.com" required>
+
+      <label for="contrasena">Contraseña</label>
+      <input id="contrasena" name="contrasena" type="password" placeholder="********" required>
+
+      <button type="submit">Iniciar sesión</button>
+    </form>
+
+     </div>
+
+  <script type="module">
+    // IMPORT supabase client (ESM)
+    import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
+
+  // Valores tomados de .env (anon key para uso en frontend)
+  const SUPABASE_URL = 'https://ghywlqpirjqsmmlyomaw.supabase.co';
+  const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdoeXdscXBpcmpxc21tbHlvbWF3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTk4MTYwMTYsImV4cCI6MjA3NTM5MjAxNn0.v8fs-lpmWu7cmqM45wKvsFNaHJxcJro4dSxknDWgVGI';
+    // --------------------------------------------------------
+
+    const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    const form = document.getElementById('login-form');
+    const alertEl = document.getElementById('alert');
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      alertEl.style.display = 'none';
+      const email = document.getElementById('usuario').value.trim();
+      const password = document.getElementById('contrasena').value;
+
+      if (!email || !password) {
+        showError('Completa email y contraseña.');
+        return;
+      }
+
+      try {
+        const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+        if (error) {
+          showError(error.message || 'Error al iniciar sesión');
+          return;
+        }
+
+        // Inicio correcto: redirigir a index.html
+        window.location.href = 'index.html';
+      } catch (err) {
+        showError(err.message || 'Error inesperado');
+      }
+    });
+
+    function showError(msg) {
+      alertEl.textContent = msg;
+      alertEl.style.display = 'block';
+    }
+  </script>
+</body>
+</html>
