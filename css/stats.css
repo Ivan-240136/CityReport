@@ -271,4 +271,35 @@
   .info-value {
     font-size: 1.25rem;
   }
+
+  /* Evitar movimientos en móviles: fijar layout y desactivar animaciones que causan reflujo */
+  .stat-card {
+    min-height: 140px; /* asegura que la tarjeta no cambie de tamaño durante animaciones */
+    padding: 1.25rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .stat-card .nav-icon {
+    width: 36px;
+    height: 36px;
+    margin-bottom: 8px;
+    flex-shrink: 0;
+    transform: none !important;
+    animation: none !important;
+  }
+
+  /* Deshabilitar animaciones que desplazan elementos en pantallas pequeñas */
+  .stat-label,
+  .stat-value,
+  .stat-card .nav-icon,
+  .stat-card {
+    animation: none !important;
+    transition: none !important;
+  }
+
+  /* Evitar efecto hover en móvil */
+  .stat-card:hover { transform: none; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
 }
