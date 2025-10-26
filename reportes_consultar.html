@@ -2,7 +2,9 @@
 <html lang="es">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
   <title>Consultar Reportes - CityReport</title>
   <link rel="stylesheet" href="css/estilos.css">
   <style>
@@ -181,8 +183,91 @@
 
     /* Responsivo */
     @media (max-width:720px){
-      .panel{padding:14px}
-      thead th, tbody td{padding:10px}
+      .panel{
+        padding: 10px;
+        margin: 10px;
+      }
+      
+      /* Header responsive */
+      header > div {
+        flex-direction: column;
+        padding: 10px !important;
+      }
+      
+      header nav {
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 8px !important;
+      }
+      
+      /* Logos responsive */
+      div[style*="display:flex;align-items:center;gap:12px"] {
+        flex-direction: column;
+        padding: 10px !important;
+      }
+      
+      div[style*="display:flex;align-items:center;gap:12px"] img {
+        height: 100px !important;
+      }
+      
+      /* Controles de búsqueda */
+      .searchRow {
+        flex-direction: column;
+        gap: 8px;
+      }
+      
+      div[style*="display:flex;justify-content:space-between;align-items:center"] {
+        flex-direction: column;
+        gap: 10px;
+      }
+      
+      div[style*="display:flex;gap:0.75rem;flex:1"] {
+        flex-direction: column;
+        width: 100%;
+      }
+      
+      /* Tabla scrollable */
+      #list-container {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+      }
+      
+      table {
+        min-width: 800px;
+      }
+      
+      thead th, tbody td {
+        padding: 8px;
+        font-size: 0.9em;
+      }
+      
+      /* Botones y controles */
+      .btn-action, .btn-table {
+        width: 100%;
+        justify-content: center;
+      }
+      
+      /* Modal responsive */
+      .modal-content {
+        margin: 10px;
+        padding: 15px;
+      }
+      
+      .modal-content div[style*="display:grid"] {
+        grid-template-columns: 1fr !important;
+      }
+      
+      /* Status badges */
+      .status-badge {
+        padding: 4px 8px;
+        font-size: 0.8em;
+      }
+      
+      /* Botones de acción en tabla */
+      td[style*="display:flex"] {
+        flex-direction: column;
+        gap: 4px;
+      }
     }
   </style>
 </head>
