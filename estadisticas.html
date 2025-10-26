@@ -10,6 +10,7 @@
   <link rel="stylesheet" href="css/modals.css">
   <link rel="stylesheet" href="css/stats.css">
   <link rel="stylesheet" href="css/nav.css">
+  <script src="js/statsAnimation.js" defer></script>
 </head>
 <body>
   <header class="main-header">
@@ -146,36 +147,97 @@
     document.getElementById('dateNow').textContent = new Date().toLocaleString();
 
     async function loadStats(){
-      const { data: total } = await supabase.from('reportes').select('id', { count: 'exact' });
-      const { data: pend } = await supabase.from('reportes').select('id', { count: 'exact' }).eq('estado','Pendiente');
-      const { data: proc } = await supabase.from('reportes').select('id', { count: 'exact' }).eq('estado','En Proceso');
-      const { data: res } = await supabase.from('reportes').select('id', { count: 'exact' }).eq('estado','Resuelto');
-      document.getElementById('totalVal').textContent = total?.length || 0;
-      document.getElementById('pendVal').textContent = pend?.length || 0;
-      document.getElementById('procVal').textContent = proc?.length || 0;
-      document.getElementById('resVal').textContent = res?.length || 0;
+      // Contadores principales (usamos count retornado por Supabase cuando es posible)
+      const { data: totalData, count: totalCount, error: totalError } = await supabase.from('reportes').select('id', { count: 'exact' });
+      const { data: pendData, count: pendCount, error: pendError } = await supabase.from('reportes').select('id', { count: 'exact' }).eq('estado','Pendiente');
+      const { data: procData, count: procCount, error: procError } = await supabase.from('reportes').select('id', { count: 'exact' }).eq('estado','En Proceso');
+      const { data: resData, count: resCount, error: resError } = await supabase.from('reportes').select('id', { count: 'exact' }).eq('estado','Resuelto');
 
-      // colonia mas frecuente
-      const { data: byCol } = await supabase.from('reportes').select('colonia_id, count:id').group('colonia_id').order('count', {ascending:false}).limit(1);
-      if (byCol && byCol.length) {
-        const { data: colName } = await supabase.from('colonias').select('nombre_colonia').eq('id', byCol[0].colonia_id).single();
-        document.getElementById('coloniaFreq').textContent = colName?.nombre_colonia || '—';
+      // Log para depuración en consola
+      if (totalError || pendError || procError || resError) {
+        console.error('Errores en conteos:', { totalError, pendError, procError, resError });
       }
 
-      // clasificacion mas comun
-      const { data: byClas } = await supabase.from('reportes').select('clasificacion_id, count:id').group('clasificacion_id').order('count', {ascending:false}).limit(1);
-      if (byClas && byClas.length) {
-        const { data: cName } = await supabase.from('clasificaciones').select('nombre').eq('id', byClas[0].clasificacion_id).single();
-        document.getElementById('clasificacionFreq').textContent = cName?.nombre || '—';
+      const totalNum = (typeof totalCount === 'number') ? totalCount : (totalData ? totalData.length : 0);
+      const pendNum = (typeof pendCount === 'number') ? pendCount : (pendData ? pendData.length : 0);
+      const procNum = (typeof procCount === 'number') ? procCount : (procData ? procData.length : 0);
+      const resNum = (typeof resCount === 'number') ? resCount : (resData ? resData.length : 0);
+
+      // helper: animate if available
+      function setAnimatedValue(elId, value){
+        const el = document.getElementById(elId);
+        if(!el) return;
+        if(typeof window.animateValue === 'function'){
+          // ensure number
+          window.animateValue(el, 0, Number(value||0), 1200);
+        } else {
+          el.textContent = value;
+        }
       }
 
-      // pico semanal: dia de la semana con mas reportes (0-6)
-      const { data: days } = await supabase.rpc('reportes_dia_semana');
-      if (days && days.length) document.getElementById('picoDia').textContent = days[0].dia || '—';
+      setAnimatedValue('totalVal', totalNum);
+      setAnimatedValue('pendVal', pendNum);
+      setAnimatedValue('procVal', procNum);
+      setAnimatedValue('resVal', resNum);
 
-      // tasa resolucion
-      const totalCount = total?.length||0; const resCount = res?.length||0;
-      document.getElementById('tasaRes').textContent = totalCount? Math.round((resCount/totalCount)*100) + '%' : '0%';
+  // Traer IDs relevantes (colonia, clasificacion, created_at) y agregar en cliente
+  // NOTA: si hay muchos reportes, puede ser preferible una consulta server-side/RPC.
+  const { data: reports, error: reportsError } = await supabase.from('reportes').select('colonia_id,clasificacion_id,created_at').limit(10000);
+  if (reportsError) console.error('Error al obtener reportes:', reportsError);
+  console.debug('Reports fetched:', reports ? reports.length : 0, reportsError || 'ok');
+
+      // valores por defecto
+      document.getElementById('coloniaFreq').textContent = '—';
+      document.getElementById('clasificacionFreq').textContent = '—';
+      document.getElementById('picoDia').textContent = '—';
+
+      if (reports && reports.length){
+        const colCount = {};
+        const clasCount = {};
+        const dayCount = {};
+
+        reports.forEach(r => {
+          if (r.colonia_id) colCount[r.colonia_id] = (colCount[r.colonia_id] || 0) + 1;
+          if (r.clasificacion_id) clasCount[r.clasificacion_id] = (clasCount[r.clasificacion_id] || 0) + 1;
+          if (r.created_at){
+            const d = new Date(r.created_at).getDay();
+            dayCount[d] = (dayCount[d] || 0) + 1;
+          }
+        });
+
+        console.debug('colCount sample:', colCount);
+        console.debug('clasCount sample:', clasCount);
+        console.debug('dayCount sample:', dayCount);
+
+        // Top colonia
+        const topCol = Object.entries(colCount).sort((a,b)=>b[1]-a[1])[0];
+        if (topCol){
+          const [colId, cnt] = topCol;
+          const { data: col, error: colError } = await supabase.from('colonias').select('nombre_colonia').eq('id', colId).limit(1).single();
+          if (colError) console.warn('No se pudo obtener nombre de colonia', colError, 'colId=', colId);
+          document.getElementById('coloniaFreq').textContent = `${col?.nombre_colonia || '—'} (${cnt} reportes)`;
+        }
+
+        // Top clasificacion
+        const topClas = Object.entries(clasCount).sort((a,b)=>b[1]-a[1])[0];
+        if (topClas){
+          const [clasId, cnt] = topClas;
+          const { data: cl, error: clError } = await supabase.from('clasificaciones').select('nombre').eq('id', clasId).limit(1).single();
+          if (clError) console.warn('No se pudo obtener nombre de clasificacion', clError, 'clasId=', clasId);
+          document.getElementById('clasificacionFreq').textContent = `${cl?.nombre || '—'} (${cnt} reportes)`;
+        }
+
+        // Pico semanal
+        const diasSemana = ['Domingo','Lunes','Martes','Miércoles','Jueves','Viernes','Sábado'];
+        const topDay = Object.entries(dayCount).sort((a,b)=>b[1]-a[1])[0];
+        if (topDay){
+          document.getElementById('picoDia').textContent = `${diasSemana[Number(topDay[0])] } (${topDay[1]} reportes)`;
+        }
+      }
+
+      // Tasa de resolucion (resueltos / total)
+      const tasa = totalNum ? Math.round((resNum/totalNum)*100) : 0;
+      document.getElementById('tasaRes').textContent = `${tasa}% (${resNum}/${totalNum})`;
     }
 
     loadStats();

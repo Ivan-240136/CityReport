@@ -17,13 +17,153 @@
     }
 
     .welcome-card {
-      background: rgba(255,255,255,0.9);
-      padding: 32px;
+      background: linear-gradient(135deg, rgba(255,255,255,0.95), rgba(255,255,255,0.9));
+      padding: 40px;
       border-radius: var(--radius-lg);
-      box-shadow: var(--shadow-lg);
+      box-shadow: 0 15px 35px rgba(0,0,0,0.1);
       backdrop-filter: blur(10px);
       text-align: center;
       animation: slideIn 0.5s ease-out forwards;
+      border: 1px solid rgba(255,255,255,0.2);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .welcome-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, #11606a, #0d4f56);
+      animation: shimmer 2s infinite;
+    }
+
+    .welcome-time {
+      font-size: 0.9rem;
+      color: #666;
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      animation: fadeIn 0.5s ease-out 0.3s forwards;
+      opacity: 0;
+    }
+
+    .welcome-heading {
+      font-size: 2.2rem;
+      color: #11606a;
+      margin-bottom: 1rem;
+      font-weight: 700;
+      animation: slideUp 0.5s ease-out forwards;
+    }
+
+    .welcome-message {
+      font-size: 1.1rem;
+      color: #444;
+      margin-bottom: 2rem;
+      line-height: 1.6;
+      animation: fadeIn 0.5s ease-out 0.2s forwards;
+      opacity: 0;
+    }
+
+    .stats-preview {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 20px;
+      margin: 2rem 0;
+      animation: fadeIn 0.5s ease-out 0.4s forwards;
+      opacity: 0;
+    }
+
+    .stat-item {
+      background: rgba(255,255,255,0.8);
+      padding: 1.5rem;
+      border-radius: 12px;
+      border: 1px solid rgba(17,96,106,0.1);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .stat-item:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 20px rgba(17,96,106,0.1);
+    }
+
+    .stat-icon {
+      color: #11606a;
+      margin-bottom: 0.8rem;
+      font-size: 1.8rem;
+    }
+
+    .stat-value {
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: #11606a;
+      margin-bottom: 0.3rem;
+    }
+
+    .stat-label {
+      font-size: 0.9rem;
+      color: #666;
+    }
+
+    .action-buttons {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 1rem;
+      margin: 2rem 0;
+      animation: slideUp 0.5s ease-out 0.3s forwards;
+      opacity: 0;
+    }
+
+    .btn-action {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 1rem 1.5rem;
+      background: linear-gradient(135deg, #11606a, #0d4f56);
+      color: white;
+      border-radius: 12px;
+      font-weight: 600;
+      text-decoration: none;
+      transition: all 0.3s ease;
+      border: none;
+      cursor: pointer;
+      box-shadow: 0 4px 15px rgba(17,96,106,0.2);
+    }
+
+    .btn-action:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(17,96,106,0.3);
+    }
+
+    .btn-action svg {
+      width: 20px;
+      height: 20px;
+    }
+
+    @keyframes shimmer {
+      0% { transform: translateX(-100%); }
+      100% { transform: translateX(100%); }
+    }
+
+    @keyframes slideUp {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
     }
 
     .quick-access {
@@ -152,38 +292,75 @@
   <main class="principal">
     <div class="dashboard-grid">
       <div class="welcome-card">
-        <h2 class="text-primary mb-4">Bienvenido a CityReport</h2>
-        <p id="saludo" class="lead mb-4">Cargando...</p>
+        <div class="welcome-time">
+          <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" width="16" height="16">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+          </svg>
+          <span id="current-time">Cargando hora...</span>
+        </div>
 
-        <div class="action-buttons mb-4">
-          <a class="btn btn-primary btn-hover-lift" href="reportes_consultar.html">
+        <h2 class="welcome-heading">Bienvenido a CityReport</h2>
+        <p id="saludo" class="welcome-message">Cargando...</p>
+
+        <div class="stats-preview">
+          <div class="stat-item">
+            <div class="stat-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" width="32" height="32">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
+              </svg>
+            </div>
+            <div class="stat-value" id="total-reportes">--</div>
+            <div class="stat-label">Total Reportes</div>
+          </div>
+          
+          <div class="stat-item">
+            <div class="stat-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" width="32" height="32">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+              </svg>
+            </div>
+            <div class="stat-value" id="reportes-pendientes">--</div>
+            <div class="stat-label">Pendientes</div>
+          </div>
+
+          <div class="stat-item">
+            <div class="stat-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" width="32" height="32">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+              </svg>
+            </div>
+            <div class="stat-value" id="reportes-resueltos">--</div>
+            <div class="stat-label">Resueltos</div>
+          </div>
+        </div>
+
+        <div class="action-buttons">
+          <a class="btn-action" href="reportes_consultar.html">
             <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
             </svg>
             Ver reportes
           </a>
-          <a class="btn btn-primary btn-hover-lift" href="reportes_agregar.html">
+          <a class="btn-action" href="reportes_agregar.html">
             <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
             </svg>
             Crear reporte
           </a>
-          <a class="btn btn-primary btn-hover-lift" href="reportes_editar.html">
+          <a class="btn-action" href="reportes_editar.html">
             <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
             </svg>
             Editar reportes
           </a>
         </div>
         
-        <div class="text-center">
-          <a id="logout-btn" class="btn btn-secondary" href="#">
-            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
-            </svg>
-            Cerrar sesión
-          </a>
+        <div id="logout-btn" class="btn-action" style="background:linear-gradient(135deg, #d32f2f, #c62828);margin-top:1rem">
+          <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
+          </svg>
+          Cerrar sesión
         </div>
       </div>
 
@@ -238,6 +415,57 @@
 
     const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
+    async function loadDashboardStats() {
+      try {
+        // Obtener estadísticas en paralelo
+        const [totalResp, pendientesResp, resueltosResp] = await Promise.all([
+          supabase.from('reportes').select('id', { count: 'exact' }),
+          supabase.from('reportes').select('id', { count: 'exact' }).eq('estatus', 'Pendiente'),
+          supabase.from('reportes').select('id', { count: 'exact' }).eq('estatus', 'Resuelto')
+        ]);
+
+        // Actualizar contadores con animación
+        const animateCounter = (element, final) => {
+          const duration = 1500;
+          const start = 0;
+          const increment = final / (duration / 16);
+          let current = start;
+          
+          const animate = () => {
+            current += increment;
+            if (current >= final) {
+              element.textContent = final;
+            } else {
+              element.textContent = Math.floor(current);
+              requestAnimationFrame(animate);
+            }
+          };
+          
+          animate();
+        };
+
+        animateCounter(document.getElementById('total-reportes'), totalResp.data?.length || 0);
+        animateCounter(document.getElementById('reportes-pendientes'), pendientesResp.data?.length || 0);
+        animateCounter(document.getElementById('reportes-resueltos'), resueltosResp.data?.length || 0);
+
+      } catch (error) {
+        console.error('Error cargando estadísticas:', error);
+      }
+    }
+
+    function updateDateTime() {
+      const now = new Date();
+      const options = {
+        weekday: 'long',
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
+      };
+      document.getElementById('current-time').textContent = now.toLocaleDateString('es-MX', options);
+    }
+
     function checkSession() {
       const userData = sessionStorage.getItem('user');
       if (!userData) {
@@ -247,7 +475,12 @@
 
       try {
         const user = JSON.parse(userData);
-        document.getElementById('saludo').textContent = `Hola, ${user.usuario}. Has iniciado sesión correctamente.`;
+        const hora = new Date().getHours();
+        let saludo = 'Buenos días';
+        if (hora >= 12 && hora < 19) saludo = 'Buenas tardes';
+        else if (hora >= 19 || hora < 6) saludo = 'Buenas noches';
+        
+        document.getElementById('saludo').textContent = `${saludo}, ${user.usuario}. Bienvenido al panel de administración de CityReport.`;
       } catch (err) {
         console.error(err);
         window.location.href = 'login.html';
@@ -259,10 +492,15 @@
       window.location.href = 'login.html';
     }
 
-    document.getElementById('logout-btn').addEventListener('click', (e) => { e.preventDefault(); logout(); });
+    document.getElementById('logout-btn').addEventListener('click', logout);
     document.getElementById('logout-link').addEventListener('click', (e) => { e.preventDefault(); logout(); });
 
+    // Inicialización
     document.getElementById('year').textContent = new Date().getFullYear();
+    checkSession();
+    loadDashboardStats();
+    updateDateTime();
+    setInterval(updateDateTime, 60000); // Actualizar fecha/hora cada minuto
     checkSession();
   </script>
 </body>
