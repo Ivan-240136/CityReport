@@ -37,19 +37,21 @@
   </style>
 </head>
 <body>
-  <header class="main-header">
-    <div class="header-container">
-      <div class="logo-container">
-        <a href="index.html" class="logo-link">
-          <img src="img/urbano.png" alt="Urbano" class="logo-img">
-          <img src="img/logo_city.png" alt="City Report" class="logo-img">
+  <header style="background:linear-gradient(180deg,#114b58,#0f5160);color:#fff;padding:18px 0;">
+    <div style="max-width:1200px;margin:0 auto;display:flex;align-items:center;gap:16px;padding:0 18px;">
+      <div style="display:flex;align-items:center;gap:12px;padding:16px">
+        <a href="index.html">
+          <img src="img/urbano.png" alt="Urbano" style="height:140px;background:white;padding:10px;border-radius:10px;transition:transform 0.2s ease;box-shadow:0 3px 6px rgba(0,0,0,0.15)">
+        </a>
+        <a href="index.html">
+          <img src="img/logo_city.png" alt="CityReport" style="height:138px;background:white;padding:10px;border-radius:10px;transition:transform 0.2s ease;box-shadow:0 3px 6px rgba(0,0,0,0.15)">
         </a>
       </div>
-      <div class="header-title">
-        <h1>Editar Reporte</h1>
-        <div class="header-subtitle">
-          <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+      <div style="flex:1;text-align:center;">
+        <h1 style="margin:0;font-size:26px;">Editar Reporte</h1>
+        <div style="color:#dff3ff;margin-top:4px;font-size:14px;display:flex;align-items:center;justify-content:center;gap:6px;">
+          <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:16px;height:16px">
+            <path d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
           </svg>
           Panel de edición
         </div>
@@ -73,7 +75,7 @@
           </svg>
           <span>Estadísticas</span>
         </a>
-        <a href="#" id="logout-link" class="nav-link">
+        <a href="#" id="logout-link" style="color:#ffd;text-decoration:none;display:flex;align-items:center;gap:4px">
           <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
           </svg>

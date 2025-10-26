@@ -9,11 +9,11 @@
   <style>
     .dashboard-grid {
       display: grid;
-      grid-template-columns: 1fr 360px;
-      gap: 24px;
+      grid-template-columns: 1fr 380px;
+      gap: 20px;
       max-width: 1200px;
-      margin: 32px auto;
-      padding: 0 20px;
+      margin: 24px auto;
+      padding: 0 16px;
     }
 
     .welcome-card {
@@ -106,9 +106,9 @@
   <header class="main-header">
     <div class="header-container">
       <div class="logo-container">
-        <a href="index.html" class="logo-link">
-          <img src="img/urbano.png" alt="Urbano" class="logo-img">
-          <img src="img/logo_city.png" alt="CityReport" class="logo-img">
+        <a href="index.html" class="logo-link" style="display:flex;align-items:center;gap:16px;">
+          <img src="img/urbano.png" alt="Urbano" style="height:140px;background:white;padding:10px;border-radius:10px;transition:transform 0.2s ease;box-shadow:0 3px 6px rgba(0,0,0,0.15)">
+          <img src="img/logo_city.png" alt="CityReport" style="height:138px;background:white;padding:10px;border-radius:10px;transition:transform 0.2s ease;box-shadow:0 3px 6px rgba(0,0,0,0.15)">
         </a>
       </div>
       <div class="header-title">
@@ -139,7 +139,7 @@
           </svg>
           <span>Estadísticas</span>
         </a>
-        <a href="#" id="logout-link" class="nav-link">
+        <a href="#" id="logout-link" style="color:#ffd;text-decoration:none;display:flex;align-items:center;gap:4px">
           <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
           </svg>
@@ -187,37 +187,34 @@
         </div>
       </div>
 
-      <div class="quick-access">
-        <div class="quick-access-header">
-          <img src="img/urbano.png" alt="Urbano" class="quick-access-logo">
-          <img src="img/logo_city.png" alt="CityReport" class="quick-access-logo">
+      <div class="quick-access" style="padding:16px">
+        <div class="quick-access-header" style="justify-content:center;margin-bottom:28px;gap:12px">
+          <img src="img/urbano.png" alt="Urbano" class="quick-access-logo" style="height:140px;background:white;padding:10px;border-radius:10px;transition:transform 0.2s ease;box-shadow:0 3px 6px rgba(0,0,0,0.15)">
+          <img src="img/logo_city.png" alt="CityReport" class="quick-access-logo" style="height:138px;background:white;padding:10px;border-radius:10px;transition:transform 0.2s ease;box-shadow:0 3px 6px rgba(0,0,0,0.15)">
         </div>
-        <h3 class="text-primary mb-3">Accesos rápidos</h3>
-        <div class="quick-links">
-          <a href="reportes_agregar.html" class="quick-link">
-            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+        <h3 class="text-primary mb-4" style="text-align:center;font-size:24px">Accesos rápidos</h3>
+        <div class="quick-links" style="gap:16px">
+          <a href="reportes_agregar.html" class="quick-link" style="padding:16px;font-size:16px;justify-content:center">
+            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" style="width:24px;height:24px">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
-            </svg>
-            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:16px;height:16px">
-              <path d="M12 4v16m8-8H4"/>
             </svg>
             Agregar Reporte
           </a>
-          <a href="reportes_consultar.html" class="quick-link">
-            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+          <a href="reportes_consultar.html" class="quick-link" style="padding:16px;font-size:16px;justify-content:center">
+            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" style="width:24px;height:24px">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
             </svg>
             Consultar Reporte
           </a>
-          <a href="reportes_editar.html" class="quick-link">
-            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+          <a href="reportes_editar.html" class="quick-link" style="padding:16px;font-size:16px;justify-content:center">
+            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" style="width:24px;height:24px">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
             </svg>
             Editar Reporte
           </a>
-          <a href="estadisticas.html" class="quick-link">
-            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+          <a href="estadisticas.html" class="quick-link" style="padding:16px;font-size:16px;justify-content:center">
+            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" style="width:24px;height:24px">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
             </svg>
             Estadísticas
