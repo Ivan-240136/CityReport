@@ -7,11 +7,99 @@
   <link rel="stylesheet" href="css/estilos.css">
   <link rel="stylesheet" href="css/nav.css">
   <style>
-    .welcome-box { max-width: 900px; margin: 40px auto; background: #fff; padding: 28px; border-radius: 12px; box-shadow: 0 6px 18px rgba(0,0,0,0.08); text-align: center; }
-    .lead { color: #555; }
-    .btn, .btn2 { display:inline-block; padding:10px 16px; border-radius:8px; text-decoration:none; margin:6px; }
-    .btn { background:var(--primary-700); color:#fff }
-    .btn2 { background:#e2e8f0; color:#222 }
+    .dashboard-grid {
+      display: grid;
+      grid-template-columns: 1fr 360px;
+      gap: 24px;
+      max-width: 1200px;
+      margin: 32px auto;
+      padding: 0 20px;
+    }
+
+    .welcome-card {
+      background: rgba(255,255,255,0.9);
+      padding: 32px;
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-lg);
+      backdrop-filter: blur(10px);
+      text-align: center;
+      animation: slideIn 0.5s ease-out forwards;
+    }
+
+    .quick-access {
+      background: rgba(255,255,255,0.9);
+      padding: 24px;
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-lg);
+      backdrop-filter: blur(10px);
+      animation: slideIn 0.5s ease-out forwards;
+      animation-delay: 0.2s;
+      opacity: 0;
+    }
+
+    .quick-access-header {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 20px;
+      padding-bottom: 16px;
+      border-bottom: 2px solid var(--primary-100);
+    }
+
+    .quick-access-logo {
+      height: 48px;
+      transition: transform 0.3s ease;
+    }
+
+    .quick-access-logo:hover {
+      transform: scale(1.05);
+    }
+
+    .quick-links {
+      display: grid;
+      gap: 12px;
+    }
+
+    .quick-link {
+      display: flex;
+      align-items: center;
+      padding: 12px 16px;
+      background: var(--gray-50);
+      border: 1px solid var(--gray-200);
+      border-radius: var(--radius);
+      color: var(--gray-800);
+      text-decoration: none;
+      transition: all 0.2s ease;
+    }
+
+    .quick-link:hover {
+      background: var(--primary-50);
+      border-color: var(--primary-200);
+      transform: translateX(4px);
+    }
+
+    .quick-link i {
+      margin-right: 12px;
+      color: var(--primary-600);
+      font-size: 1.2em;
+    }
+
+    @keyframes slideIn {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @media (max-width: 768px) {
+      .dashboard-grid {
+        grid-template-columns: 1fr;
+      }
+    }
   </style>
 </head>
 <body>
@@ -62,38 +150,81 @@
   </header>
 
   <main class="principal">
-    <section style="max-width:1100px;margin:26px auto;display:grid;grid-template-columns:1fr 360px;gap:18px;align-items:start">
-      <div style="background:rgba(255,255,255,0.06);padding:20px;border-radius:12px;backdrop-filter:blur(6px);box-shadow:0 6px 18px rgba(0,0,0,0.08)">
-        <h2 style="text-align:center">Bienvenido a CityReport</h2>
-        <p id="saludo" class="lead">Cargando...</p>
+    <div class="dashboard-grid">
+      <div class="welcome-card">
+        <h2 class="text-primary mb-4">Bienvenido a CityReport</h2>
+        <p id="saludo" class="lead mb-4">Cargando...</p>
 
-        <div style="display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin-top:18px">
-          <a class="btn" href="reportes_consultar.html">Ver reportes</a>
-          <a class="btn" href="reportes_agregar.html">Crear reporte</a>
-          <a class="btn" href="reportes_editar.html">Editar reportes</a>
+        <div class="action-buttons mb-4">
+          <a class="btn btn-primary btn-hover-lift" href="reportes_consultar.html">
+            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+            </svg>
+            Ver reportes
+          </a>
+          <a class="btn btn-primary btn-hover-lift" href="reportes_agregar.html">
+            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+            </svg>
+            Crear reporte
+          </a>
+          <a class="btn btn-primary btn-hover-lift" href="reportes_editar.html">
+            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+            </svg>
+            Editar reportes
+          </a>
         </div>
         
-        <div style="margin-top:18px;text-align:center">
-          <a id="logout-btn" class="btn2" href="#">Cerrar sesión</a>
+        <div class="text-center">
+          <a id="logout-btn" class="btn btn-secondary" href="#">
+            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+            </svg>
+            Cerrar sesión
+          </a>
         </div>
       </div>
 
-      <aside style="padding:18px;background:rgba(255,255,255,0.06);border-radius:12px;backdrop-filter:blur(6px);">
-        <div style="display:flex;align-items:center;gap:12px;justify-content:space-between">
-          <img src="img/urbano.png" alt="Urbano" style="height:56px">
-          <img src="img/logo_city.png" alt="CityReport" style="height:56px">
+      <div class="quick-access">
+        <div class="quick-access-header">
+          <img src="img/urbano.png" alt="Urbano" class="quick-access-logo">
+          <img src="img/logo_city.png" alt="CityReport" class="quick-access-logo">
         </div>
-        <div style="margin-top:16px">
-          <h3 style="margin:0 0 8px 0">Accesos rápidos</h3>
-          <ul style="list-style:none;padding:0;margin:0;display:grid;grid-template-columns:1fr;gap:8px">
-            <li><a href="reportes_agregar.html" class="btn2" style="display:block;text-align:center">+ Agregar Reporte</a></li>
-            <li><a href="reportes_consultar.html" class="btn2" style="display:block;text-align:center">🔎 Consultar Reporte</a></li>
-            <li><a href="reportes_editar.html" class="btn2" style="display:block;text-align:center">✏️ Editar Reporte</a></li>
-            <li><a href="estadisticas.html" class="btn2" style="display:block;text-align:center">📊 Estadísticas</a></li>
-          </ul>
+        <h3 class="text-primary mb-3">Accesos rápidos</h3>
+        <div class="quick-links">
+          <a href="reportes_agregar.html" class="quick-link">
+            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+            </svg>
+            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:16px;height:16px">
+              <path d="M12 4v16m8-8H4"/>
+            </svg>
+            Agregar Reporte
+          </a>
+          <a href="reportes_consultar.html" class="quick-link">
+            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+            </svg>
+            Consultar Reporte
+          </a>
+          <a href="reportes_editar.html" class="quick-link">
+            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+            </svg>
+            Editar Reporte
+          </a>
+          <a href="estadisticas.html" class="quick-link">
+            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+            </svg>
+            Estadísticas
+          </a>
         </div>
-      </aside>
-    </section>
+      </div>
+    </div>
   </main>
 
   <footer class="pie">

@@ -51,58 +51,87 @@
   </header>
 
   <main>
-    <div class="stats-container">
-      <div class="stats-header">
-        <div class="stats-header-content">
-          <div id="dateNow" class="stats-date"></div>
-          <h2 class="stats-title">Panel de Estadísticas</h2>
-        </div>
-        <a href="index.html" class="btn btn-ghost">
-          <svg class="icon-stats" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+    <div class="content-panel">
+      <div class="panel-header">
+        <div class="panel-title">
+          <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
           </svg>
-          Volver
-        </a>
+          Panel de Estadísticas
+        </div>
+        <div class="action-buttons">
+          <span class="stats-date" id="dateNow"></span>
+          <a href="index.html" class="btn btn-primary btn-hover-lift">
+            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
+            </svg>
+            Inicio
+          </a>
+        </div>
       </div>
 
-      <div class="stats-cards">
-        <div class="stat-card total">
+      <div class="stats-cards animate-slide-in">
+        <div class="stat-card data-card total">
+          <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
+          </svg>
           <span class="stat-label">Total de Reportes</span>
           <p class="stat-value animate-count" id="totalVal">0</p>
         </div>
-        <div class="stat-card pending">
+        <div class="stat-card data-card pending">
+          <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+          </svg>
           <span class="stat-label">Pendientes</span>
           <p class="stat-value animate-count" id="pendVal">0</p>
         </div>
-        <div class="stat-card in-progress">
+        <div class="stat-card data-card in-progress">
+          <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M19 14l-7 7m0 0l-7-7m7 7V3"/>
+          </svg>
           <span class="stat-label">En Proceso</span>
           <p class="stat-value animate-count" id="procVal">0</p>
         </div>
-        <div class="stat-card completed">
+        <div class="stat-card data-card completed">
+          <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+          </svg>
           <span class="stat-label">Resueltos</span>
           <p class="stat-value animate-count" id="resVal">0</p>
         </div>
       </div>
 
       <div class="stats-grid">
-        <div class="info-card">
+        <div class="info-card data-card">
+          <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
+            <path d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
+          </svg>
           <p class="info-value" id="coloniaFreq">—</p>
           <p class="info-label">Colonia más frecuente</p>
         </div>
-        <div class="info-card">
+        <div class="info-card data-card">
+          <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
+          </svg>
           <p class="info-value" id="clasificacionFreq">—</p>
           <p class="info-label">Reporte más común</p>
         </div>
-        <div class="info-card">
+        <div class="info-card data-card">
+          <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+          </svg>
           <p class="info-value" id="picoDia">—</p>
           <p class="info-label">Pico de actividad semanal</p>
         </div>
-        <div class="info-card">
+        <div class="info-card data-card">
+          <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
+          </svg>
           <p class="info-value" id="tasaRes">—</p>
           <p class="info-label">Tasa De Resolución General</p>
         </div>
       </div>
-
     </div>
   </main>
 

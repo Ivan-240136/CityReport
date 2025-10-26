@@ -8,6 +8,30 @@
   <link rel="stylesheet" href="css/forms.css">
   <link rel="stylesheet" href="css/tables.css">
   <link rel="stylesheet" href="css/modals.css">
+  <style>
+    /* Estilos de botones con animación */
+    .btn-action {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.75rem 1.25rem;
+      text-decoration: none;
+      background: linear-gradient(180deg,#0f5160,#0d4f56);
+      color: white;
+      font-weight: 500;
+      border-radius: 8px;
+      transition: all 0.2s ease;
+      box-shadow: 0 4px 6px -1px rgba(13,79,86,0.1);
+      border: none;
+      cursor: pointer;
+      transform: translateY(0);
+    }
+    
+    .btn-action:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 8px -1px rgba(13,79,86,0.15);
+    }
+  </style>
 </head>
 <body>
   <header class="header">
@@ -58,8 +82,14 @@
   <main>
     <div class="panel">
       <div style="margin-bottom:1rem">
-        <a href="index.html" class="btn btn-secondary btn-back animate-slide-in">
-          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <a href="index.html" class="btn btn-secondary" 
+           style="display:inline-flex;align-items:center;gap:0.5rem;padding:0.75rem 1.25rem;text-decoration:none;
+                  background:linear-gradient(180deg,#0f5160,#0d4f56);color:white;font-weight:500;
+                  border-radius:8px;transition:all 0.2s ease;box-shadow:0 4px 6px -1px rgba(13,79,86,0.1);
+                  border:none;transform:translateY(0);"
+           onmouseover="this.style.transform='translateY(-1px)';this.style.boxShadow='0 6px 8px -1px rgba(13,79,86,0.15)'"
+           onmouseout="this.style.transform='translateY(0)';this.style.boxShadow='0 4px 6px -1px rgba(13,79,86,0.1)'">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16">
             <path d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
           </svg>
           Volver
@@ -108,6 +138,9 @@
               <button type="submit" class="btn btn-primary">
                 <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                   <path d="M12 4v16m-8-8h16"/>
+                </svg>
+                <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M12 4v16m8-8H4"/>
                 </svg>
                 Agregar Reporte
               </button>
