@@ -1,0 +1,26 @@
+{
+    "time": "2025-10-27T11:55:28-06:00",
+    "stage": "login_users_fetch_failed",
+    "usuario": "ivan_flores1",
+    "rest_response": {
+        "error": "curl_error",
+        "message": "SSL certificate problem: unable to get local issuer certificate"
+    },
+    "fallback_detail": {
+        "error": "curl_error",
+        "message": "SSL certificate problem: unable to get local issuer certificate"
+    }
+}
+{
+    "time": "2025-10-27T11:55:34-06:00",
+    "stage": "login_users_fetch_failed",
+    "usuario": "ivan_ojeda",
+    "rest_response": {
+        "error": "curl_error",
+        "message": "SSL certificate problem: unable to get local issuer certificate"
+    },
+    "fallback_detail": {
+        "error": "curl_error",
+        "message": "SSL certificate problem: unable to get local issuer certificate"
+    }
+}

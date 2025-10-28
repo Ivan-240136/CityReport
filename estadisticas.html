@@ -138,37 +138,50 @@
 
   <script type="module">
     import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
+
     const SUPABASE_URL = 'https://ghywlqpirjqsmmlyomaw.supabase.co';
     const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdoeXdscXBpcmpxc21tbHlvbWF3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTk4MTYwMTYsImV4cCI6MjA3NTM5MjAxNn0.v8fs-lpmWu7cmqM45wKvsFNaHJxcJro4dSxknDWgVGI';
     const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    // simple mapa de campos (si cambian en DB, ajustas aquí)
+    const FIELDS = {
+      status: 'estatus',
+      coloniaId: 'id_colonia',
+      clasifId: 'id_clasificacion',
+      date: 'fecha_reporte'
+    };
 
     if (!sessionStorage.getItem('user')) window.location.href='login.html';
 
     document.getElementById('dateNow').textContent = new Date().toLocaleString();
 
-    async function loadStats(){
-      // Contadores principales (usamos count retornado por Supabase cuando es posible)
-      const { data: totalData, count: totalCount, error: totalError } = await supabase.from('reportes').select('id', { count: 'exact' });
-      const { data: pendData, count: pendCount, error: pendError } = await supabase.from('reportes').select('id', { count: 'exact' }).eq('estado','Pendiente');
-      const { data: procData, count: procCount, error: procError } = await supabase.from('reportes').select('id', { count: 'exact' }).eq('estado','En Proceso');
-      const { data: resData, count: resCount, error: resError } = await supabase.from('reportes').select('id', { count: 'exact' }).eq('estado','Resuelto');
+    async function loadStats() {
+      // Conteos por estatus
+      const { count: totalCount, error: totalError } =
+        await supabase.from('reportes').select('id', { count: 'exact', head: true });
 
-      // Log para depuración en consola
+      const { count: pendCount, error: pendError } =
+        await supabase.from('reportes').select('id', { count: 'exact', head: true }).eq(FIELDS.status,'Pendiente');
+
+      const { count: procCount, error: procError } =
+        await supabase.from('reportes').select('id', { count: 'exact', head: true }).eq(FIELDS.status,'En Proceso');
+
+      const { count: resCount,  error: resError  } =
+        await supabase.from('reportes').select('id', { count: 'exact', head: true }).eq(FIELDS.status,'Resuelto');
+
       if (totalError || pendError || procError || resError) {
         console.error('Errores en conteos:', { totalError, pendError, procError, resError });
       }
 
-      const totalNum = (typeof totalCount === 'number') ? totalCount : (totalData ? totalData.length : 0);
-      const pendNum = (typeof pendCount === 'number') ? pendCount : (pendData ? pendData.length : 0);
-      const procNum = (typeof procCount === 'number') ? procCount : (procData ? procData.length : 0);
-      const resNum = (typeof resCount === 'number') ? resCount : (resData ? resData.length : 0);
+      const totalNum = Number(totalCount || 0);
+      const pendNum  = Number(pendCount  || 0);
+      const procNum  = Number(procCount  || 0);
+      const resNum   = Number(resCount   || 0);
 
-      // helper: animate if available
       function setAnimatedValue(elId, value){
         const el = document.getElementById(elId);
         if(!el) return;
         if(typeof window.animateValue === 'function'){
-          // ensure number
           window.animateValue(el, 0, Number(value||0), 1200);
         } else {
           el.textContent = value;
@@ -176,17 +189,19 @@
       }
 
       setAnimatedValue('totalVal', totalNum);
-      setAnimatedValue('pendVal', pendNum);
-      setAnimatedValue('procVal', procNum);
-      setAnimatedValue('resVal', resNum);
+      setAnimatedValue('pendVal',  pendNum);
+      setAnimatedValue('procVal',  procNum);
+      setAnimatedValue('resVal',   resNum);
 
-  // Traer IDs relevantes (colonia, clasificacion, created_at) y agregar en cliente
-  // NOTA: si hay muchos reportes, puede ser preferible una consulta server-side/RPC.
-  const { data: reports, error: reportsError } = await supabase.from('reportes').select('colonia_id,clasificacion_id,created_at').limit(10000);
-  if (reportsError) console.error('Error al obtener reportes:', reportsError);
-  console.debug('Reports fetched:', reports ? reports.length : 0, reportsError || 'ok');
+      // Datos para "más frecuente" y "pico semanal"
+      const { data: reports, error: reportsError } = await supabase
+        .from('reportes')
+        .select(`${FIELDS.coloniaId},${FIELDS.clasifId},${FIELDS.date}`)
+        .limit(10000);
 
-      // valores por defecto
+      if (reportsError) console.error('Error al obtener reportes:', reportsError);
+      console.debug('Reports fetched:', reports ? reports.length : 0, reportsError || 'ok');
+
       document.getElementById('coloniaFreq').textContent = '—';
       document.getElementById('clasificacionFreq').textContent = '—';
       document.getElementById('picoDia').textContent = '—';
@@ -197,54 +212,76 @@
         const dayCount = {};
 
         reports.forEach(r => {
-          if (r.colonia_id) colCount[r.colonia_id] = (colCount[r.colonia_id] || 0) + 1;
-          if (r.clasificacion_id) clasCount[r.clasificacion_id] = (clasCount[r.clasificacion_id] || 0) + 1;
-          if (r.created_at){
-            const d = new Date(r.created_at).getDay();
+          const colId = r[FIELDS.coloniaId];
+          const claId = r[FIELDS.clasifId];
+          const fecha = r[FIELDS.date];
+
+          if (colId != null) colCount[colId] = (colCount[colId] || 0) + 1;
+          if (claId != null) clasCount[claId] = (clasCount[claId] || 0) + 1;
+          if (fecha){
+            const d = new Date(fecha).getDay();
             dayCount[d] = (dayCount[d] || 0) + 1;
           }
         });
-
-        console.debug('colCount sample:', colCount);
-        console.debug('clasCount sample:', clasCount);
-        console.debug('dayCount sample:', dayCount);
 
         // Top colonia
         const topCol = Object.entries(colCount).sort((a,b)=>b[1]-a[1])[0];
         if (topCol){
           const [colId, cnt] = topCol;
-          const { data: col, error: colError } = await supabase.from('colonias').select('nombre_colonia').eq('id', colId).limit(1).single();
+          const { data: col, error: colError } = await supabase
+            .from('colonias')
+            .select('nombre_colonia')
+            .eq('id', Number(colId))
+            .limit(1)
+            .single();
           if (colError) console.warn('No se pudo obtener nombre de colonia', colError, 'colId=', colId);
-          document.getElementById('coloniaFreq').textContent = `${col?.nombre_colonia || '—'} (${cnt} reportes)`;
+          document.getElementById('coloniaFreq').textContent =
+            `${col?.nombre_colonia || '—'} (${cnt} reportes)`;
         }
 
-        // Top clasificacion
+        // Top clasificación
         const topClas = Object.entries(clasCount).sort((a,b)=>b[1]-a[1])[0];
         if (topClas){
           const [clasId, cnt] = topClas;
-          const { data: cl, error: clError } = await supabase.from('clasificaciones').select('nombre').eq('id', clasId).limit(1).single();
-          if (clError) console.warn('No se pudo obtener nombre de clasificacion', clError, 'clasId=', clasId);
-          document.getElementById('clasificacionFreq').textContent = `${cl?.nombre || '—'} (${cnt} reportes)`;
+          const { data: cl, error: clError } = await supabase
+            .from('clasificaciones')
+            .select('nombre')
+            .eq('id', Number(clasId))
+            .limit(1)
+            .single();
+          if (clError) console.warn('No se pudo obtener nombre de clasificación', clError, 'clasId=', clasId);
+          document.getElementById('clasificacionFreq').textContent =
+            `${cl?.nombre || '—'} (${cnt} reportes)`;
         }
 
         // Pico semanal
         const diasSemana = ['Domingo','Lunes','Martes','Miércoles','Jueves','Viernes','Sábado'];
         const topDay = Object.entries(dayCount).sort((a,b)=>b[1]-a[1])[0];
         if (topDay){
-          document.getElementById('picoDia').textContent = `${diasSemana[Number(topDay[0])] } (${topDay[1]} reportes)`;
+          const idx = Number(topDay[0]);
+          document.getElementById('picoDia').textContent =
+            `${diasSemana[idx] || '—'} (${topDay[1]} reportes)`;
         }
       }
 
-      // Tasa de resolucion (resueltos / total)
+      // Tasa de resolución
       const tasa = totalNum ? Math.round((resNum/totalNum)*100) : 0;
       document.getElementById('tasaRes').textContent = `${tasa}% (${resNum}/${totalNum})`;
     }
 
     loadStats();
   </script>
+
   <script>
+    // logout correcto
     const logoutLink = document.getElementById('logout-link');
-    if (logoutLink) logoutLink.addEventListener('click', (e)=>{ e.preventDefault(); sessionStorage.removeItem('user'); window.location.href='login.html'; });
+    if (logoutLink) {
+      logoutLink.addEventListener('click', (e) => {
+        e.preventDefault();
+        sessionStorage.removeItem('user');
+        window.location.href='login.html';
+      });
+    }
   </script>
 </body>
 </html>

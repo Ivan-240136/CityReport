@@ -113,6 +113,15 @@
   opacity: 1;
 }
 
+/* Elementos solo para administradores */
+.admin-only {
+  display: none !important;
+}
+
+body[data-role="admin_sys"] .admin-only {
+  display: flex !important;
+}
+
 /* Separación para pantallas pequeñas */
 @media (max-width: 768px) {
   .header-container {

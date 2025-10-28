@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión de Usuarios</title>
+    <link rel="stylesheet" href="css/estilos.css">
+    <link rel="stylesheet" href="css/nav.css">
+    <link rel="stylesheet" href="css/tables.css">
+</head>
+<body>
+    <header style="background:linear-gradient(180deg,#114b58,#0f5160);color:#fff;padding:18px 0;">
+        <div style="max-width:1200px;margin:0 auto;display:flex;align-items:center;gap:16px;padding:0 18px;">
+            <div class="logos-container">
+                <img src="img/urbano.png" alt="Logo Urbano" class="logo">
+                <img src="img/logo_city.png" alt="Logo City" class="logo">
+            </div>
+            <nav class="main-nav">
+                <a href="index.html">Inicio</a>
+                <a href="reportes_consultar.html">Reportes</a>
+                <a href="usuarios.html" class="active">Usuarios</a>
+                <a href="estadisticas.html">Estadísticas</a>
+                <a href="logout.php" id="logout-link">Cerrar Sesión</a>
+            </nav>
+        </div>
+    </header>
+
+    <div class="container">
+        <h1>Gestión de Usuarios</h1>
+        
+        <div class="table-container">
+            <table id="usersTable">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Usuario</th>
+                        <th>Rol</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    
+                </tbody>
+            </table>
+        </div>
+    </div>
+</body>
+</html>
