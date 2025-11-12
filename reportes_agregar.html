@@ -4,93 +4,75 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>Agregar Reporte - CityReport</title>
+
+  <!-- Tus estilos existentes -->
   <link rel="stylesheet" href="css/estilos.css">
   <link rel="stylesheet" href="css/forms.css">
   <link rel="stylesheet" href="css/tables.css">
   <link rel="stylesheet" href="css/modals.css">
-  <style>
-    /* Estilos de botones con animación */
-    .btn-action {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.5rem;
-      padding: 0.75rem 1.25rem;
-      text-decoration: none;
-      background: linear-gradient(180deg,#0f5160,#0d4f56);
-      color: white;
-      font-weight: 500;
-      border-radius: 8px;
-      transition: all 0.2s ease;
-      box-shadow: 0 4px 6px -1px rgba(13,79,86,0.1);
-      border: none;
-      cursor: pointer;
-      transform: translateY(0);
-    }
-    
-    .btn-action:hover {
-      transform: translateY(-1px);
-      box-shadow: 0 6px 8px -1px rgba(13,79,86,0.15);
-    }
-  </style>
+  <!-- Tema unificado (Azul Petróleo + Naranja Coral) -->
+  <link rel="stylesheet" href="css/cityreport-theme.css">
 </head>
 <body>
   <header class="header">
     <div class="header-content">
       <div class="header-logo">
-        <a href="index.html" class="logo-link" style="display:flex;align-items:center;gap:12px;padding:16px">
-          <img src="img/urbano.png" alt="Urbano" style="height:140px;background:white;padding:10px;border-radius:10px;transition:transform 0.2s ease;box-shadow:0 3px 6px rgba(0,0,0,0.15)">
-          <img src="img/logo_city.png" alt="CityReport" style="height:138px;background:white;padding:10px;border-radius:10px;transition:transform 0.2s ease;box-shadow:0 3px 6px rgba(0,0,0,0.15)">
+        <a href="index.html" class="logo-link">
+          <img src="img/urbano.png" alt="UrbanoTech" class="logo-img" style="height:140px">
+          <img src="img/logo_city.png" alt="CityReport" class="logo-img" style="height:138px">
         </a>
       </div>
+
       <div class="header-title">
-        <h1>
+        <h1 class="title-with-icon">
           <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <path d="M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"/>
           </svg>
           Agregar Reporte
         </h1>
       </div>
+
       <nav class="header-nav">
         <a href="index.html" class="nav-link">
           <svg class="icon small" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
+            <path d="M3 12l2-2 7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2v10a1 1 0 01-1 1h-3"/>
           </svg>
           Inicio
         </a>
         <a href="reportes_consultar.html" class="nav-link">
           <svg class="icon small" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"/>
+            <path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2"/>
           </svg>
           Reportes
         </a>
         <a href="estadisticas.html" class="nav-link">
           <svg class="icon small" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
+            <path d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6m6 0V9a2 2 0 012-2h2a2 2 0 012 2v10"/>
           </svg>
           Estadísticas
         </a>
-        <a href="#" id="logout-link" style="color:#ffd;text-decoration:none;display:flex;align-items:center;gap:4px">
+        <!-- Solo admin -->
+        <a href="usuarios.html" class="nav-link" data-role-allow="1">
           <svg class="icon small" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
+            <path d="M17 20h5v-2a4 4 0 00-5-3.87M9 20H4v-2a4 4 0 015-3.87M12 12a4 4 0 100-8"/>
           </svg>
-          Cerrar sesión
+          Usuarios
         </a>
+        <a href="#" id="logout-link" class="nav-link">Cerrar sesión</a>
       </nav>
     </div>
   </header>
 
   <main>
-    <div class="panel">
-      <div style="margin-bottom:1rem">
-        <a href="index.html" class="btn btn-secondary" 
-           style="display:inline-flex;align-items:center;gap:0.5rem;padding:0.75rem 1.25rem;text-decoration:none;
-                  background:linear-gradient(180deg,#0f5160,#0d4f56);color:white;font-weight:500;
-                  border-radius:8px;transition:all 0.2s ease;box-shadow:0 4px 6px -1px rgba(13,79,86,0.1);
-                  border:none;transform:translateY(0);"
-           onmouseover="this.style.transform='translateY(-1px)';this.style.boxShadow='0 6px 8px -1px rgba(13,79,86,0.15)'"
-           onmouseout="this.style.transform='translateY(0)';this.style.boxShadow='0 4px 6px -1px rgba(13,79,86,0.1)'">
-          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16">
-            <path d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+    <div class="panel card">
+      <div id="forbiddenMsg" class="alert warn" style="display:none">
+        Tu rol no tiene permiso para agregar reportes. Serás redirigido al inicio.
+      </div>
+
+      <div class="mb-16">
+        <a href="index.html" class="btn btn-primary">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M10 19l-7-7 7-7M3 12h18"/>
           </svg>
           Volver
         </a>
@@ -100,8 +82,7 @@
         <div class="form-grid">
           <div class="form-group">
             <label for="remitente">Remitente <span class="text-danger">*</span></label>
-            <input id="remitente" name="remitente" class="form-control" required 
-                   placeholder="Nombre completo del remitente">
+            <input id="remitente" name="remitente" class="form-control" required placeholder="Nombre completo del remitente">
           </div>
 
           <div class="form-group">
@@ -120,236 +101,150 @@
 
           <div class="form-group">
             <label for="calle">Calle / Referencia</label>
-            <input id="calle" name="calle" class="form-control" 
-                   placeholder="Dirección o punto de referencia">
+            <input id="calle" name="calle" class="form-control" placeholder="Dirección o punto de referencia">
           </div>
 
           <div class="form-group full">
             <label for="detalles">Detalles del reporte</label>
-            <textarea id="detalles" name="detalles" class="form-control" rows="6"
-                     placeholder="Describe los detalles del reporte..."></textarea>
+            <textarea id="detalles" name="detalles" class="form-control" rows="6" placeholder="Describe los detalles del reporte..."></textarea>
           </div>
 
-          <!-- Input oculto para futuras imágenes -->
-          <input type="file" id="imagen" accept="image/*" style="display:none">
-          
+          <input type="file" id="imagen" accept="image/*" hidden>
+
           <div class="form-group full">
-            <div class="d-flex justify-content-between align-items-center">
-              <button type="submit" class="btn btn-primary">
-                <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <path d="M12 4v16m-8-8h16"/>
-                </svg>
+            <div class="flex-between">
+              <button type="submit" class="btn btn-accent">
                 <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                   <path d="M12 4v16m8-8H4"/>
                 </svg>
                 Agregar Reporte
               </button>
-              <span class="hint">(Subida de imágenes: se implementará más adelante)</span>
+              <span class="muted">(La subida de imágenes llegará más adelante)</span>
             </div>
           </div>
         </div>
       </form>
-      <div id="msg" style="margin-top:12px;color:crimson"></div>
+
+      <div id="msg" class="mt-12"></div>
     </div>
   </main>
 
   <script type="module">
     import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
+
     const SUPABASE_URL = 'https://ghywlqpirjqsmmlyomaw.supabase.co';
     const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdoeXdscXBpcmpxc21tbHlvbWF3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTk4MTYwMTYsImV4cCI6MjA3NTM5MjAxNn0.v8fs-lpmWu7cmqM45wKvsFNaHJxcJro4dSxknDWgVGI';
     const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-  const form = document.getElementById('formAdd');
-  const msg = document.getElementById('msg');
-  const fileInput = document.getElementById('imagen');
-  const storageBucket = 'reportes-images';
+    // ===== Sesión y roles =====
+    const allowedRoles = [1, 2]; // Admin, Coordinador
+    const raw = sessionStorage.getItem('user');
+    if (!raw) location.href = 'login.html';
 
-  async function loadOptions() {
+    let currentUser = null;
+    try { currentUser = JSON.parse(raw); } catch {}
+    const role = Number(currentUser?.id_rol);
+
+    // Mostrar/ocultar enlaces por rol
+    document.querySelectorAll('[data-role-allow]').forEach(el=>{
+      const allow = el.getAttribute('data-role-allow').split(',').map(n=>Number(n.trim()));
+      if(!allow.includes(role)) el.style.display = 'none';
+    });
+
+    const form = document.getElementById('formAdd');
+    const msg = document.getElementById('msg');
+    const forbiddenMsg = document.getElementById('forbiddenMsg');
+
+    function blockAccess(){
+      forbiddenMsg.style.display = 'block';
+      form.querySelectorAll('input,select,textarea,button').forEach(el=>el.disabled=true);
+      setTimeout(()=>location.href='index.html', 1500);
+    }
+    if (!allowedRoles.includes(role)) blockAccess();
+
+    // ===== Combos =====
+    async function loadOptions(){
+      if (!allowedRoles.includes(role)) return;
       const selC = document.getElementById('clasificacion');
       const selCol = document.getElementById('colonia');
-      
-      try {
-        // Cargar clasificaciones y colonias en paralelo
+      try{
         const [clasResult, colResult] = await Promise.all([
-          supabase.from('clasificaciones')
-            .select('id, nombre')
-            .order('nombre'),
-          supabase.from('colonias')
-            .select('id, nombre_colonia')
-            .order('nombre_colonia')
+          supabase.from('clasificaciones').select('id,nombre').order('nombre'),
+          supabase.from('colonias').select('id,nombre_colonia').order('nombre_colonia')
         ]);
+        if (clasResult.error) throw clasResult.error;
+        if (colResult.error) throw colResult.error;
 
-        // Manejar errores
-        if (clasResult.error) throw new Error(`Error cargando clasificaciones: ${clasResult.error.message}`);
-        if (colResult.error) throw new Error(`Error cargando colonias: ${colResult.error.message}`);
+        selC.innerHTML = `<option value="">Seleccionar clasificación...</option>${
+          (clasResult.data||[]).map(r=>`<option value="${r.id}">${r.nombre}</option>`).join('')
+        }`;
+        selCol.innerHTML = `<option value="">Seleccionar colonia...</option>${
+          (colResult.data||[]).map(r=>`<option value="${r.id}">${r.nombre_colonia}</option>`).join('')
+        }`;
 
-        // Validar datos
-        if (!clasResult.data?.length) throw new Error('No hay clasificaciones disponibles');
-        if (!colResult.data?.length) throw new Error('No hay colonias disponibles');
-
-        // Actualizar selects
-        selC.innerHTML = `
-          <option value="">Seleccionar clasificación...</option>
-          ${clasResult.data.map(r => 
-            `<option value="${r.id}">${r.nombre}</option>`
-          ).join('')}
-        `;
-
-        selCol.innerHTML = `
-          <option value="">Seleccionar colonia...</option>
-          ${colResult.data.map(r => 
-            `<option value="${r.id}">${r.nombre_colonia}</option>`
-          ).join('')}
-        `;
-
-  // Limpiar mensajes de error previos
-  msg.textContent = '';
-
-  // focus inicial en remitente para mejor UX
-  const r = document.getElementById('remitente'); if(r) r.focus();
-
-      } catch (error) {
-        console.error('Error cargando opciones:', error);
-        msg.style.color = '#721c24';
-        msg.style.backgroundColor = '#f8d7da';
-        msg.style.padding = '10px';
-        msg.style.borderRadius = '4px';
+        msg.textContent = '';
+        document.getElementById('remitente')?.focus();
+      }catch(error){
+        msg.className='alert error';
         msg.textContent = error.message || 'Error cargando datos';
-        
-        // Deshabilitar el formulario si no se pueden cargar las opciones
-        form.querySelectorAll('input, select, button').forEach(el => el.disabled = true);
+        form.querySelectorAll('input,select,button,textarea').forEach(el=>el.disabled=true);
       }
     }
 
-    // Validar archivo de imagen
-    function validateImage(file) {
-      const maxSize = 5 * 1024 * 1024; // 5MB
-      const allowedTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
-      
-      if (!allowedTypes.includes(file.type)) {
-        throw new Error('Solo se permiten imágenes en formato JPG, PNG, GIF o WEBP');
-      }
-      
-      if (file.size > maxSize) {
-        throw new Error('La imagen no debe exceder 5MB');
-      }
-      
-      return true;
-    }
-
+    // ===== Submit =====
     form.addEventListener('submit', async (e)=>{
       e.preventDefault();
-      msg.textContent = '';
+      if (!allowedRoles.includes(role)) { blockAccess(); return; }
+
+      msg.className=''; msg.textContent='';
       const remitente = document.getElementById('remitente').value.trim();
       const clasificacion = document.getElementById('clasificacion').value;
       const colonia = document.getElementById('colonia').value;
       const calle = document.getElementById('calle').value.trim();
       const detalles = document.getElementById('detalles').value.trim();
 
-      // Nota: la subida de imágenes la gestionaremos más adelante.
-      // Por ahora ignoramos cualquier archivo seleccionado y continuamos con el registro.
+      if(!remitente || !clasificacion || !colonia){
+        msg.className='alert error'; msg.textContent='Completa los campos obligatorios'; return;
+      }
 
-  if (!remitente || !clasificacion || !colonia) { msg.textContent = 'Completa los campos obligatorios'; return; }
+      const btn = form.querySelector('button[type="submit"]');
+      btn.disabled = true; btn.textContent = 'Agregando…';
 
-      // obtener usuario desde sessionStorage
-      const user = JSON.parse(sessionStorage.getItem('user')||'null');
-      const registrado_por = user?.usuario || 'anon';
-
-  // Por ahora no subimos la imagen desde el cliente. imagen_url queda null.
-  let imagen_url = null;
-
-      // Deshabilitar botón y mostrar estado
-      const submitBtn = form.querySelector('button[type="submit"]');
-      submitBtn.disabled = true;
-      submitBtn.textContent = 'Agregando...';
-      msg.textContent = '';
-
-      try {
-        const now = new Date().toISOString().replace('T', ' ').substring(0, 19);
+      try{
+        const now = new Date().toISOString().replace('T',' ').substring(0,19);
         const payload = {
           remitente,
           id_clasificacion: parseInt(clasificacion),
           id_colonia: parseInt(colonia),
           calle,
           detalles,
-          fecha_reporte: now, // legacy / compat
+          fecha_reporte: now,
           estatus: 'Pendiente',
-          creado_por: user?.id || null,
+          creado_por: currentUser?.id || null,
           creado_en: now
         };
 
-        if (imagen_url) {
-          payload.imagen_url = imagen_url;
-        }
-
-        console.log('Insertando reporte con payload:', payload);
-
-        const { data, error } = await supabase
-          .from('reportes')
-          .insert([payload])
-          .select()
-          .single();
-
+        const { error } = await supabase.from('reportes').insert([payload]);
         if (error) throw error;
 
-        console.log('Reporte agregado exitosamente:', data);
-        msg.style.color = '#155724';
-        msg.style.backgroundColor = '#d4edda';
-        msg.style.padding = '10px';
-        msg.style.borderRadius = '4px';
-        msg.textContent = '¡Reporte agregado correctamente!';
-        
-        // Limpiar formulario
+        msg.className='alert ok';
+        msg.textContent='¡Reporte agregado correctamente!';
         form.reset();
-        
-        // Redirigir después de 2 segundos
-        setTimeout(() => {
-          window.location.href = 'reportes_consultar.html';
-        }, 2000);
-
-      } catch (error) {
-        console.error('Error al agregar reporte:', error);
-        msg.style.color = '#721c24';
-        msg.style.backgroundColor = '#f8d7da';
-        msg.style.padding = '10px';
-        msg.style.borderRadius = '4px';
-        msg.textContent = `Error al agregar reporte: ${error.message || 'Error desconocido'}`;
-      } finally {
-        // Restaurar botón
-        submitBtn.disabled = false;
-        submitBtn.textContent = 'Agregar Reporte';
+        setTimeout(()=>location.href='reportes_consultar.html', 1200);
+      }catch(error){
+        msg.className='alert error';
+        msg.textContent=`Error al agregar reporte: ${error.message||'Desconocido'}`;
+      }finally{
+        btn.disabled=false; btn.textContent='Agregar Reporte';
       }
-      // (no reset global aquí; ya se hace en éxito)
     });
 
-    // check session
-    if (!sessionStorage.getItem('user')) window.location.href = 'login.html';
-    
-    // Verificar esquema de la tabla
-    async function checkSchema() {
-      try {
-        console.log('Verificando esquema de la tabla reportes...');
-        const { data, error } = await supabase
-          .from('reportes')
-          .select()
-          .limit(1);
-        
-        if (error) throw error;
-        
-        if (data && data[0]) {
-          console.log('Columnas disponibles en la tabla reportes:', Object.keys(data[0]));
-        }
-      } catch (err) {
-        console.error('Error al verificar esquema:', err);
-      }
-    }
-    
-    loadOptions();
-    checkSchema();
-  </script>
-  <script>
-    const logoutLink = document.getElementById('logout-link');
-    if (logoutLink) logoutLink.addEventListener('click', (e)=>{ e.preventDefault(); sessionStorage.removeItem('user'); window.location.href='login.html'; });
+    if (allowedRoles.includes(role)) loadOptions();
+
+    // Logout
+    document.getElementById('logout-link')?.addEventListener('click', e=>{
+      e.preventDefault(); sessionStorage.removeItem('user'); location.href='login.html';
+    });
   </script>
 </body>
 </html>

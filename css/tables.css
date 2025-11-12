@@ -250,3 +250,39 @@ tr:hover .actions-cell {
     flex-wrap: wrap;
   }
 }
+/* Ajustes visuales para coincidir con index */
+.panel {
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+  padding: 2rem;
+  margin: 2rem auto;
+  max-width: 1000px;
+  border: 1px solid rgba(17,96,106,0.15);
+}
+
+.table {
+  min-width: 600px;
+  border-collapse: collapse;
+}
+
+.table th {
+  background: #114b58;
+  color: #fff;
+  border-bottom: 2px solid #0f5160;
+}
+
+.table td {
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.table tbody tr:hover {
+  background: #f8fbfc;
+  transform: none;
+}
+
+/* Centra todo */
+.text-center th,
+.text-center td {
+  text-align: center;
+}

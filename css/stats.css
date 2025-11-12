@@ -55,7 +55,7 @@
   line-height: 1.2;
 }
 
-/* Cards Grid */
+/* Cards Grid (totales de arriba) */
 .stats-cards {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
@@ -127,11 +127,13 @@
   animation: fadeIn 0.5s ease-out forwards 0.2s;
 }
 
-/* Info Grid */
+/* Info Grid (las 4 tarjetas de abajo) */
 .stats-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  grid-template-columns: repeat(2, minmax(0, 1fr)); /* 2 columnas fijas */
   gap: 1.5rem;
+  justify-items: stretch;
+  align-items: stretch;
   opacity: 0;
   animation: fadeIn 0.5s ease-out forwards 0.4s;
 }
@@ -218,14 +220,8 @@
 }
 
 @keyframes slideIn {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 @keyframes fadeIn {
@@ -253,7 +249,8 @@
   .stats-cards {
     grid-template-columns: 1fr;
   }
-  
+
+  /* En móvil, las 4 tarjetas en una sola columna */
   .stats-grid {
     grid-template-columns: 1fr;
   }

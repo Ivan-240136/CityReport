@@ -145,70 +145,41 @@ function supabase_signout(string $access_token)
 }
 
 $conn = null;
-
-function getConexion() {
-    global $conn;
-    
-    if ($conn !== null) {
-        return $conn;
+$databaseUrl = env_get('DATABASE_URL');
+if ($databaseUrl && $databaseUrl !== false) {
+    $parts = parse_url($databaseUrl);
+    if ($parts !== false) {
+        $pg_host = $parts['host'] ?? null;
+        $pg_port = $parts['port'] ?? ($parts['query']['port'] ?? '5432');
+        $pg_db = isset($parts['path']) ? ltrim($parts['path'], '/') : null;
+        $pg_user = $parts['user'] ?? null;
+        $pg_pass = $parts['pass'] ?? null;
+    } else {
+        $pg_host = env_get('PG_HOST');
+        $pg_db = env_get('PG_DB');
+        $pg_user = env_get('PG_USER');
+        $pg_pass = env_get('PG_PASS');
+        $pg_port = env_get('PG_PORT') ?: '5432';
     }
-    
-    $dsn = env_get('SUPABASE_DB_URL');
-    if (!$dsn) {
-        throw new Exception('SUPABASE_DB_URL no está definida en las variables de entorno');
-    }
-$pg_host = env_get('PG_HOST');
-$pg_db = env_get('PG_DB');
-$pg_user = env_get('PG_USER');
-$pg_pass = env_get('PG_PASS');
-$pg_port = env_get('PG_PORT') ?: '5432';
-
-// Construir la URL de conexión completa
-$databaseUrl = "postgres://{$pg_user}:{$pg_pass}@{$pg_host}:{$pg_port}/{$pg_db}";
+} else {
+    $pg_host = env_get('PG_HOST');
+    $pg_db = env_get('PG_DB');
+    $pg_user = env_get('PG_USER');
+    $pg_pass = env_get('PG_PASS');
+    $pg_port = env_get('PG_PORT') ?: '5432';
+}
 
 if ($pg_host && $pg_db && $pg_user) {
     try {
-        // Configuración más permisiva para SSL
-        // Usar la API REST de Supabase en lugar de conexión directa
-        $dsn = getenv('SUPABASE_DB_URL');
-        if (!$dsn) {
-            $dsn = sprintf(
-                "pgsql:host=%s;port=%s;dbname=%s;user=%s;password=%s;sslmode=require",
-                $pg_host,
-                $pg_port,
-                $pg_db,
-                $pg_user,
-                $pg_pass
-            );
-        }
-        $options = [
-            PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-            PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
-            PDO::ATTR_TIMEOUT => 5
-        ];
-        $conn = new PDO($dsn, $pg_user, $pg_pass, $options);
+        // Usar sslmode=require para conexiones SSL sin verificación de certificado
+        $dsn = "pgsql:host={$pg_host};port={$pg_port};dbname={$pg_db};sslmode=require";
+        $conn = new PDO($dsn, $pg_user, $pg_pass);
+        $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         error_log('Conexión PDO establecida correctamente');
     } catch (PDOException $e) {
         error_log('No se pudo conectar a Postgres: ' . $e->getMessage());
         error_log('DSN usado: ' . preg_replace('/pass=([^;]+)/', 'pass=***', $dsn));
         $conn = null;
     }
-}
-
-try {
-    $options = [
-        PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-        PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
-        PDO::ATTR_TIMEOUT => 5
-    ];
-    
-    $conn = new PDO($dsn, null, null, $options);
-    error_log('Conexión PDO establecida correctamente con Supabase');
-} catch (PDOException $e) {
-    error_log('No se pudo conectar a Supabase: ' . $e->getMessage());
-    throw $e;
-}
-
-return $conn;
 }
 ?>

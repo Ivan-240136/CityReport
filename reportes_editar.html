@@ -37,7 +37,7 @@
   </style>
 </head>
 <body>
-  <header style="background:linear-gradient(180deg,#114b58,#0f5160);color:#fff;padding:18px 0;">
+  <header style="background:linear-gradient(180deg,#154965,#154965);color:#fff;padding:18px 0;">
     <div style="max-width:1200px;margin:0 auto;display:flex;align-items:center;gap:16px;padding:0 18px;">
       <div style="display:flex;align-items:center;gap:12px;padding:16px">
         <a href="index.html">
@@ -141,7 +141,6 @@
         </div>
       </div>
 
-      <!-- Resumen del reporte (limpio y profesional) -->
       <div id="summary" style="border-left:4px solid #11606a;padding:12px;margin-bottom:12px;background:#fbfdff;border-radius:6px;display:none">
         <div style="display:flex;justify-content:space-between;align-items:center">
           <div>
@@ -258,32 +257,26 @@
     const form = document.getElementById('formEdit');
     const msg = document.getElementById('msg');
 
-    // almacenará los nombres de columnas detectadas para update
     const columnKeys = { clas: null, col: null, status: null };
 
     async function loadOptions(){
       const { data: clas } = await supabase.from('clasificaciones').select('id,nombre').order('nombre');
       const { data: cols } = await supabase.from('colonias').select('id,nombre_colonia').order('nombre_colonia');
-      // poblar selects
       document.getElementById('clasificacion').innerHTML = (clas||[]).map(c=>`<option value="${c.id}">${c.nombre}</option>`).join('');
       document.getElementById('colonia').innerHTML = (cols||[]).map(c=>`<option value="${c.id}">${c.nombre_colonia}</option>`).join('');
-      // crear mapas rápidos para resolver ids a nombres en la tabla de resultados
       window._clasMap = {};
       (clas||[]).forEach(c=>{ window._clasMap[c.id] = c.nombre; });
       window._colsMap = {};
       (cols||[]).forEach(c=>{ window._colsMap[c.id] = c.nombre_colonia; });
     }
 
-    // carga opcional de lista reducida y configuración del panel de búsqueda
     async function loadTable(){
-      // mostrar panel de búsqueda
       const panel = document.getElementById('searchPanel');
       const resultsTable = document.getElementById('resultsTable');
       const searchResults = document.getElementById('searchResults');
       const searchInput = document.getElementById('searchInput');
       const searchBtn = document.getElementById('searchBtn');
 
-      // función para mostrar resultados en la tabla
       function displayResults(results){
         if(!results || !results.length){
           searchResults.innerHTML = `<tr><td colspan="4" style="padding:12px;text-align:center;color:#666">No se encontraron reportes</td></tr>`;
@@ -292,7 +285,6 @@
         }
         searchResults.innerHTML = results.map(r=>{
           const nombre = r.remitente || 'N/A';
-          // resolver clasificación: buscar varios nombres de campo y mapear id->nombre si es numérico
           const clasField = r.clasificacion_nombre || r.clasificacion || r.id_clasificacion || r.clasificacion_id || r.id_clas || '';
           let clas = '';
           if(clasField === null || clasField === undefined) clas = '';
@@ -319,13 +311,11 @@
         resultsTable.style.display = 'block';
       }
 
-      // buscar por texto o id
       async function performSearch(){
         const q = searchInput.value.trim();
         try{
           let dbq = supabase.from('reportes').select('*');
           if(!q){
-            // si vacío, cargar recientes
             const { data, error } = await dbq.order('id', { ascending:false }).limit(10);
             if(error) throw error;
             displayResults(data || []);
@@ -335,7 +325,6 @@
           else dbq = dbq.ilike('remitente', `%${q}%`);
           const { data, error } = await dbq.order('id', { ascending:false }).limit(20);
           if(error) throw error;
-          // intentar enriquecer con nombres (clasificaciones) si están disponibles
           const enriched = (data||[]).map(r=>({ ...r, clasificacion_nombre: r.clasificacion_nombre || r.clasificacion || '' }));
           displayResults(enriched);
         }catch(err){
@@ -345,31 +334,24 @@
         }
       }
 
-      // exponer función global para seleccionar y editar (con animación)
       window.editarReporte = async function(id){
-        // cargar reporte y mostrar formulario de edición
         await loadById(id);
-        // animar salida del panel y entrada del formulario
         if(panel){
           panel.classList.remove('animate-in');
           panel.classList.add('fade-out');
         }
         const formEl = document.getElementById('formEdit');
-        // esperar la animación de salida (si existe) y luego ocultar
         setTimeout(()=>{
           if(panel) panel.style.display = 'none';
-          // mostrar y animar el formulario
           formEl.style.display = 'block';
           formEl.classList.remove('fade-out');
           formEl.classList.add('animate-in');
         }, 180);
       }
 
-      // wiring eventos
       searchBtn.addEventListener('click', performSearch);
       searchInput.addEventListener('keypress', (e)=>{ if(e.key==='Enter'){ e.preventDefault(); performSearch(); } });
 
-      // "Volver": navegar una página atrás en el historial (fallback a reportes_consultar)
       const backLink = document.getElementById('back-link');
       if(backLink){
         backLink.addEventListener('click', (ev)=>{
@@ -377,12 +359,10 @@
           try{
             if(window.history && window.history.length > 1){ window.history.back(); return; }
           }catch(e){}
-          // fallback
           window.location.href = 'reportes_consultar.html';
         });
       }
 
-  // carga inicial: mostrar últimos 10
   if(panel) panel.classList.add('animate-in');
   await performSearch();
     }
@@ -399,7 +379,6 @@
       const { data, error } = await supabase.from('reportes').select('*').eq('id', id).single();
       if (error) { msg.textContent='Error al cargar'; console.error(error); return; }
 
-      // detectar nombres de columnas flexibles
       const clasKey = data.id_clasificacion !== undefined ? 'id_clasificacion' : (data.clasificacion_id !== undefined ? 'clasificacion_id' : (data.id_clas !== undefined ? 'id_clas' : null));
       const colKey = data.id_colonia !== undefined ? 'id_colonia' : (data.colonia_id !== undefined ? 'colonia_id' : null);
       const statusKey = data.estatus !== undefined ? 'estatus' : (data.estado !== undefined ? 'estado' : (data.status !== undefined ? 'status' : null));
@@ -408,27 +387,21 @@
       document.getElementById('rid').value = data.id;
       document.getElementById('remitente').value = data.remitente || '';
 
-      // set summary
       document.getElementById('summary-id').textContent = data.id;
       document.getElementById('summary-remitente').textContent = data.remitente || '-';
       document.getElementById('summary-creado').textContent = data.creado_en ? formatDateTime(data.creado_en) : '-';
       document.getElementById('summary').style.display = 'block';
 
-      // helper para setear selects robustamente
       function setSelectValue(select, val){
         if(!select) return;
         if(val === undefined || val === null || val === ''){ select.value = ''; return }
         const v = String(val);
-        // match by value
         for(const o of select.options){ if(o.value === v){ select.value = v; return } }
-        // match by label (texto)
         const byText = Array.from(select.options).find(o=>o.text.trim().toLowerCase()===v.trim().toLowerCase());
         if(byText){ select.value = byText.value; return }
-        // fallback: append temporary option so UI shows the value
         const tmp = document.createElement('option'); tmp.value = v; tmp.text = v; tmp.selected = true; select.appendChild(tmp);
       }
 
-      // set selects/inputs safely
       if (clasKey) setSelectValue(document.getElementById('clasificacion'), data[clasKey] || '');
       if (colKey) setSelectValue(document.getElementById('colonia'), data[colKey] || '');
       document.getElementById('calle').value = data.calle || '';
@@ -440,7 +413,6 @@
       }
 
       window.scrollTo({top:0,behavior:'smooth'});
-      // evidencias (imagen única o array)
       const evList = document.getElementById('evidenciasList');
       evList.innerHTML = '';
       if (data.imagen_url){
@@ -468,7 +440,6 @@
       const detalles = document.getElementById('detalles').value;
       const estado = (document.getElementById('estado') ? document.getElementById('estado').value : (document.getElementById('estatus') ? document.getElementById('estatus').value : ''));
 
-      // construir payload respetando nombres detectados (enviamos al servidor)
       const updates = { 
         remitente, 
         calle, 
@@ -482,9 +453,7 @@
       if (columnKeys.status) updates[columnKeys.status] = estado;
       else updates['estatus'] = estado;
 
-      // Llamar al endpoint servidor para evitar RLS/privilegios del cliente
       try{
-        // Enviar como application/x-www-form-urlencoded para evitar preflight OPTIONS en algunos servidores
         const form = new URLSearchParams();
         form.append('id', id);
         form.append('updates', JSON.stringify(updates));
@@ -493,7 +462,6 @@
           body: form
         });
 
-        // leer siempre como texto y luego intentar parsear JSON (más robusto frente a respuestas vacías o HTML de error)
         const text = await res.text();
         let j = null;
         try{ j = text ? JSON.parse(text) : null } catch(parseErr){
@@ -502,7 +470,6 @@
 
         if (!res.ok) {
           msg.style.color='crimson';
-          // preferir el mensaje devuelto por el servidor si existe
           msg.textContent = 'Error al actualizar: ' + (j && j.message ? j.message : res.statusText + (text ? ' - ' + text : ''));
           console.error('Update HTTP error:', res.status, text, j);
           return;
@@ -515,7 +482,6 @@
           return;
         }
 
-        // éxito
         msg.style.color='green'; msg.textContent = (j && j.message) ? j.message : 'Actualizado correctamente';
         await loadTable();
       }catch(err){
@@ -533,12 +499,10 @@
       msg.style.color='green'; msg.textContent='Eliminado'; form.reset(); loadTable();
     });
 
-  // init
   if (!sessionStorage.getItem('user')) window.location.href='login.html';
   await loadOptions();
   await loadTable();
   if (idParam) {
-    // si se pasó id en la URL, abrirlo en modo edición
     if (typeof window.editarReporte === 'function') await window.editarReporte(idParam);
     else await loadById(idParam);
   }

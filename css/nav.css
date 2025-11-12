@@ -1,6 +1,8 @@
-/* Estilos para la barra de navegación y encabezado */
+/* ================================
+   NAV & HEADER ESTILO UNIFICADO
+================================ */
 .main-header {
-  background: linear-gradient(180deg,#114b58,#0f5160);
+  background: linear-gradient(180deg, #114b58, #0f5160);
   color: #fff;
   padding: 1rem 0;
 }
@@ -27,15 +29,32 @@
   text-decoration: none;
 }
 
+/* Imagen general */
 .logo-img {
-  height: 2.875rem;
-  width: auto;
   transition: transform 0.2s ease;
 }
 
 .logo-img:hover {
   transform: scale(1.05);
 }
+
+/* Tamaños iguales a index */
+.header-logos img {
+  background: #fff;
+  padding: 10px;
+  border-radius: 10px;
+  transition: transform 0.2s ease;
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.15);
+  display: block;
+  object-fit: contain;
+}
+
+/* alturas exactas como index */
+.logo-urbano { height: 140px; }
+.logo-city { height: 138px; }
+
+/* evita deformaciones */
+.header-logos img { width: auto; }
 
 .header-title {
   flex: 1;
@@ -54,7 +73,7 @@
   font-size: 0.875rem;
   font-weight: 400;
   margin-top: 0.25rem;
-  color: var(--primary-100);
+  color: var(--primary-100, #bde4ee);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -108,7 +127,6 @@
   opacity: 1;
 }
 
-/* Estado activo */
 .nav-link.active .nav-icon {
   opacity: 1;
 }
@@ -122,7 +140,7 @@ body[data-role="admin_sys"] .admin-only {
   display: flex !important;
 }
 
-/* Separación para pantallas pequeñas */
+/* Responsivo */
 @media (max-width: 768px) {
   .header-container {
     flex-direction: column;

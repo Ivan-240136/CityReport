@@ -1,48 +1,298 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gestión de Usuarios</title>
-    <link rel="stylesheet" href="css/estilos.css">
-    <link rel="stylesheet" href="css/nav.css">
-    <link rel="stylesheet" href="css/tables.css">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Gestión de Usuarios - CityReport</title>
+
+  <link rel="stylesheet" href="css/estilos.css">
+  <link rel="stylesheet" href="css/nav.css">
+  <link rel="stylesheet" href="css/tables.css">
+
+  <script src="https://cdn.jsdelivr.net/npm/bcryptjs@2.4.3/dist/bcrypt.min.js"></script>
+
+  <style>
+    .page-wrap { max-width: 1200px; margin: 24px auto; padding: 0 16px; }
+    .title { text-align:center; margin: 8px 0 18px; color:#0f5160; font-size: 28px; font-weight: 700; }
+
+    .btn-bar {
+      display:flex; gap:.75rem; justify-content:center; margin: 0 0 1rem;
+    }
+    .btn {
+      display:inline-flex; align-items:center; gap:.5rem;
+      padding:.6rem 1rem; border:none; border-radius: var(--radius, 10px);
+      cursor:pointer; color:#fff; background:#0f5160;
+      box-shadow:0 4px 10px rgba(15,81,96,.12); transition:.2s;
+    }
+    .btn:hover { transform: translateY(-1px); box-shadow:0 6px 14px rgba(15,81,96,.16); }
+    .btn-green  { background:#0f5160; }
+    .btn-blue   { background:#246b8a; }
+    .btn-red    { background:#c0392b; }
+
+    .form-grid {
+      display:grid; grid-template-columns: 120px 1fr 220px 220px;
+      gap:12px; align-items:end;
+    }
+    .form-grid label { display:block; font-weight:600; margin-bottom:6px; color:#374151; }
+    .form-grid input, .form-grid select {
+      width:100%; padding:10px; border:1px solid #e5e7eb; border-radius:8px; background:#fff;
+    }
+    .form-actions { display:flex; gap:.6rem; justify-content:flex-end; margin-top:.75rem; }
+    .hint { color:#6b7280; font-size:.85rem; margin-top:4px; }
+
+    .table thead th { background:#0f5160; color:#fff; border-bottom:0; }
+    .table tbody tr:hover { background:#f4f8fa; transform:none; }
+  </style>
 </head>
 <body>
-    <header style="background:linear-gradient(180deg,#114b58,#0f5160);color:#fff;padding:18px 0;">
-        <div style="max-width:1200px;margin:0 auto;display:flex;align-items:center;gap:16px;padding:0 18px;">
-            <div class="logos-container">
-                <img src="img/urbano.png" alt="Logo Urbano" class="logo">
-                <img src="img/logo_city.png" alt="Logo City" class="logo">
-            </div>
-            <nav class="main-nav">
-                <a href="index.html">Inicio</a>
-                <a href="reportes_consultar.html">Reportes</a>
-                <a href="usuarios.html" class="active">Usuarios</a>
-                <a href="estadisticas.html">Estadísticas</a>
-                <a href="logout.php" id="logout-link">Cerrar Sesión</a>
-            </nav>
+  <header class="main-header">
+    <div class="header-container">
+      <div class="logo-container">
+        <a href="index.html" class="logo-link header-logos">
+          <img src="img/urbano.png" alt="Urbano" class="logo-img logo-urbano">
+          <img src="img/logo_city.png" alt="CityReport" class="logo-img logo-city">
+        </a>
+      </div>
+      <div class="header-title">
+        <h1>CityReport</h1>
+        <div class="header-subtitle">
+          <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"/>
+          </svg>
+          Gestión de usuarios
         </div>
-    </header>
-
-    <div class="container">
-        <h1>Gestión de Usuarios</h1>
-        
-        <div class="table-container">
-            <table id="usersTable">
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Usuario</th>
-                        <th>Rol</th>
-                        <th>Acciones</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    
-                </tbody>
-            </table>
-        </div>
+      </div>
+      <nav class="main-nav">
+        <a href="index.html" class="nav-link">Inicio</a>
+        <a href="reportes_consultar.html" class="nav-link">Reportes</a>
+        <a href="estadisticas.html" class="nav-link">Estadísticas</a>
+        <a href="usuarios.html" class="nav-link active admin-only">Usuarios</a>
+        <a href="#" id="logout-link" class="nav-link">Cerrar sesión</a>
+      </nav>
     </div>
+  </header>
+
+  <main class="page-wrap">
+    <div class="panel">
+      <div class="title">Gestión de Usuarios</div>
+
+      <div class="btn-bar">
+        <button id="btnAdd" class="btn btn-green">Agregar Usuario</button>
+        <button id="btnEdit" class="btn btn-blue">Editar Usuario</button>
+        <button id="btnDelete" class="btn btn-red">Eliminar Usuario</button>
+      </div>
+
+      <div class="table-responsive">
+        <table class="table" id="usersTable">
+          <thead>
+            <tr>
+              <th style="width:90px">ID</th>
+              <th>Usuario</th>
+              <th style="width:180px">Rol</th>
+            </tr>
+          </thead>
+          <tbody id="usersBody"></tbody>
+        </table>
+      </div>
+
+      <div class="panel" style="margin-top:1rem; padding:1.25rem">
+        <form id="userForm">
+          <div class="form-grid">
+            <div>
+              <label for="fid">ID</label>
+              <input id="fid" type="text" placeholder="(auto)" readonly>
+            </div>
+
+            <div>
+              <label for="fusuario">Usuario</label>
+              <input id="fusuario" type="text" placeholder="usuario_sistema" required>
+            </div>
+
+            <div>
+              <label for="frol">Rol</label>
+              <select id="frol">
+                <option value="1">admin_sys</option>
+                <option value="2">coordinador</option>
+                <option value="3">supervisor</option>
+              </select>
+            </div>
+
+            <div>
+              <label for="fpass">Contraseña</label>
+              <input id="fpass" type="password" placeholder="Dejar vacío para no cambiar">
+              <div class="hint">Para crear usuario es obligatorio.</div>
+            </div>
+          </div>
+
+          <div class="form-actions">
+            <button type="submit" class="btn btn-green" id="btnSave">Guardar</button>
+            <button type="button" class="btn" id="btnCancel" style="background:#64748b">Cancelar</button>
+          </div>
+          <div id="msg" class="hint" style="margin-top:.5rem"></div>
+        </form>
+      </div>
+    </div>
+  </main>
+
+  <footer class="pie">
+    <div class="contenedor">&copy; <span id="year"></span> CityReport — Todos los derechos reservados</div>
+  </footer>
+
+  <script type="module">
+    import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
+
+    const SUPABASE_URL = 'https://ghywlqpirjqsmmlyomaw.supabase.co';
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdoeXdscXBpcmpxc21tbHlvbWF3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTk4MTYwMTYsImV4cCI6MjA3NTM5MjAxNn0.v8fs-lpmWu7cmqM45wKvsFNaHJxcJro4dSxknDWgVGI';
+    const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    const bcrypt = window.dcodeIO?.bcrypt;
+
+    const raw = sessionStorage.getItem('user');
+    if (!raw) location.href = 'login.html';
+    const currentUser = JSON.parse(raw);
+    const roleName = (id) => id == 1 ? 'admin_sys' : id == 2 ? 'coordinador' : 'supervisor';
+    const roleId   = (name) => name === 'admin_sys' ? 1 : name === 'coordinador' ? 2 : 3;
+
+    if (Number(currentUser.id_rol) !== 1) {
+      alert('Solo administradores pueden gestionar usuarios.');
+      location.href = 'index.html';
+    }
+    document.body.setAttribute('data-role', 'admin_sys');
+
+    const tbody   = document.getElementById('usersBody');
+    const fId     = document.getElementById('fid');
+    const fUser   = document.getElementById('fusuario');
+    const fRol    = document.getElementById('frol');
+    const fPass   = document.getElementById('fpass');
+    const form    = document.getElementById('userForm');
+    const msg     = document.getElementById('msg');
+    const btnAdd  = document.getElementById('btnAdd');
+    const btnEdit = document.getElementById('btnEdit');
+    const btnDel  = document.getElementById('btnDelete');
+    const btnCancel = document.getElementById('btnCancel');
+
+    document.getElementById('year').textContent = new Date().getFullYear();
+
+    document.getElementById('logout-link').addEventListener('click', (e) => {
+      e.preventDefault(); sessionStorage.removeItem('user'); location.href = 'login.html';
+    });
+
+    let selected = null;
+
+    function setMessage(text, ok=false) {
+      msg.textContent = text || '';
+      msg.style.color = ok ? 'green' : '#6b7280';
+    }
+
+    function clearForm() {
+      fId.value = '';
+      fUser.value = '';
+      fRol.value = '2'; 
+      fPass.value = '';
+      setMessage('');
+    }
+
+    function selectRow(u, tr) {
+      Array.from(tbody.querySelectorAll('tr')).forEach(r => r.classList.remove('selected'));
+      tr.classList.add('selected');
+      selected = u;
+
+      fId.value   = u.id;
+      fUser.value = u.usuario || '';
+      fRol.value  = u.id_rol || 2;
+      fPass.value = '';
+      setMessage(`Editando: ${u.usuario}`);
+    }
+
+    async function loadUsers() {
+      selected = null;
+      tbody.innerHTML = '';
+      const { data, error } = await supabase.from('usuarios').select('id, usuario, id_rol').order('id', { ascending: true });
+      if (error) { console.error(error); setMessage('Error al cargar usuarios'); return; }
+
+      for (const u of (data || [])) {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td>${u.id}</td>
+          <td>${u.usuario}</td>
+          <td>${roleName(u.id_rol)}</td>
+        `;
+        tr.addEventListener('click', () => selectRow(u, tr));
+        tbody.appendChild(tr);
+      }
+    }
+
+    btnAdd.addEventListener('click', () => {
+      clearForm();
+      fUser.focus();
+      setMessage('Creación de usuario nuevo');
+    });
+
+    btnEdit.addEventListener('click', () => {
+      if (!selected) return setMessage('Selecciona un usuario de la tabla.');
+      fId.value   = selected.id;
+      fUser.value = selected.usuario || '';
+      fRol.value  = selected.id_rol || 2;
+      fPass.value = '';
+      setMessage(`Editando: ${selected.usuario}`);
+    });
+
+    btnDel.addEventListener('click', async () => {
+      if (!selected) return setMessage('Selecciona un usuario de la tabla.');
+      if (!confirm(`¿Eliminar al usuario "${selected.usuario}"?`)) return;
+      const { error } = await supabase.from('usuarios').delete().eq('id', selected.id);
+      if (error) { console.error(error); return setMessage('Error al eliminar'); }
+      setMessage('Usuario eliminado', true);
+      clearForm();
+      await loadUsers();
+    });
+
+    btnCancel.addEventListener('click', () => {
+      clearForm();
+      Array.from(tbody.querySelectorAll('tr')).forEach(r => r.classList.remove('selected'));
+      selected = null;
+    });
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      setMessage('');
+
+      const id    = fId.value.trim();
+      const user  = fUser.value.trim();
+      const idRol = Number(fRol.value || 2);
+      const pass  = fPass.value;
+
+      if (!user) return setMessage('El usuario no puede ir vacío.');
+
+      const payload = { usuario: user, id_rol: idRol };
+
+      if (pass) {
+        if (!bcrypt) return setMessage('Error con verificador de contraseñas.');
+        const salt = bcrypt.genSaltSync(10);
+        payload.contrasena = bcrypt.hashSync(pass, salt); 
+      } else if (!id) {
+        return setMessage('Para crear un usuario debes indicar una contraseña.');
+      }
+
+      try {
+        if (id) {
+          const { error } = await supabase.from('usuarios').update(payload).eq('id', id);
+          if (error) throw error;
+          setMessage('Usuario actualizado', true);
+        } else {
+          const { error } = await supabase.from('usuarios').insert(payload);
+          if (error) throw error;
+          setMessage('Usuario creado', true);
+        }
+        clearForm();
+        await loadUsers();
+      } catch (err) {
+        console.error(err);
+        setMessage('Error al guardar');
+      }
+    });
+
+    await loadUsers();
+  </script>
 </body>
 </html>

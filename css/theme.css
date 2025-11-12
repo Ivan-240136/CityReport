@@ -1,0 +1,96 @@
+/* =========================================================
+   CityReport — Theme Tokens (colores unificados)
+   Paleta: Azul petróleo + Naranja coral (CTA/acento)
+   ========================================================= */
+:root{
+  /* Marca (Azul petróleo) */
+  --ink-500: #154965;   /* HEX correcto del documento */
+  --ink-600: #154965;   /* tono usado en tu header */
+  --ink-700: #154965;   /* tono usado en gradientes */
+  --ink-800: #0d4f56;
+
+  /* Acento (Naranja coral) */
+  --accent-500: #F18F01;
+  --accent-600: #d97f00;
+
+  /* Grises base */
+  --g-25:#fbfdff; --g-50:#f8fbfc; --g-100:#eef6fb; --g-200:#dce6ee;
+  --g-600:#495b67; --g-700:#33424d; --g-900:#122632;
+
+  /* Derivados */
+  --brand-grad-1: var(--ink-600);
+  --brand-grad-2: var(--ink-700);
+}
+
+/* ======= Header / Nav ================================== */
+.main-header{
+  background: linear-gradient(180deg,var(--brand-grad-1),var(--brand-grad-2)) !important;
+  color:#fff;
+}
+.nav-link{ color:#dff3ff; }
+.nav-link:hover,
+.nav-link.active{ background: rgba(255,255,255,.12); color:#fff; }
+
+/* ======= Paneles / Tarjetas ============================ */
+.panel,
+.stat-card,
+.info-card{
+  border: 1px solid color-mix(in srgb, var(--ink-500) 15%, transparent);
+  box-shadow: 0 15px 35px rgba(0,0,0,.10);
+}
+.panel-header::before,
+.stat-card.total::before{
+  background: linear-gradient(90deg,var(--ink-600),var(--ink-700)) !important;
+}
+
+/* ======= Tipografía con marca ========================== */
+.stat-value,
+.info-value,
+.panel-title{ color: var(--ink-600) !important; }
+
+/* ======= Botones (primario/acento) ===================== */
+.btn,
+.btn-primary,
+.btn-action{
+  background: linear-gradient(180deg,var(--ink-700),var(--ink-800)) !important;
+  color:#fff !important;
+  border: none !important;
+}
+.btn:hover,
+.btn-primary:hover,
+.btn-action:hover{
+  filter: brightness(1.05);
+  transform: translateY(-1px);
+}
+
+/* Variante “CTA” (usa la naranja) */
+.btn-cta{
+  background: linear-gradient(180deg,var(--accent-500),var(--accent-600)) !important;
+  color:#fff !important;
+}
+
+/* ======= Badges de estatus (coherentes con tu tabla) === */
+.status-pendiente{ background:#fff3cd; color:#856404; }
+.status-resuelto{  background:#d1e7dd; color:#155724; }
+.status-en-proceso{background:#f0f9ff; color:#0369a1; }
+
+/* ======= Tablas ======================================== */
+.table th{
+  background: var(--ink-600) !important;
+  border-bottom: 2px solid var(--ink-700) !important;
+  color:#fff !important;
+}
+.table tbody tr:hover{ background: var(--g-50) !important; }
+
+/* ======= Stats grid: 2 arriba + 2 abajo en desktop ===== */
+.stats-grid{
+  grid-template-columns: repeat(2, minmax(0,1fr)) !important;
+}
+@media (max-width: 640px){
+  .stats-grid{ grid-template-columns: 1fr !important; }
+}
+
+/* ======= Textos de info (sin paréntesis) ================ */
+#coloniaFreq::after,
+#clasificacionFreq::after,
+#picoDia::after{ content: "" !important; }

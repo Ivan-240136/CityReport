@@ -51,7 +51,6 @@
     }
 
     /* Tabla */
-    /* Tabla mejorada */
     table{width:100%;border-collapse:separate;border-spacing:0;margin-top:12px}
     thead th{
       background:#f8fafd;
@@ -87,26 +86,9 @@
     }
 
     /* Modal */
-    .modal {
-      display:none;
-      position:fixed;
-      top:0;left:0;right:0;bottom:0;
-      background:rgba(0,0,0,0.5);
-      z-index:1000;
-      padding:20px;
-      overflow-y:auto;
-    }
-    .modal-content {
-      background:#fff;
-      max-width:800px;
-      margin:40px auto;
-      border-radius:12px;
-      box-shadow:0 20px 60px rgba(0,0,0,0.2);
-      padding:24px;
-    }
-    .modal.show {
-      display:block;
-    }
+    .modal { display:none; position:fixed; top:0;left:0;right:0;bottom:0; background:rgba(0,0,0,0.5); z-index:1000; padding:20px; overflow-y:auto; }
+    .modal-content { background:#fff; max-width:800px; margin:40px auto; border-radius:12px; box-shadow:0 20px 60px rgba(0,0,0,0.2); padding:24px; }
+    .modal.show { display:block; }
 
     /* Badge estatus */
     .status-badge{display:inline-block;padding:6px 10px;border-radius:8px;font-weight:600;font-size:0.9em}
@@ -117,178 +99,58 @@
     .loading-overlay{position:relative}
     #list-container{min-height:140px;position:relative}
     .loading-overlay .loading {
-      position:absolute;
-      top:0;left:0;right:0;bottom:0;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      background:rgba(255,255,255,0.72);
-      backdrop-filter:blur(4px);
-      z-index:120;
-      border-radius:12px;
-      padding:12px;
-      box-sizing:border-box;
+      position:absolute; top:0;left:0;right:0;bottom:0;
+      display:flex; align-items:center; justify-content:center;
+      background:rgba(255,255,255,0.72); backdrop-filter:blur(4px);
+      z-index:120; border-radius:12px; padding:12px; box-sizing:border-box;
     }
-    .loading-overlay .loading > .loading-inner{display:flex;flex-direction:column;align-items:center;gap:8px}
-    .spinner{
-      width:46px;height:46px;border-radius:50%;border:5px solid rgba(16,66,84,0.08);border-top-color:#0d4f56;animation:spin 0.9s linear infinite;box-shadow:0 6px 18px rgba(13,79,86,0.08);display:block;margin:0 auto
-    }
-    /* Miniaturas */
-    .thumb{width:88px;height:66px;object-fit:cover;border-radius:6px;border:1px solid #e6eef5}
+    .spinner{ width:46px;height:46px;border-radius:50%;border:5px solid rgba(16,66,84,0.08);border-top-color:#0d4f56;animation:spin 0.9s linear infinite;box-shadow:0 6px 18px rgba(13,79,86,0.08);display:block;margin:0 auto }
     @keyframes spin{to{transform:rotate(360deg)}}
 
-    /* Estilos de botones con animación */
+    /* Botones */
     .btn-action {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.5rem;
-      padding: 0.75rem 1.25rem;
-      text-decoration: none;
-      background: linear-gradient(180deg,#0f5160,#0d4f56);
-      color: white;
-      font-weight: 500;
-      border-radius: 8px;
-      transition: all 0.2s ease;
-      box-shadow: 0 4px 6px -1px rgba(13,79,86,0.1);
-      border: none;
-      cursor: pointer;
-      transform: translateY(0);
+      display:inline-flex; align-items:center; gap:.5rem;
+      padding:.75rem 1.25rem; text-decoration:none;
+      background:linear-gradient(180deg,#0f5160,#0d4f56);
+      color:#fff; font-weight:500; border-radius:8px;
+      transition:.2s ease; box-shadow:0 4px 6px -1px rgba(13,79,86,.1);
+      border:none; cursor:pointer;
     }
-    
-    .btn-action:hover {
-      transform: translateY(-1px);
-      box-shadow: 0 6px 8px -1px rgba(13,79,86,0.15);
-    }
-
-    .btn-table {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.5rem;
-      padding: 0.5rem 1rem;
-      background: linear-gradient(180deg,#0f5160,#0d4f56);
-      color: white;
-      font-weight: 500;
-      border-radius: 6px;
-      transition: all 0.2s ease;
-      box-shadow: 0 2px 4px rgba(13,79,86,0.1);
-      border: none;
-      cursor: pointer;
-      transform: translateY(0);
-    }
-
-    .btn-table:hover {
-      transform: translateY(-1px);
-      box-shadow: 0 4px 6px rgba(13,79,86,0.15);
-    }
+    .btn-action:hover { transform:translateY(-1px); box-shadow:0 6px 8px -1px rgba(13,79,86,.15); }
 
     /* Responsivo */
     @media (max-width:720px){
-      .panel{
-        padding: 10px;
-        margin: 10px;
-      }
-      
-      /* Header responsive */
-      header > div {
-        flex-direction: column;
-        padding: 10px !important;
-      }
-      
-      header nav {
-        flex-wrap: wrap;
-        justify-content: center;
-        gap: 8px !important;
-      }
-      
-        /* Logos responsive */
-        div[style*="display:flex;align-items:center;gap:12px"] {
-          padding: 10px !important;
-        }
-      
-        div[style*="display:flex;align-items:center;gap:12px"] a {
-          display: flex;
-          gap: 12px;
-        }
-      
-        div[style*="display:flex;align-items:center;gap:12px"] img {
-          height: 100px !important;
-        }
-      
-        
-      
-      /* Controles de búsqueda */
-      .searchRow {
-        flex-direction: column;
-        gap: 8px;
-      }
-      
-      div[style*="display:flex;justify-content:space-between;align-items:center"] {
-        flex-direction: column;
-        gap: 10px;
-      }
-      
-      div[style*="display:flex;gap:0.75rem;flex:1"] {
-        flex-direction: column;
-        width: 100%;
-      }
-      
-      /* Tabla scrollable */
-      #list-container {
-        overflow-x: auto;
-        -webkit-overflow-scrolling: touch;
-      }
-      
-      table {
-        min-width: 800px;
-      }
-      
-      thead th, tbody td {
-        padding: 8px;
-        font-size: 0.9em;
-      }
-      
-      /* Botones y controles */
-      .btn-action, .btn-table {
-        width: 100%;
-        justify-content: center;
-      }
-      
-      /* Modal responsive */
-      .modal-content {
-        margin: 10px;
-        padding: 15px;
-      }
-      
-      .modal-content div[style*="display:grid"] {
-        grid-template-columns: 1fr !important;
-      }
-      
-      /* Status badges */
-      .status-badge {
-        padding: 4px 8px;
-        font-size: 0.8em;
-      }
-      
-      /* Botones de acción en tabla */
-      td[style*="display:flex"] {
-        flex-direction: column;
-        gap: 4px;
-      }
+      .panel{ padding:10px; margin:10px; }
+      header > div { flex-direction:column; padding:10px !important; }
+      header nav { flex-wrap:wrap; justify-content:center; gap:8px !important; }
+      div[style*="display:flex;align-items:center;gap:12px"] { padding:10px !important; }
+      div[style*="display:flex;align-items:center;gap:12px"] img { height:100px !important; }
+
+      .searchRow { flex-direction:column; gap:8px; }
+      #list-container { overflow-x:auto; -webkit-overflow-scrolling:touch; }
+      table { min-width:800px; }
+      thead th, tbody td { padding:8px; font-size:.9em; }
+      .btn-action{ width:100%; justify-content:center; }
+      .modal-content { margin:10px; padding:15px; }
+      .status-badge { padding:4px 8px; font-size:.8em; }
+      td[style*="display:flex"] { flex-direction:column; gap:4px; }
     }
   </style>
 </head>
 <body>
-  <header style="background:linear-gradient(180deg,#114b58,#0f5160);color:#fff;padding:18px 0;">
+  <header style="background:linear-gradient(180deg,#154965,#154965);color:#fff;padding:18px 0;">
     <div style="max-width:1200px;margin:0 auto;display:flex;align-items:center;gap:16px;padding:0 18px;">
       <div style="display:flex;align-items:center;gap:12px;padding:16px">
-          <a href="index.html" style="display:flex;align-items:center;gap:16px;">
-            <img src="img/urbano.png" alt="Urbano" style="height:140px;background:white;padding:10px;border-radius:10px;transition:transform 0.2s ease;box-shadow:0 3px 6px rgba(0,0,0,0.15)">
-            <img src="img/logo_city.png" alt="CityReport" style="height:138px;background:white;padding:10px;border-radius:10px;transition:transform 0.2s ease;box-shadow:0 3px 6px rgba(0,0,0,0.15)">
-          </a>
+        <a href="index.html" style="display:flex;align-items:center;gap:16px;">
+          <img src="img/urbano.png" alt="Urbano" style="height:140px;background:white;padding:10px;border-radius:10px;box-shadow:0 3px 6px rgba(0,0,0,0.15)">
+          <img src="img/logo_city.png" alt="CityReport" style="height:138px;background:white;padding:10px;border-radius:10px;box-shadow:0 3px 6px rgba(0,0,0,0.15)">
+        </a>
       </div>
       <div style="flex:1;text-align:center">
         <h1 style="margin:0;font-size:26px;">Consultar Reportes</h1>
       </div>
+
+      <!-- NAV con enlace Usuarios (solo admin) -->
       <nav style="display:flex;gap:12px;align-items:center">
         <a href="index.html" style="color:#dff3ff;text-decoration:none;display:flex;align-items:center;gap:4px">
           <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:20px;height:20px">
@@ -296,18 +158,31 @@
           </svg>
           Inicio
         </a>
-        <a href="reportes_consultar.html" style="color:#dff3ff;text-decoration:none;display:flex;align-items:center;gap:4px">
+
+        <a href="reportes_consultar.html" aria-current="page"
+           style="color:#fff;text-decoration:none;display:flex;align-items:center;gap:4px;font-weight:700">
           <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:20px;height:20px">
             <path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"/>
           </svg>
           Reportes
         </a>
+
         <a href="estadisticas.html" style="color:#dff3ff;text-decoration:none;display:flex;align-items:center;gap:4px">
           <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:20px;height:20px">
             <path d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
           </svg>
           Estadísticas
         </a>
+
+        <!-- Solo admins -->
+        <a href="usuarios.html" class="admin-only"
+           style="display:none;color:#dff3ff;text-decoration:none;align-items:center;gap:4px">
+          <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:20px;height:20px">
+            <path d="M17 20h5v-2a4 4 0 00-5-3.87M9 20H4v-2a4 4 0 0 1 5-3.87M12 12a4 4 0 100-8 4 4 0 000 8z"/>
+          </svg>
+          Usuarios
+        </a>
+
         <a href="#" id="logout-link" style="color:#ffd;text-decoration:none;display:flex;align-items:center;gap:4px">
           <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:20px;height:20px">
             <path d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
@@ -318,25 +193,52 @@
     </div>
   </header>
 
+  <!-- Control de rol para mostrar "Usuarios" solo a admin_sys y ocultar "Nuevo Reporte" a quien no tenga permiso -->
+  <script>
+    (function setupRole(){
+      const raw = sessionStorage.getItem('user');
+      if (!raw) { window.location.href = 'login.html'; return; }
+      let u = null; try { u = JSON.parse(raw); } catch {}
+      if (!u || typeof u.id_rol === 'undefined') { window.location.href = 'login.html'; return; }
+
+      const role = Number(u.id_rol);
+      const isAdmin = role === 1;
+      const canCreate = role === 1 || role === 2; // Admin y Coordinador
+
+      // Mostrar enlace Usuarios solo a admin
+      document.querySelectorAll('.admin-only').forEach(el => { el.style.display = isAdmin ? 'flex' : 'none'; });
+
+      // Ocultar botón "Nuevo Reporte" si no puede crear
+      window.addEventListener('DOMContentLoaded', () => {
+        const btnNuevo = document.getElementById('btnNuevoReporte');
+        if (btnNuevo && !canCreate) btnNuevo.style.display = 'none';
+      });
+
+      // Logout
+      document.getElementById('logout-link')?.addEventListener('click', (e)=>{
+        e.preventDefault(); sessionStorage.removeItem('user'); window.location.href='login.html';
+      });
+    })();
+  </script>
+
   <main>
     <div class="panel">
       <div style="margin-bottom:1rem">
-        <a href="index.html" class="btn btn-secondary" 
-           class="btn-action">
+        <a href="index.html" class="btn btn-secondary btn-action">
           <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16">
             <path d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
           </svg>
           Volver
         </a>
       </div>
+
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem">
         <div style="display:flex;gap:0.75rem;flex:1">
           <input type="text" id="q" 
                  placeholder="Buscar por ID o remitente..." 
                  aria-label="Buscar reportes"
                  class="form-control"
-                 style="flex:1;padding:0.75rem 1rem;border-radius:8px;border:1px solid var(--gray-200);
-                        background:white;font-size:0.875rem;color:var(--gray-900);transition:var(--transition)">
+                 style="flex:1;padding:0.75rem 1rem;border-radius:8px;border:1px solid var(--gray-200);background:white;font-size:0.875rem;color:var(--gray-900)">
           <button id="btnSearch" class="btn-action">
             <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
@@ -344,10 +246,8 @@
             Buscar
           </button>
         </div>
-        
-        <a href="reportes_agregar.html" 
-           class="btn btn-primary" 
-           class="btn-action">
+        <!-- Botón que se oculta si el rol no puede crear -->
+        <a id="btnNuevoReporte" href="reportes_agregar.html" class="btn btn-primary btn-action">
           <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <path d="M12 4v16m8-8H4"/>
           </svg>
@@ -357,18 +257,17 @@
 
       <div id="list-container" class="loading-overlay">
         <div id="list"></div>
-        <!-- Overlay de carga -->
         <div id="loading" class="loading" aria-hidden="true" style="display:none">
           <div style="text-align:center">
             <div class="spinner" role="status" aria-hidden="true"></div>
-            <div style="margin-top:8px;color:#123; font-weight:600">Cargando reportes…</div>
+            <div style="margin-top:8px;color:#123;font-weight:600">Cargando reportes…</div>
           </div>
         </div>
       </div>
     </div>
   </main>
 
-  <!-- Modal para detalles del reporte -->
+  <!-- Modal detalles -->
   <div id="reporteModal" class="modal">
     <div class="modal-content">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px">
@@ -379,7 +278,7 @@
     </div>
   </div>
 
-  <!-- Modal para previsualización de imagen -->
+  <!-- Modal imagen -->
   <div id="imageModal" class="modal" onclick="this.classList.remove('show')" style="background:rgba(0,0,0,0.9)">
     <div style="height:100%;display:flex;align-items:center;justify-content:center">
       <img id="modalImage" style="max-width:90%;max-height:90%;object-fit:contain;border-radius:8px" src="" alt="Previsualización">
@@ -390,136 +289,60 @@
     function showReporteDetails(reporte) {
       const modal = document.getElementById('reporteModal');
       const details = document.getElementById('reporteDetails');
-      
-      const fechaCreacion = reporte.creado_en ? new Date(reporte.creado_en).toLocaleDateString('es-MX', {
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric',
-        hour: '2-digit',
-        minute: '2-digit'
-      }) : 'N/A';
 
-      const fechaActualizado = reporte.updated_at ? new Date(reporte.updated_at).toLocaleDateString('es-MX', {
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric',
-        hour: '2-digit',
-        minute: '2-digit'
-      }) : null;
+      const fechaCreacion = reporte.creado_en ? new Date(reporte.creado_en).toLocaleDateString('es-MX',{year:'numeric',month:'long',day:'numeric',hour:'2-digit',minute:'2-digit'}) : 'N/A';
 
       details.innerHTML = `
         <div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(300px, 1fr));gap:20px">
           <div>
             <h3 style="color:#11606a;margin:0 0 16px">Información Principal</h3>
             <dl style="margin:0;display:grid;gap:12px">
-              <div>
-                <dt style="color:#666;font-size:0.9em">ID del Reporte</dt>
-                <dd style="margin:4px 0 0;font-weight:600">${reporte.id}</dd>
-              </div>
-              <div>
-                <dt style="color:#666;font-size:0.9em">Remitente</dt>
-                <dd style="margin:4px 0 0">${reporte.remitente || 'N/A'}</dd>
-              </div>
-              <div>
-                <dt style="color:#666;font-size:0.9em">Clasificación</dt>
-                <dd style="margin:4px 0 0">${reporte.clasificacion_name || 'N/A'}</dd>
-              </div>
-              <div>
-                <dt style="color:#666;font-size:0.9em">Colonia</dt>
-                <dd style="margin:4px 0 0">${reporte.colonia_name || 'N/A'}</dd>
-              </div>
-              <div>
-                <dt style="color:#666;font-size:0.9em">Dirección</dt>
-                <dd style="margin:4px 0 0">${reporte.calle || reporte.direccion || 'N/A'}</dd>
-              </div>
+              <div><dt style="color:#666;font-size:.9em">ID del Reporte</dt><dd style="margin:4px 0 0;font-weight:600">${reporte.id}</dd></div>
+              <div><dt style="color:#666;font-size:.9em">Remitente</dt><dd style="margin:4px 0 0">${reporte.remitente || 'N/A'}</dd></div>
+              <div><dt style="color:#666;font-size:.9em">Clasificación</dt><dd style="margin:4px 0 0">${reporte.clasificacion_name || 'N/A'}</dd></div>
+              <div><dt style="color:#666;font-size:.9em">Colonia</dt><dd style="margin:4px 0 0">${reporte.colonia_name || 'N/A'}</dd></div>
+              <div><dt style="color:#666;font-size:.9em">Dirección</dt><dd style="margin:4px 0 0">${reporte.calle || reporte.direccion || 'N/A'}</dd></div>
             </dl>
           </div>
-          
           <div>
             <h3 style="color:#11606a;margin:0 0 16px">Detalles y Estado</h3>
             <dl style="margin:0;display:grid;gap:12px">
-              <div>
-                <dt style="color:#666;font-size:0.9em">Descripción Detallada</dt>
-                <dd style="margin:4px 0 0">${reporte.detalles || 'Sin detalles'}</dd>
-              </div>
-              <div>
-                <dt style="color:#666;font-size:0.9em">Estado Actual</dt>
-                <dd style="margin:4px 0 0">
-                  <span class="status-badge ${reporte.estatus?.toLowerCase() === 'pendiente' ? 'status-pendiente' : 'status-completado'}">
-                    ${reporte.estatus || 'Pendiente'}
-                  </span>
-                </dd>
-              </div>
+              <div><dt style="color:#666;font-size:.9em">Descripción Detallada</dt><dd style="margin:4px 0 0">${reporte.detalles || 'Sin detalles'}</dd></div>
+              <div><dt style="color:#666;font-size:.9em">Estado Actual</dt><dd style="margin:4px 0 0">
+                <span class="status-badge ${reporte.estatus?.toLowerCase()==='pendiente'?'status-pendiente':'status-completado'}">${reporte.estatus || 'Pendiente'}</span>
+              </dd></div>
             </dl>
           </div>
-
           <div>
             <h3 style="color:#11606a;margin:0 0 16px">Información de Registro</h3>
             <dl style="margin:0;display:grid;gap:12px">
-              <div>
-                <dt style="color:#666;font-size:0.9em">Creado por</dt>
-                <dd style="margin:4px 0 0">${reporte.creador_nombre || reporte.creado_por || 'N/A'}</dd>
-              </div>
-              <div>
-                <dt style="color:#666;font-size:0.9em">Fecha de Creación</dt>
-                <dd style="margin:4px 0 0">${fechaCreacion}</dd>
-              </div>
-              <div>
-                <dt style="color:#666;font-size:0.9em">Última actualización</dt>
-                <dd style="margin:4px 0 0">${reporte.fecha_actualizacion ? new Date(reporte.fecha_actualizacion).toLocaleDateString('es-MX', {
-                  year: 'numeric',
-                  month: 'long',
-                  day: 'numeric',
-                  hour: '2-digit',
-                  minute: '2-digit'
-                }) : 'N/A'}</dd>
-              </div>
+              <div><dt style="color:#666;font-size:.9em">Creado por</dt><dd style="margin:4px 0 0">${reporte.creador_nombre || reporte.creado_por || 'N/A'}</dd></div>
+              <div><dt style="color:#666;font-size:.9em">Fecha de Creación</dt><dd style="margin:4px 0 0">${fechaCreacion}</dd></div>
+              <div><dt style="color:#666;font-size:.9em">Última actualización</dt><dd style="margin:4px 0 0">${reporte.fecha_actualizacion ? new Date(reporte.fecha_actualizacion).toLocaleDateString('es-MX',{year:'numeric',month:'long',day:'numeric',hour:'2-digit',minute:'2-digit'}) : 'N/A'}</dd></div>
             </dl>
           </div>
-
           ${reporte.imagen_url || reporte.imagen ? `
             <div>
               <h3 style="color:#11606a;margin:0 0 16px">Imagen Adjunta</h3>
-              <img src="${reporte.imagen_url || reporte.imagen}" 
-                   alt="Imagen del reporte" 
+              <img src="${reporte.imagen_url || reporte.imagen}" alt="Imagen del reporte"
                    style="width:100%;max-height:200px;object-fit:cover;border-radius:8px;cursor:pointer"
                    onclick="showImagePreview('${reporte.imagen_url || reporte.imagen}')">
-            </div>
-          ` : ''}
+            </div>` : ``}
         </div>
-
         <div style="margin-top:24px;display:flex;gap:12px;justify-content:flex-end">
-          <a href="reportes_editar.html?id=${reporte.id}" 
-             class="btn-primary" 
+          <a href="reportes_editar.html?id=${reporte.id}" class="btn-primary"
              style="text-decoration:none;padding:8px 16px;background:linear-gradient(180deg,#11606a,#0d4f56);color:white;border-radius:6px;font-weight:600">
             Editar Reporte
           </a>
-          <button onclick="closeModal()" 
-                  style="padding:8px 16px;border:1px solid #dce6ee;background:#fff;border-radius:6px;cursor:pointer">
+          <button onclick="closeModal()" style="padding:8px 16px;border:1px solid #dce6ee;background:#fff;border-radius:6px;cursor:pointer">
             Cerrar
           </button>
-        </div>
-      `;
-      
+        </div>`;
       modal.classList.add('show');
     }
-
-    function closeModal() {
-      const modals = document.querySelectorAll('.modal');
-      modals.forEach(modal => modal.classList.remove('show'));
-    }
-
-    function showImagePreview(url) {
-      const modal = document.getElementById('imageModal');
-      const img = document.getElementById('modalImage');
-      img.src = url;
-      modal.classList.add('show');
-    }
-
-    // Cerrar modal con Escape
-    document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape') closeModal();
-    });
+    function closeModal(){ document.querySelectorAll('.modal').forEach(m=>m.classList.remove('show')); }
+    function showImagePreview(url){ const m=document.getElementById('imageModal'); const img=document.getElementById('modalImage'); img.src=url; m.classList.add('show'); }
+    document.addEventListener('keydown',(e)=>{ if(e.key==='Escape') closeModal(); });
   </script>
 
   <script type="module">
@@ -532,164 +355,71 @@
 
     const list = document.getElementById('list');
     const q = document.getElementById('q');
-    const btn = document.getElementById('btnSearch');
 
-    function showLoading(){
-      const l = document.getElementById('loading');
-      if (l){ l.style.display = 'flex'; l.setAttribute('aria-hidden','false'); }
-    }
-    function hideLoading(){
-      const l = document.getElementById('loading');
-      if (l){ l.style.display = 'none'; l.setAttribute('aria-hidden','true'); }
-    }
+    function showLoading(){ const l=document.getElementById('loading'); if(l){ l.style.display='flex'; l.setAttribute('aria-hidden','false'); } }
+    function hideLoading(){ const l=document.getElementById('loading'); if(l){ l.style.display='none'; l.setAttribute('aria-hidden','true'); } }
 
-    async function loadAll() {
-      showLoading();
-      try {
-        const { data, error } = await supabase
-          .from('reportes')
-          .select('*')
-          .order('id', {ascending:false});
-
-        if (error) {
-          console.error('Error de Supabase:', error);
-          list.innerHTML = `<div style="color:crimson;padding:10px;background:#fee;border-radius:4px;">
-            Error cargando datos: ${error.message || 'Error desconocido'}
-          </div>`;
-          return;
-        }
-
-        if (!data || data.length === 0) {
-          list.innerHTML = '<div style="padding:10px;background:#f5f5f5;border-radius:4px;">No hay reportes disponibles</div>';
-          return;
-        }
-
-        // Enriquecer con nombres de clasificación y colonia (si existen FK)
-        const enriched = await enrichWithNames(data);
-        renderTable(enriched);
-      } catch (err) {
-        console.error('Error general:', err);
-        list.innerHTML = `<div style="color:crimson;padding:10px;background:#fee;border-radius:4px;">
-          Error inesperado: ${err.message || 'Error desconocido'}
-        </div>`;
-      }
-      finally{
-        hideLoading();
-      }
-    }
-
-    // Mapea FK a nombres consultando las tablas 'clasificaciones' y 'colonias' cuando sea necesario
-    async function enrichWithNames(rows) {
-      if (!rows || rows.length === 0) return rows;
-
+    async function enrichWithNames(rows){
+      if(!rows || !rows.length) return rows;
       const first = rows[0];
-      // posibles nombres de columna FK que podría tener tu tabla
-      const possibleClasKeys = ['clasificacion_id', 'clasificacion', 'id_clasificacion'];
-      const possibleColKeys = ['colonia_id', 'colonia', 'id_colonia'];
+      const possibleClasKeys = ['clasificacion_id','clasificacion','id_clasificacion'];
+      const possibleColKeys = ['colonia_id','colonia','id_colonia'];
+      const clasKey = possibleClasKeys.find(k=>k in first);
+      const colKey  = possibleColKeys.find(k=>k in first);
 
-      const clasKey = possibleClasKeys.find(k => k in first);
-      const colKey = possibleColKeys.find(k => k in first);
+      const klasIds = clasKey ? [...new Set(rows.map(r=>r[clasKey]).filter(Boolean))] : [];
+      const colIds  = colKey  ? [...new Set(rows.map(r=>r[colKey]).filter(Boolean))] : [];
+      const klasMap={}, colMap={}, userMap={};
 
-      const klasIds = clasKey ? [...new Set(rows.map(r => r[clasKey]).filter(Boolean))] : [];
-      const colIds = colKey ? [...new Set(rows.map(r => r[colKey]).filter(Boolean))] : [];
-
-  const klasMap = {};
-  const colMap = {};
-  const userMap = {};
-
-      try {
-        if (klasIds.length) {
-          const { data: kdata, error: kerr } = await supabase
-            .from('clasificaciones')
-            .select('id, nombre')
-            .in('id', klasIds);
-          if (!kerr && kdata) kdata.forEach(x => klasMap[x.id] = x.nombre);
-          else if (kerr) console.warn('No se pudo obtener clasificaciones:', kerr.message || kerr);
+      try{
+        if(klasIds.length){
+          const {data:kdata}=await supabase.from('clasificaciones').select('id,nombre').in('id',klasIds);
+          (kdata||[]).forEach(x=>klasMap[x.id]=x.nombre);
         }
-
-        if (colIds.length) {
-          const { data: cdata, error: cerr } = await supabase
-            .from('colonias')
-            .select('id, nombre_colonia')
-            .in('id', colIds);
-          if (!cerr && cdata) cdata.forEach(x => colMap[x.id] = x.nombre_colonia || x.nombre);
-          else if (cerr) console.warn('No se pudo obtener colonias:', cerr.message || cerr);
+        if(colIds.length){
+          const {data:cdata}=await supabase.from('colonias').select('id,nombre_colonia').in('id',colIds);
+          (cdata||[]).forEach(x=>colMap[x.id]=x.nombre_colonia||x.nombre);
         }
-        // intentar resolver creado_por a nombre de usuario si existe la columna
-        if ('creado_por' in first || 'creador_id' in first || 'creado_por_id' in first) {
-          const userKey = 'creado_por' in first ? 'creado_por' : ('creador_id' in first ? 'creador_id' : 'creado_por_id');
-          const userIds = [...new Set(rows.map(r => r[userKey]).filter(Boolean))];
-          if (userIds.length) {
-            // tablas comunes donde podría estar el usuario
-            const possibleUserTables = ['backup_usuarios_20250820','usuarios','users'];
-            for (const t of possibleUserTables) {
-              try {
-                const { data: udata, error: uerr } = await supabase
-                  .from(t)
-                  .select('id, usuario, nombre, nombre_completo, email')
-                  .in('id', userIds);
-                if (!uerr && udata && udata.length) {
-                  udata.forEach(u => {
-                    userMap[u.id] = u.nombre || u.nombre_completo || u.usuario || u.email || (`#${u.id}`);
-                  });
-                  break; // si encontramos en una tabla, salimos
-                }
-              } catch (ue){ console.warn('error buscando usuarios en', t, ue); }
-            }
+        const userKey = ('creado_por' in first)?'creado_por':(('creador_id' in first)?'creador_id':(('creado_por_id'in first)?'creado_por_id':null));
+        if(userKey){
+          const userIds=[...new Set(rows.map(r=>r[userKey]).filter(Boolean))];
+          const tables=['backup_usuarios_20250820','usuarios','users'];
+          for(const t of tables){
+            const {data:udata,error:uerr}=await supabase.from(t).select('id,usuario,nombre,nombre_completo,email').in('id',userIds);
+            if(!uerr && udata && udata.length){ udata.forEach(u=>userMap[u.id]=u.nombre||u.nombre_completo||u.usuario||u.email||(`#${u.id}`)); break; }
           }
         }
-      } catch (err) {
-        console.error('Error obteniendo tablas relacionadas:', err);
-      }
+      }catch(e){ console.warn(e); }
 
-      return rows.map(r => ({
+      return rows.map(r=>({
         ...r,
-        clasificacion_name: clasKey ? (typeof r[clasKey] === 'object' ? (r[clasKey].nombre || r[clasKey].nombre_clasificacion) : (klasMap[r[clasKey]] || null)) : null,
-        colonia_name: colKey ? (typeof r[colKey] === 'object' ? (r[colKey].nombre_colonia || r[colKey].nombre) : (colMap[r[colKey]] || null)) : null,
-        creador_nombre: ('creado_por' in r ? (userMap[r.creado_por] || null) : (('creador_id' in r ? (userMap[r.creador_id] || null) : (('creado_por_id' in r ? (userMap[r.creado_por_id] || null) : null)))))
+        clasificacion_name: clasKey ? (typeof r[clasKey]==='object' ? (r[clasKey].nombre||r[clasKey].nombre_clasificacion) : (klasMap[r[clasKey]]||null)) : null,
+        colonia_name:       colKey  ? (typeof r[colKey]==='object'  ? (r[colKey].nombre_colonia||r[colKey].nombre)     : (colMap[r[colKey]]||null))  : null,
+        creador_nombre: ('creado_por' in r ? userMap[r.creado_por] : ('creador_id' in r ? userMap[r.creador_id] : ('creado_por_id' in r ? userMap[r.creado_por_id] : null)))
       }));
     }
 
-    function renderTable(rows) {
-      if (!rows.length) { 
-        list.innerHTML = '<div style="padding:20px;text-align:center;background:#f5f5f5;border-radius:8px;">No hay reportes disponibles</div>'; 
-        return; 
-      }
-      
-      const html = [`
+    function renderTable(rows){
+      if(!rows.length){ list.innerHTML='<div style="padding:20px;text-align:center;background:#f5f5f5;border-radius:8px;">No hay reportes disponibles</div>'; return; }
+      const html=[`
         <table>
           <thead>
             <tr>
-              <th>ID</th>
-              <th>Remitente</th>
-              <th>Clasificación</th>
-              <th>Colonia</th>
-              <th>Calle</th>
-              <th>Fecha de Creación</th>
-              <th>Creado por</th>
-              <th>Estatus</th>
-              <th>Acciones</th>
+              <th>ID</th><th>Remitente</th><th>Clasificación</th><th>Colonia</th>
+              <th>Calle</th><th>Fecha de Creación</th><th>Creado por</th><th>Estatus</th><th>Acciones</th>
             </tr>
-          </thead>
-          <tbody>`];
-      
-      rows.forEach(r => {
-        const fechaCreacion = r.creado_en ? new Date(r.creado_en).toLocaleDateString('es-MX', {
-          year: 'numeric',
-          month: 'long',
-          day: 'numeric',
-          hour: '2-digit',
-          minute: '2-digit'
-        }) : 'N/A';
-        
+          </thead><tbody>`];
+
+      rows.forEach(r=>{
+        const fechaCreacion = r.creado_en ? new Date(r.creado_en).toLocaleDateString('es-MX',{year:'numeric',month:'long',day:'numeric',hour:'2-digit',minute:'2-digit'}) : 'N/A';
         const clas = r.clasificacion_name || 'N/A';
-        const col = r.colonia_name || 'N/A';
+        const col  = r.colonia_name || 'N/A';
         const calle = r.calle || r.direccion || 'N/A';
         const creadoPor = r.creador_nombre || r.creado_por || 'N/A';
         const imagen = r.imagen_url || r.imagen || null;
-        
+
         html.push(`
-          <tr data-id="${r.id}" onclick="showReporteDetails(${JSON.stringify(r).replace(/"/g, '&quot;')})">
+          <tr data-id="${r.id}" onclick="showReporteDetails(${JSON.stringify(r).replace(/"/g,'&quot;')})">
             <td>${r.id || 'N/A'}</td>
             <td>${r.remitente || 'N/A'}</td>
             <td>${clas}</td>
@@ -697,46 +427,17 @@
             <td>${calle}</td>
             <td>${fechaCreacion}</td>
             <td>${creadoPor}</td>
-            <td>
-              <span class="status-badge ${r.estatus?.toLowerCase() === 'pendiente' ? 'status-pendiente' : 'status-completado'}">
-                ${r.estatus || 'Pendiente'}
-              </span>
-            </td>
+            <td><span class="status-badge ${r.estatus?.toLowerCase()==='pendiente'?'status-pendiente':'status-completado'}">${r.estatus || 'Pendiente'}</span></td>
             <td style="display:flex;gap:8px;align-items:center">
-              <button onclick="event.stopPropagation(); showReporteDetails(${JSON.stringify(r).replace(/"/g, '&quot;')})" 
-                      class="btn-table">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
-                  <circle cx="12" cy="12" r="3"></circle>
-                </svg>
-                Ver
-              </button>
-              <button onclick="event.stopPropagation(); window.location.href='reportes_editar.html?id=${r.id}'" 
-                      class="btn-table">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
-                  <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
-                </svg>
-                Editar
-              </button>
-              ${imagen ? 
-                `<button onclick="event.stopPropagation(); showImagePreview('${imagen}')" 
-                         style="background:none;border:none;cursor:pointer;color:#6c2ea9;padding:6px;border-radius:4px;display:flex;align-items:center;gap:4px">
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
-                    <circle cx="8.5" cy="8.5" r="1.5"></circle>
-                    <polyline points="21 15 16 10 5 21"></polyline>
-                  </svg>
-                  Imagen
-                </button>` 
-                : ''}
+              <button onclick="event.stopPropagation(); showReporteDetails(${JSON.stringify(r).replace(/"/g,'&quot;')})" class="btn-action">Ver</button>
+              <button onclick="event.stopPropagation(); window.location.href='reportes_editar.html?id=${r.id}'" class="btn-action">Editar</button>
+              ${imagen ? `<button onclick="event.stopPropagation(); showImagePreview('${imagen}')" class="btn-action" style="background:#174d57">Imagen</button>` : ``}
             </td>
-          </tr>`)
-      })
-  html.push('</tbody></table>');
+          </tr>`);
+      });
+      html.push('</tbody></table>');
       list.innerHTML = html.join('');
 
-      // attach double click
       document.querySelectorAll('#list tbody tr').forEach(tr=>{
         tr.addEventListener('dblclick', ()=>{
           const id = tr.getAttribute('data-id');
@@ -745,60 +446,38 @@
       });
     }
 
-    btn.addEventListener('click', async ()=>{
-      try {
-        const v = q.value.trim();
-        if (!v) { 
-          loadAll(); 
-          return; 
-        }
-        showLoading();
-
-        // Consulta simple que incluye FKs (si existen). Luego enriquecemos los resultados.
-        let query = supabase
-          .from('reportes')
-          .select('*');
-
-        if (/^\d+$/.test(v)) {
-          query = query.eq('id', parseInt(v)).limit(1);
-        } else {
-          query = query.ilike('remitente', `%${v}%`).order('id', {ascending:false});
-        }
-
-        const { data, error } = await query;
-
-        if (error) {
-          console.error('Error de búsqueda:', error);
-          list.innerHTML = `<div style="color:crimson;padding:10px;background:#fee;border-radius:4px;">
-            Error en la búsqueda: ${error.message || 'Error desconocido'}
-          </div>`;
-          return;
-        }
-
-        if (!data || data.length === 0) {
-          list.innerHTML = '<div style="padding:10px;background:#f5f5f5;border-radius:4px;">No se encontraron reportes</div>';
-          return;
-        }
-
+    async function loadAll(){
+      showLoading();
+      try{
+        const {data,error} = await supabase.from('reportes').select('*').order('id',{ascending:false});
+        if(error) throw error;
+        if(!data || !data.length){ list.innerHTML='<div style="padding:10px;background:#f5f5f5;border-radius:4px;">No hay reportes disponibles</div>'; return; }
         const enriched = await enrichWithNames(data);
         renderTable(enriched);
-      } catch (err) {
-        console.error('Error general:', err);
-        list.innerHTML = `<div style="color:crimson;padding:10px;background:#fee;border-radius:4px;">
-          Error inesperado: ${err.message || 'Error desconocido'}
-        </div>`;
-      }
-      finally{
-        hideLoading();
-      }
+      }catch(err){
+        list.innerHTML = `<div style="color:crimson;padding:10px;background:#fee;border-radius:4px;">Error: ${err.message||'desconocido'}</div>`;
+      }finally{ hideLoading(); }
+    }
+
+    document.getElementById('btnSearch').addEventListener('click', async ()=>{
+      const v = q.value.trim();
+      if(!v){ loadAll(); return; }
+      showLoading();
+      try{
+        let query = supabase.from('reportes').select('*');
+        if(/^\d+$/.test(v)){ query = query.eq('id', parseInt(v)).limit(1); }
+        else{ query = query.ilike('remitente', `%${v}%`).order('id',{ascending:false}); }
+        const {data,error} = await query;
+        if(error) throw error;
+        if(!data || !data.length){ list.innerHTML='<div style="padding:10px;background:#f5f5f5;border-radius:4px;">No se encontraron reportes</div>'; return; }
+        const enriched = await enrichWithNames(data);
+        renderTable(enriched);
+      }catch(err){
+        list.innerHTML = `<div style="color:crimson;padding:10px;background:#fee;border-radius:4px;">Error búsqueda: ${err.message||'desconocido'}</div>`;
+      }finally{ hideLoading(); }
     });
 
     loadAll();
-  </script>
-  <script>
-    // attach logout link
-    const logoutLink = document.getElementById('logout-link');
-    if (logoutLink) logoutLink.addEventListener('click', (e)=>{ e.preventDefault(); sessionStorage.removeItem('user'); window.location.href='login.html'; });
   </script>
 </body>
 </html>

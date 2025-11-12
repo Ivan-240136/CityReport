@@ -25,31 +25,55 @@
       <nav class="main-nav">
         <a href="index.html" class="nav-link">
           <svg class="nav-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
           </svg>
           <span>Inicio</span>
         </a>
         <a href="reportes_consultar.html" class="nav-link">
           <svg class="nav-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" />
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"/>
           </svg>
           <span>Reportes</span>
         </a>
         <a href="estadisticas.html" class="nav-link active">
           <svg class="nav-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
           </svg>
           <span>Estadísticas</span>
         </a>
+
+        <!-- Enlace solo para admin -->
+        <a href="usuarios.html" class="nav-link admin-only" style="display:none">
+          <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a4 4 0 00-5-3.87M9 20H4v-2a4 4 0 0 1 5-3.87M12 12a4 4 0 100-8 4 4 0 000 8z"/>
+          </svg>
+          <span>Usuarios</span>
+        </a>
+
         <a href="#" id="logout-link" style="color:#ffd;text-decoration:none;display:flex;align-items:center;gap:4px">
           <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
           </svg>
           <span>Cerrar sesión</span>
         </a>
       </nav>
     </div>
   </header>
+
+  <!-- Control de rol -->
+  <script>
+    (function setupRole(){
+      const raw = sessionStorage.getItem('user');
+      if(!raw){ window.location.href='login.html'; return; }
+      let u=null; try{ u=JSON.parse(raw); }catch(e){}
+      if(!u || typeof u.id_rol === 'undefined'){ window.location.href='login.html'; return; }
+      const isAdmin = Number(u.id_rol) === 1;
+      document.querySelectorAll('.admin-only').forEach(el => { el.style.display = isAdmin ? 'flex' : 'none'; });
+      document.getElementById('logout-link')?.addEventListener('click',(e)=>{
+        e.preventDefault(); sessionStorage.removeItem('user'); window.location.href='login.html';
+      });
+    })();
+  </script>
 
   <main>
     <div class="content-panel">
@@ -143,145 +167,89 @@
     const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdoeXdscXBpcmpxc21tbHlvbWF3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTk4MTYwMTYsImV4cCI6MjA3NTM5MjAxNn0.v8fs-lpmWu7cmqM45wKvsFNaHJxcJro4dSxknDWgVGI';
     const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-    // simple mapa de campos (si cambian en DB, ajustas aquí)
-    const FIELDS = {
-      status: 'estatus',
-      coloniaId: 'id_colonia',
-      clasifId: 'id_clasificacion',
-      date: 'fecha_reporte'
-    };
+    const FIELDS = { status:'estatus', coloniaId:'id_colonia', clasifId:'id_clasificacion', date:'fecha_reporte' };
 
     if (!sessionStorage.getItem('user')) window.location.href='login.html';
 
     document.getElementById('dateNow').textContent = new Date().toLocaleString();
 
     async function loadStats() {
-      // Conteos por estatus
-      const { count: totalCount, error: totalError } =
-        await supabase.from('reportes').select('id', { count: 'exact', head: true });
-
-      const { count: pendCount, error: pendError } =
-        await supabase.from('reportes').select('id', { count: 'exact', head: true }).eq(FIELDS.status,'Pendiente');
-
-      const { count: procCount, error: procError } =
-        await supabase.from('reportes').select('id', { count: 'exact', head: true }).eq(FIELDS.status,'En Proceso');
-
-      const { count: resCount,  error: resError  } =
-        await supabase.from('reportes').select('id', { count: 'exact', head: true }).eq(FIELDS.status,'Resuelto');
-
-      if (totalError || pendError || procError || resError) {
-        console.error('Errores en conteos:', { totalError, pendError, procError, resError });
-      }
+      const { count: totalCount } = await supabase.from('reportes').select('id', { count: 'exact', head: true });
+      const { count: pendCount  } = await supabase.from('reportes').select('id', { count: 'exact', head: true }).eq(FIELDS.status,'Pendiente');
+      const { count: procCount  } = await supabase.from('reportes').select('id', { count: 'exact', head: true }).eq(FIELDS.status,'En Proceso');
+      const { count: resCount   } = await supabase.from('reportes').select('id', { count: 'exact', head: true }).eq(FIELDS.status,'Resuelto');
 
       const totalNum = Number(totalCount || 0);
       const pendNum  = Number(pendCount  || 0);
       const procNum  = Number(procCount  || 0);
       const resNum   = Number(resCount   || 0);
 
-      function setAnimatedValue(elId, value){
-        const el = document.getElementById(elId);
+      const setAnimatedValue = (id, val) => {
+        const el = document.getElementById(id);
         if(!el) return;
-        if(typeof window.animateValue === 'function'){
-          window.animateValue(el, 0, Number(value||0), 1200);
-        } else {
-          el.textContent = value;
-        }
-      }
-
+        if(typeof window.animateValue === 'function') window.animateValue(el, 0, Number(val||0), 1200);
+        else el.textContent = val;
+      };
       setAnimatedValue('totalVal', totalNum);
       setAnimatedValue('pendVal',  pendNum);
       setAnimatedValue('procVal',  procNum);
       setAnimatedValue('resVal',   resNum);
 
-      // Datos para "más frecuente" y "pico semanal"
-      const { data: reports, error: reportsError } = await supabase
+      const { data: reports } = await supabase
         .from('reportes')
         .select(`${FIELDS.coloniaId},${FIELDS.clasifId},${FIELDS.date}`)
         .limit(10000);
 
-      if (reportsError) console.error('Error al obtener reportes:', reportsError);
-      console.debug('Reports fetched:', reports ? reports.length : 0, reportsError || 'ok');
-
-      document.getElementById('coloniaFreq').textContent = '—';
-      document.getElementById('clasificacionFreq').textContent = '—';
-      document.getElementById('picoDia').textContent = '—';
+      document.getElementById('coloniaFreq').textContent       = 'Colonia más frecuente - —';
+      document.getElementById('clasificacionFreq').textContent = 'Reporte más común - —';
+      document.getElementById('picoDia').textContent            = 'Pico de actividad - —';
 
       if (reports && reports.length){
-        const colCount = {};
-        const clasCount = {};
-        const dayCount = {};
-
-        reports.forEach(r => {
+        const colCount={}, clasCount={}, dayCount={};
+        for (const r of reports){
           const colId = r[FIELDS.coloniaId];
           const claId = r[FIELDS.clasifId];
           const fecha = r[FIELDS.date];
-
           if (colId != null) colCount[colId] = (colCount[colId] || 0) + 1;
           if (claId != null) clasCount[claId] = (clasCount[claId] || 0) + 1;
-          if (fecha){
-            const d = new Date(fecha).getDay();
-            dayCount[d] = (dayCount[d] || 0) + 1;
-          }
-        });
+          if (fecha) { const d = new Date(fecha).getDay(); dayCount[d] = (dayCount[d] || 0) + 1; }
+        }
 
-        // Top colonia
         const topCol = Object.entries(colCount).sort((a,b)=>b[1]-a[1])[0];
         if (topCol){
-          const [colId, cnt] = topCol;
-          const { data: col, error: colError } = await supabase
-            .from('colonias')
-            .select('nombre_colonia')
-            .eq('id', Number(colId))
-            .limit(1)
-            .single();
-          if (colError) console.warn('No se pudo obtener nombre de colonia', colError, 'colId=', colId);
+          const [colId] = topCol;
+          const { data: col } = await supabase
+            .from('colonias').select('nombre_colonia').eq('id', Number(colId)).limit(1).single();
+          const nombreCol = col?.nombre_colonia || '—';
           document.getElementById('coloniaFreq').textContent =
-            `${col?.nombre_colonia || '—'} (${cnt} reportes)`;
+            ` ${nombreCol}`;
         }
 
-        // Top clasificación
         const topClas = Object.entries(clasCount).sort((a,b)=>b[1]-a[1])[0];
         if (topClas){
-          const [clasId, cnt] = topClas;
-          const { data: cl, error: clError } = await supabase
-            .from('clasificaciones')
-            .select('nombre')
-            .eq('id', Number(clasId))
-            .limit(1)
-            .single();
-          if (clError) console.warn('No se pudo obtener nombre de clasificación', clError, 'clasId=', clasId);
+          const [clasId] = topClas;
+          const { data: cl } = await supabase
+            .from('clasificaciones').select('nombre').eq('id', Number(clasId)).limit(1).single();
+          const plainName = (cl?.nombre || '—').replace(/\(.*?\)/g, '').trim();
           document.getElementById('clasificacionFreq').textContent =
-            `${cl?.nombre || '—'} (${cnt} reportes)`;
+            ` ${plainName}`;
         }
 
-        // Pico semanal
         const diasSemana = ['Domingo','Lunes','Martes','Miércoles','Jueves','Viernes','Sábado'];
         const topDay = Object.entries(dayCount).sort((a,b)=>b[1]-a[1])[0];
         if (topDay){
           const idx = Number(topDay[0]);
+          const dia = diasSemana[idx] || '—';
           document.getElementById('picoDia').textContent =
-            `${diasSemana[idx] || '—'} (${topDay[1]} reportes)`;
+            ` ${dia}`;
         }
       }
 
-      // Tasa de resolución
       const tasa = totalNum ? Math.round((resNum/totalNum)*100) : 0;
       document.getElementById('tasaRes').textContent = `${tasa}% (${resNum}/${totalNum})`;
     }
 
     loadStats();
-  </script>
-
-  <script>
-    // logout correcto
-    const logoutLink = document.getElementById('logout-link');
-    if (logoutLink) {
-      logoutLink.addEventListener('click', (e) => {
-        e.preventDefault();
-        sessionStorage.removeItem('user');
-        window.location.href='login.html';
-      });
-    }
   </script>
 </body>
 </html>

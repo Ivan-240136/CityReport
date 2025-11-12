@@ -1,0 +1,95 @@
+/* ========= CITYREPORT THEME (Azul Petróleo + Naranja Coral) ========= */
+:root{
+  /* Marca */
+  --brand-ink:#154965;         /* Azul Petróleo */
+  --brand-ink-900:#154965;
+  --brand-accent:#F18C18;      /* Naranja Coral aprox */
+  --brand-accent-900:#b8620f;
+
+}
+
+/* ---------- Base de página ---------- */
+html,body{height:100%}
+body{
+  background: radial-gradient(1100px 500px at 50% -180px, rgba(21,73,101,.25), transparent 40%) var(--bg-soft);
+  color:var(--ink);
+}
+
+/* ---------- Header unificado ---------- */
+.header{
+  background:linear-gradient(180deg,var(--brand-ink-900),var(--brand-ink));
+  color:#fff;
+}
+.header-content{max-width:1200px;margin:0 auto;display:flex;gap:16px;align-items:center;padding:10px 18px}
+.header-title{flex:1;text-align:center}
+.title-with-icon{display:flex;align-items:center;gap:.6rem;margin:0}
+.header-nav{display:flex;gap:10px;align-items:center}
+.header-nav .nav-link{
+  color:#e7f4fb;text-decoration:none;padding:.5rem .75rem;border-radius:12px;transition:.18s;
+}
+.header-nav .nav-link:hover{background:rgba(255,255,255,.10);color:#fff}
+
+/* Logos */
+.logo-link{display:flex;align-items:center;gap:12px;padding:16px}
+.logo-img{height:138px;background:#fff;padding:10px;border-radius:10px;box-shadow:0 3px 6px rgba(0,0,0,.15)}
+/* evita filtros que atenúen el logo */
+.logo-img{filter:none!important;mix-blend-mode:normal!important;opacity:1!important}
+
+/* ---------- Panel / Card ---------- */
+.panel{max-width:1100px;margin:28px auto;padding:18px}
+.card{background:#fff;border:1px solid var(--panel-border);border-radius:var(--radius-lg);box-shadow:var(--shadow)}
+
+/* ---------- Formulario ---------- */
+.form-grid{display:grid;grid-template-columns:repeat(2,minmax(260px,1fr));gap:16px}
+.form-group.full{grid-column:1 / -1}
+.form-control{
+  width:100%;padding:.75rem 1rem;border:1px solid #dde7ee;border-radius:12px;background:#fff;
+  transition:.18s;
+}
+.form-control:focus{outline:none;border-color:#cde8f2;box-shadow:0 0 0 3px rgba(21,73,101,.18)}
+label{font-weight:600}
+
+/* ---------- Botones ---------- */
+.btn{
+  display:inline-flex;align-items:center;gap:.5rem;border:none;border-radius:12px;
+  padding:.75rem 1.15rem;cursor:pointer;text-decoration:none;font-weight:600;transition:.18s
+}
+.btn-primary{
+  background:linear-gradient(180deg,var(--brand-ink),var(--brand-ink-900));color:#fff;
+  box-shadow:0 6px 18px rgba(21,73,101,.18)
+}
+.btn-primary:hover{transform:translateY(-1px);box-shadow:0 10px 22px rgba(21,73,101,.24)}
+.btn-accent{
+  background:linear-gradient(180deg,var(--brand-accent),var(--brand-accent-900));color:#fff;
+  box-shadow:0 6px 18px rgba(241,140,24,.25)
+}
+.btn-accent:hover{transform:translateY(-1px);box-shadow:0 10px 22px rgba(241,140,24,.35)}
+.btn-danger{background:linear-gradient(135deg,#d32f2f,#c62828);color:#fff}
+.btn.sm{padding:.6rem .9rem;border-radius:10px;font-size:.95rem}
+
+/* CTA genérico reutilizable (en tarjetas/acciones) */
+.btn-action{composes: btn btn-primary}
+
+/* ---------- Badges ---------- */
+.status-badge{display:inline-block;padding:6px 10px;border-radius:9999px;font-weight:700;font-size:.9em}
+.status-pendiente{background:#fff3cd;color:#856404}
+.status-completado{background:#d1e7dd;color:#155724}
+
+/* ---------- Utilidades ---------- */
+.flex-between{display:flex;align-items:center;justify-content:space-between}
+.gap-12{gap:12px}.p-16{padding:16px}
+.mb-16{margin-bottom:16px}.mt-12{margin-top:12px}
+.text-danger{color:#dc3545}.muted{color:var(--muted)}
+.icon{width:20px;height:20px}.small{width:18px;height:18px}
+
+/* ---------- Alertas ---------- */
+.alert{padding:12px 14px;border-radius:12px}
+.alert.ok{background:#d4edda;color:#155724;border:1px solid #c3e6cb}
+.alert.error{background:#f8d7da;color:#721c24;border:1px solid #f5c6cb}
+.alert.warn{background:#fff3cd;color:#664d03;border:1px solid #ffecb5}
+
+/* ---------- Responsivo ---------- */
+@media (max-width:720px){
+  .form-grid{grid-template-columns:1fr}
+  .header-content{flex-direction:column}
+}
