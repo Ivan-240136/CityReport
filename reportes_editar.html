@@ -4,8 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>Editar Reporte - CityReport</title>
-  <link rel="stylesheet" href="css/estilos.css">
-  <link rel="stylesheet" href="css/nav.css">
+  <link rel="stylesheet" href="css/cityreport-theme.css">
   <style>
     /* Estilos de botones con animación */
     .btn-action {
@@ -14,7 +13,7 @@
       gap: 0.5rem;
       padding: 0.75rem 1.25rem;
       text-decoration: none;
-      background: linear-gradient(180deg,#0f5160,#0d4f56);
+      background: var(--brand-ink);
       color: white !important;
       font-weight: 500;
       border-radius: 8px;
@@ -454,35 +453,16 @@
       else updates['estatus'] = estado;
 
       try{
-        const form = new URLSearchParams();
-        form.append('id', id);
-        form.append('updates', JSON.stringify(updates));
-        const res = await fetch('api/reportes_update.php', {
-          method: 'POST',
-          body: form
-        });
-
-        const text = await res.text();
-        let j = null;
-        try{ j = text ? JSON.parse(text) : null } catch(parseErr){
-          console.warn('Respuesta no-JSON del servidor al actualizar:', text);
-        }
-
-        if (!res.ok) {
+        const { error } = await supabase.from('reportes').update(updates).eq('id', id);
+        if (error) {
           msg.style.color='crimson';
-          msg.textContent = 'Error al actualizar: ' + (j && j.message ? j.message : res.statusText + (text ? ' - ' + text : ''));
-          console.error('Update HTTP error:', res.status, text, j);
+          msg.textContent = 'Error al actualizar: ' + (error.message || 'Error desconocido');
+          console.error('Update error:', error);
           return;
         }
 
-        if (j && j.error) {
-          msg.style.color='crimson';
-          msg.textContent = 'Error al actualizar: ' + (j.message || 'Error desconocido');
-          console.error('Update error payload:', j);
-          return;
-        }
-
-        msg.style.color='green'; msg.textContent = (j && j.message) ? j.message : 'Actualizado correctamente';
+        msg.style.color='green'; 
+        msg.textContent = 'Actualizado correctamente';
         await loadTable();
       }catch(err){
         console.error(err);

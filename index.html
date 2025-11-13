@@ -5,10 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>CityReport - Inicio</title>
 
-  <link rel="stylesheet" href="css/estilos.css" />
-  <link rel="stylesheet" href="css/nav.css" />
-
-  <link rel="stylesheet" href="css/theme.css" />
+  <link rel="stylesheet" href="css/cityreport-theme.css" />
 </head>
 <body>
   <header class="main-header">
@@ -32,12 +29,39 @@
       </div>
 
       <nav class="main-nav">
-        <a href="index.html" class="nav-link active">Inicio</a>
-        <a href="reportes_consultar.html" class="nav-link">Reportes</a>
-        <a href="estadisticas.html" class="nav-link">Estadísticas</a>
+        <a href="index.html" class="nav-link active" aria-current="page"
+           style="color:#dff3ff;text-decoration:none;display:flex;align-items:center;gap:4px;font-weight:700">
+          <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:20px;height:20px">
+            <path d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
+          </svg>
+          Inicio
+        </a>
+
+        <a href="reportes_consultar.html" class="nav-link"
+           style="color:#dff3ff;text-decoration:none;display:flex;align-items:center;gap:4px">
+          <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:20px;height:20px">
+            <path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"/>
+          </svg>
+          Reportes
+        </a>
+
+        <a href="estadisticas.html" class="nav-link"
+           style="color:#dff3ff;text-decoration:none;display:flex;align-items:center;gap:4px">
+          <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:20px;height:20px">
+            <path d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
+          </svg>
+          Estadísticas
+        </a>
+
         <!-- Solo admin -->
-        <a href="usuarios.html" class="nav-link" data-role-allow="1">Usuarios</a>
-        <a href="#" id="logout-link" class="nav-link">Cerrar sesión</a>
+        <a href="usuarios.html" class="nav-link" data-role-allow="1" style="color:#dff3ff;text-decoration:none;display:flex;align-items:center;gap:4px"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:20px;height:20px"><path d="M17 20h5v-2a4 4 0 00-5-3.87M9 20H4v-2a4 4 0 0 1 5-3.87M12 12a4 4 0 100-8 4 4 0 000 8z"/></svg>Usuarios</a>
+
+        <a href="#" id="logout-link" style="color:#ffd;text-decoration:none;display:flex;align-items:center;gap:4px">
+          <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:20px;height:20px">
+            <path d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
+          </svg>
+          Cerrar sesión
+        </a>
       </nav>
     </div>
   </header>
@@ -173,3 +197,4 @@
   </script>
 </body>
 </html>
+

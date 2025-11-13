@@ -7,7 +7,7 @@ echo "<meta name=viewport content='width=device-width,initial-scale=1'>";
 echo "<style>body{font-family:system-ui,Segoe UI,Arial; padding:20px;background:#f6f8f9;color:#111}h1{margin-top:0}pre{background:#fff;padding:12px;border-radius:6px;box-shadow:0 4px 12px rgba(0,0,0,0.06);}</style>";
 
 $files = [
-    'css/estilos.css',
+    'css/cityreport-theme.css',
     'img/logo_city.png',
 ];
 
