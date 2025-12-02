@@ -269,3 +269,25 @@
     font-size: 1.25rem;
   }
 }
+
+/* Alinear cabecera del panel */
+.panel-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;   /* centra título vs bloque derecho */
+}
+
+/* Bloque fecha + botón */
+.action-buttons {
+  display: flex;
+  align-items: center;   /* centra fecha con el botón */
+  gap: 16px;             /* separación entre fecha e Inicio */
+}
+
+/* Ajuste fino de la fecha */
+.stats-date {
+  display: flex;
+  align-items: center;
+  margin: 0;
+  line-height: 1;        /* evita que se vea “más arriba” */
+}

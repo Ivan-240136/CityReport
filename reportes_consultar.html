@@ -97,7 +97,7 @@
     .status-pendiente{background:#fff3cd;color:#856404}
     .status-completado{background:#d1e7dd;color:#155724}
 
-    /* Loading overlay (estructura básica, sin spinner) */
+    /* Loading overlay (estructura básica, sin spinner interno) */
     .loading-overlay{position:relative}
     #list-container{min-height:140px;position:relative}
 
@@ -274,7 +274,7 @@
 
       <div id="list-container" class="loading-overlay">
         <div id="list"></div>
-        <!-- Loader interno eliminado: aquí antes estaba el otro spinner -->
+        <!-- Loader interno eliminado -->
       </div>
     </div>
   </main>
@@ -368,18 +368,17 @@
     const list = document.getElementById('list');
     const q = document.getElementById('q');
 
+    // >>> Loader global conectado a las operaciones de Supabase <<<
     function showLoading(){
-      const l=document.getElementById('loading');
+      const l = document.getElementById('loader');
       if(l){
-        l.style.display='flex';
-        l.setAttribute('aria-hidden','false');
+        l.style.display = 'flex';
       }
     }
     function hideLoading(){
-      const l=document.getElementById('loading');
+      const l = document.getElementById('loader');
       if(l){
-        l.style.display='none';
-        l.setAttribute('aria-hidden','true');
+        l.style.display = 'none';
       }
     }
 
@@ -514,14 +513,6 @@
     });
 
     loadAll();
-  </script>
-
-  <!-- Ocultar loader global cuando cargue la página -->
-  <script>
-    window.addEventListener("load", () => {
-      const loader = document.getElementById("loader");
-      if (loader) loader.style.display = "none";
-    });
   </script>
 </body>
 </html>

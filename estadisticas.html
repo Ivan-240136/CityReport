@@ -11,30 +11,74 @@
   <link rel="stylesheet" href="css/tables.css">
   <link rel="stylesheet" href="css/modals.css">
   <link rel="stylesheet" href="css/stats.css">
+
+  <!-- Unificación de estilo de botones (mismo azul que Consultar/Agregar) -->
+  <style>
+    :root {
+      /* Azul institucional CityReport */
+      --brand-ink: #154965;
+    }
+
+    /* Botón base */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: .5rem;
+      padding: .75rem 1.25rem;
+      border-radius: 8px;
+      border: none;
+      cursor: pointer;
+      font-weight: 500;
+      text-decoration: none;
+      transition: all .18s ease;
+      font-family: inherit;
+    }
+
+    /* Botón primario unificado */
+    .btn-primary {
+      background: var(--brand-ink) !important;
+      color: #fff !important;
+      box-shadow: 0 4px 6px -1px rgba(13,79,86,.10);
+    }
+
+    /* Hover consistente */
+    .btn-primary:hover,
+    .btn-hover-lift:hover {
+      background: var(--brand-ink) !important;
+      transform: translateY(-1px);
+      box-shadow: 0 6px 8px -1px rgba(13,79,86,.15);
+    }
+
+    .btn svg.nav-icon {
+      width: 18px;
+      height: 18px;
+    }
+  </style>
+
   <script src="js/statsAnimation.js" defer></script>
 </head>
 <body>
   <div id="loader" class="loader-wrapper">
-  <div class="container">
-    <div class="dot"></div>
-    <div class="traveler"></div>
-  </div>
+    <div class="container">
+      <div class="dot"></div>
+      <div class="traveler"></div>
+    </div>
 
-  <svg width="0" height="0" class="svg">
-    <defs>
-      <filter id="uib-jelly-triangle-ooze">
-        <feGaussianBlur in="SourceGraphic" stdDeviation="3.333" result="blur" />
-        <feColorMatrix
-          in="blur"
-          mode="matrix"
-          values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 18 -7"
-          result="ooze"
-        />
-        <feBlend in="SourceGraphic" in2="ooze" />
-      </filter>
-    </defs>
-  </svg>
-</div>
+    <svg width="0" height="0" class="svg">
+      <defs>
+        <filter id="uib-jelly-triangle-ooze">
+          <feGaussianBlur in="SourceGraphic" stdDeviation="3.333" result="blur" />
+          <feColorMatrix
+            in="blur"
+            mode="matrix"
+            values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 18 -7"
+            result="ooze"
+          />
+          <feBlend in="SourceGraphic" in2="ooze" />
+        </filter>
+      </defs>
+    </svg>
+  </div>
 
   <header class="main-header">
     <div class="header-container">
@@ -275,8 +319,10 @@
     loadStats();
   </script>
   <script>
-  window.addEventListener("load", () => {
-    document.getElementById("loader").style.display = "none";
+    window.addEventListener("load", () => { setTimeout(() => {
+      const loader = document.getElementById("loader");
+      if (loader) loader.style.display = "none";
+    }, 2000); //segundos
   });
   </script>
 </body>

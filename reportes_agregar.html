@@ -10,29 +10,79 @@
   <link rel="stylesheet" href="css/forms.css">
   <link rel="stylesheet" href="css/tables.css">
   <link rel="stylesheet" href="css/modals.css">
+
+  <!-- Override de botones para alinear colores con Consultar Reportes -->
+  <style>
+    :root {
+      /* Por si no estuviera definido en cityreport-theme */
+      --brand-ink: #154965;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: .5rem;
+      padding: .75rem 1.25rem;
+      border-radius: 8px;
+      border: none;
+      cursor: pointer;
+      font-weight: 500;
+      text-decoration: none;
+      transition: all .18s ease;
+      font-family: inherit;
+    }
+
+    .btn-primary {
+      background: var(--brand-ink);
+      color: #fff;
+      box-shadow: 0 4px 6px -1px rgba(13, 79, 86, .10);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 8px -1px rgba(13, 79, 86, .15);
+    }
+
+    .btn-secondary {
+      background: #ffffff;
+      color: var(--brand-ink);
+      border: 1px solid rgba(21, 73, 101, 0.2);
+      box-shadow: 0 2px 4px -1px rgba(13, 79, 86, .08);
+    }
+
+    .btn-secondary:hover {
+      background: #f4f8fb;
+    }
+
+    .btn svg.icon {
+      width: 18px;
+      height: 18px;
+    }
+  </style>
 </head>
 <body>
+  <!-- Loader global -->
   <div id="loader" class="loader-wrapper">
-  <div class="container">
-    <div class="dot"></div>
-    <div class="traveler"></div>
-  </div>
+    <div class="container">
+      <div class="dot"></div>
+      <div class="traveler"></div>
+    </div>
 
-  <svg width="0" height="0" class="svg">
-    <defs>
-      <filter id="uib-jelly-triangle-ooze">
-        <feGaussianBlur in="SourceGraphic" stdDeviation="3.333" result="blur" />
-        <feColorMatrix
-          in="blur"
-          mode="matrix"
-          values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 18 -7"
-          result="ooze"
-        />
-        <feBlend in="SourceGraphic" in2="ooze" />
-      </filter>
-    </defs>
-  </svg>
-</div>
+    <svg width="0" height="0" class="svg">
+      <defs>
+        <filter id="uib-jelly-triangle-ooze">
+          <feGaussianBlur in="SourceGraphic" stdDeviation="3.333" result="blur" />
+          <feColorMatrix
+            in="blur"
+            mode="matrix"
+            values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 18 -7"
+            result="ooze"
+          />
+          <feBlend in="SourceGraphic" in2="ooze" />
+        </filter>
+      </defs>
+    </svg>
+  </div>
 
   <header class="header">
     <div class="header-content">
@@ -45,45 +95,51 @@
 
       <div class="header-title">
         <h1 class="title-with-icon">
-          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"/>
-          </svg>
           Agregar Reporte
         </h1>
       </div>
 
       <nav class="main-nav">
-        <a href="index.html" class="nav-link active" aria-current="page"
-           style="color:#dff3ff;text-decoration:none;display:flex;align-items:center;gap:4px;font-weight:700">
+        <a href="index.html" class="nav-link"
+           style="color:#dff3ff;text-decoration:none;display:flex;align-items:center;gap:4px;">
           <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:20px;height:20px">
             <path d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
           </svg>
           Inicio
         </a>
+
         <a href="reportes_consultar.html" class="nav-link"
-           style="color:#dff3ff;text-decoration:none;display:flex;align-items:center;gap:4px">
+           style="color:#dff3ff;text-decoration:none;display:flex;align-items:center;gap:4px;">
           <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:20px;height:20px">
             <path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"/>
           </svg>
           Reportes
         </a>
+
         <a href="estadisticas.html" class="nav-link"
-           style="color:#dff3ff;text-decoration:none;display:flex;align-items:center;gap:4px">
+           style="color:#dff3ff;text-decoration:none;display:flex;align-items:center;gap:4px;">
           <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:20px;height:20px">
             <path d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
           </svg>
           Estadísticas
         </a>
-        <!-- Solo admin -->
-        <a href="usuarios.html" class="nav-link" data-role-allow="1" style="color:#dff3ff;text-decoration:none;display:flex;align-items:center;gap:4px"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:20px;height:20px"><path d="M17 20h5v-2a4 4 0 00-5-3.87M9 20H4v-2a4 4 0 0 1 5-3.87M12 12a4 4 0 100-8 4 4 0 000 8z"/></svg>Usuarios</a>
 
-        <a href="#" id="logout-link" style="color:#ffd;text-decoration:none;display:flex;align-items:center;gap:4px">
+        <!-- Solo admin -->
+        <a href="usuarios.html" class="nav-link" data-role-allow="1"
+           style="color:#dff3ff;text-decoration:none;display:flex;align-items:center;gap:4px;">
           <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:20px;height:20px">
-            <path d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
+            <path d="M17 20h5v-2a4 4 0 00-5-3.87M9 20H4v-2a4 4 0 0 1 5-3.87M12 12a4 4 0 100-8 4 4 0 000 8z"/>
           </svg>
           Usuarios
         </a>
-        <a href="#" id="logout-link" class="nav-link">Cerrar sesión</a>
+
+        <a href="#" id="logout-link"
+           style="color:#ffd;text-decoration:none;display:flex;align-items:center;gap:4px;">
+          <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:20px;height:20px">
+            <path d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
+          </svg>
+          Cerrar sesión
+        </a>
       </nav>
     </div>
   </header>
@@ -95,6 +151,7 @@
       </div>
 
       <div class="mb-16">
+        <!-- CAMBIO: ahora btn-primary para que sea azul lleno -->
         <a href="index.html" class="btn btn-primary">
           <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <path d="M10 19l-7-7 7-7M3 12h18"/>
@@ -222,6 +279,7 @@
       if (!allowedRoles.includes(role)) { blockAccess(); return; }
 
       msg.className=''; msg.textContent='';
+
       const remitente = document.getElementById('remitente').value.trim();
       const clasificacion = document.getElementById('clasificacion').value;
       const colonia = document.getElementById('colonia').value;
@@ -229,11 +287,14 @@
       const detalles = document.getElementById('detalles').value.trim();
 
       if(!remitente || !clasificacion || !colonia){
-        msg.className='alert error'; msg.textContent='Completa los campos obligatorios'; return;
+        msg.className='alert error';
+        msg.textContent='Completa los campos obligatorios';
+        return;
       }
 
       const btn = form.querySelector('button[type="submit"]');
-      btn.disabled = true; btn.textContent = 'Agregando…';
+      btn.disabled = true;
+      btn.textContent = 'Agregando…';
 
       try{
         const now = new Date().toISOString().replace('T',' ').substring(0,19);
@@ -260,7 +321,8 @@
         msg.className='alert error';
         msg.textContent=`Error al agregar reporte: ${error.message||'Desconocido'}`;
       }finally{
-        btn.disabled=false; btn.textContent='Agregar Reporte';
+        btn.disabled=false;
+        btn.textContent='Agregar Reporte';
       }
     });
 
@@ -268,13 +330,20 @@
 
     // Logout
     document.getElementById('logout-link')?.addEventListener('click', e=>{
-      e.preventDefault(); sessionStorage.removeItem('user'); location.href='login.html';
+      e.preventDefault();
+      sessionStorage.removeItem('user');
+      location.href='login.html';
     });
   </script>
+
   <script>
-  window.addEventListener("load", () => {
-    document.getElementById("loader").style.display = "none";
-  });
+    // Ocultar loader global después de 2 segundos
+    window.addEventListener("load", () => {
+      setTimeout(() => {
+        const loader = document.getElementById("loader");
+        if (loader) loader.style.display = "none";
+      }, 2000);
+    });
   </script>
 </body>
 </html>
