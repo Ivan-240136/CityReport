@@ -4,10 +4,31 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>CityReport - Inicio</title>
-
+  <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
+  <link rel="stylesheet" href="css/loader.css">
   <link rel="stylesheet" href="css/cityreport-theme.css" />
 </head>
 <body>
+<div id="loader" class="loader-wrapper">    <!-- Loader -->
+  <div class="container">
+    <div class="dot"></div>
+    <div class="traveler"></div>
+  </div>
+  <svg width="0" height="0" class="svg">
+    <defs>
+      <filter id="uib-jelly-triangle-ooze">
+        <feGaussianBlur in="SourceGraphic" stdDeviation="3.333" result="blur" />
+        <feColorMatrix
+          in="blur"
+          mode="matrix"
+          values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 18 -7"
+          result="ooze"
+        />
+        <feBlend in="SourceGraphic" in2="ooze" />
+      </filter>
+    </defs>
+  </svg>
+</div>
   <header class="main-header">
     <div class="header-container">
       <div class="logo-container">
@@ -216,6 +237,11 @@
     updateDateTime(); 
     setInterval(updateDateTime, 60000);
     loadDashboardStats();
+  </script>
+  <script>
+  window.addEventListener("load", () => {
+    document.getElementById("loader").style.display = "none";
+  });
   </script>
 </body>
 </html>

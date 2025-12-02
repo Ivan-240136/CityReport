@@ -6,6 +6,8 @@
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <title>Consultar Reportes - CityReport</title>
+  <link rel="stylesheet" href="css/loader.css">
+  <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
   <link rel="stylesheet" href="css/cityreport-theme.css">
   <style>
     /* Panel y contenedor */
@@ -95,17 +97,9 @@
     .status-pendiente{background:#fff3cd;color:#856404}
     .status-completado{background:#d1e7dd;color:#155724}
 
-    /* Loading overlay */
+    /* Loading overlay (estructura básica, sin spinner) */
     .loading-overlay{position:relative}
     #list-container{min-height:140px;position:relative}
-    .loading-overlay .loading {
-      position:absolute; top:0;left:0;right:0;bottom:0;
-      display:flex; align-items:center; justify-content:center;
-      background:rgba(255,255,255,0.72); backdrop-filter:blur(4px);
-      z-index:120; border-radius:12px; padding:12px; box-sizing:border-box;
-    }
-    .spinner{ width:46px;height:46px;border-radius:50%;border:5px solid rgba(16,66,84,0.08);border-top-color:#0d4f56;animation:spin 0.9s linear infinite;box-shadow:0 6px 18px rgba(13,79,86,0.08);display:block;margin:0 auto }
-    @keyframes spin{to{transform:rotate(360deg)}}
 
     /* Botones */
     .btn-action {
@@ -138,6 +132,29 @@
   </style>
 </head>
 <body>
+  <!-- Loader global nuevo -->
+  <div id="loader" class="loader-wrapper">
+    <div class="container">
+      <div class="dot"></div>
+      <div class="traveler"></div>
+    </div>
+
+    <svg width="0" height="0" class="svg">
+      <defs>
+        <filter id="uib-jelly-triangle-ooze">
+          <feGaussianBlur in="SourceGraphic" stdDeviation="3.333" result="blur" />
+          <feColorMatrix
+            in="blur"
+            mode="matrix"
+            values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 18 -7"
+            result="ooze"
+          />
+          <feBlend in="SourceGraphic" in2="ooze" />
+        </filter>
+      </defs>
+    </svg>
+  </div>
+
   <header style="background:linear-gradient(180deg,#154965,#154965);color:#fff;padding:18px 0;">
     <div style="max-width:1200px;margin:0 auto;display:flex;align-items:center;gap:16px;padding:0 18px;">
       <div style="display:flex;align-items:center;gap:12px;padding:16px">
@@ -193,7 +210,7 @@
     </div>
   </header>
 
-  <!-- Control de rol para mostrar "Usuarios" solo a admin_sys y ocultar "Nuevo Reporte" a quien no tenga permiso -->
+  <!-- Control de rol -->
   <script>
     (function setupRole(){
       const raw = sessionStorage.getItem('user');
@@ -257,12 +274,7 @@
 
       <div id="list-container" class="loading-overlay">
         <div id="list"></div>
-        <div id="loading" class="loading" aria-hidden="true" style="display:none">
-          <div style="text-align:center">
-            <div class="spinner" role="status" aria-hidden="true"></div>
-            <div style="margin-top:8px;color:#123;font-weight:600">Cargando reportes…</div>
-          </div>
-        </div>
+        <!-- Loader interno eliminado: aquí antes estaba el otro spinner -->
       </div>
     </div>
   </main>
@@ -356,8 +368,20 @@
     const list = document.getElementById('list');
     const q = document.getElementById('q');
 
-    function showLoading(){ const l=document.getElementById('loading'); if(l){ l.style.display='flex'; l.setAttribute('aria-hidden','false'); } }
-    function hideLoading(){ const l=document.getElementById('loading'); if(l){ l.style.display='none'; l.setAttribute('aria-hidden','true'); } }
+    function showLoading(){
+      const l=document.getElementById('loading');
+      if(l){
+        l.style.display='flex';
+        l.setAttribute('aria-hidden','false');
+      }
+    }
+    function hideLoading(){
+      const l=document.getElementById('loading');
+      if(l){
+        l.style.display='none';
+        l.setAttribute('aria-hidden','true');
+      }
+    }
 
     async function enrichWithNames(rows){
       if(!rows || !rows.length) return rows;
@@ -386,7 +410,10 @@
           const tables=['backup_usuarios_20250820','usuarios','users'];
           for(const t of tables){
             const {data:udata,error:uerr}=await supabase.from(t).select('id,usuario,nombre,nombre_completo,email').in('id',userIds);
-            if(!uerr && udata && udata.length){ udata.forEach(u=>userMap[u.id]=u.nombre||u.nombre_completo||u.usuario||u.email||(`#${u.id}`)); break; }
+            if(!uerr && udata && udata.length){
+              udata.forEach(u=>userMap[u.id]=u.nombre||u.nombre_completo||u.usuario||u.email||(`#${u.id}`));
+              break;
+            }
           }
         }
       }catch(e){ console.warn(e); }
@@ -400,7 +427,10 @@
     }
 
     function renderTable(rows){
-      if(!rows.length){ list.innerHTML='<div style="padding:20px;text-align:center;background:#f5f5f5;border-radius:8px;">No hay reportes disponibles</div>'; return; }
+      if(!rows.length){
+        list.innerHTML='<div style="padding:20px;text-align:center;background:#f5f5f5;border-radius:8px;">No hay reportes disponibles</div>';
+        return;
+      }
       const html=[`
         <table>
           <thead>
@@ -451,7 +481,10 @@
       try{
         const {data,error} = await supabase.from('reportes').select('*').order('id',{ascending:false});
         if(error) throw error;
-        if(!data || !data.length){ list.innerHTML='<div style="padding:10px;background:#f5f5f5;border-radius:4px;">No hay reportes disponibles</div>'; return; }
+        if(!data || !data.length){
+          list.innerHTML='<div style="padding:10px;background:#f5f5f5;border-radius:4px;">No hay reportes disponibles</div>';
+          return;
+        }
         const enriched = await enrichWithNames(data);
         renderTable(enriched);
       }catch(err){
@@ -469,7 +502,10 @@
         else{ query = query.ilike('remitente', `%${v}%`).order('id',{ascending:false}); }
         const {data,error} = await query;
         if(error) throw error;
-        if(!data || !data.length){ list.innerHTML='<div style="padding:10px;background:#f5f5f5;border-radius:4px;">No se encontraron reportes</div>'; return; }
+        if(!data || !data.length){
+          list.innerHTML='<div style="padding:10px;background:#f5f5f5;border-radius:4px;">No se encontraron reportes</div>';
+          return;
+        }
         const enriched = await enrichWithNames(data);
         renderTable(enriched);
       }catch(err){
@@ -478,6 +514,14 @@
     });
 
     loadAll();
+  </script>
+
+  <!-- Ocultar loader global cuando cargue la página -->
+  <script>
+    window.addEventListener("load", () => {
+      const loader = document.getElementById("loader");
+      if (loader) loader.style.display = "none";
+    });
   </script>
 </body>
 </html>
