@@ -17,21 +17,57 @@
     .btn-bar {
       display:flex; gap:.75rem; justify-content:center; margin: 0 0 1rem;
     }
-    /* Reuse theme .btn classes; keep small helpers to map existing markup to theme colors */
-    .btn { display:inline-flex; align-items:center; gap:.5rem; padding:.6rem 1rem; border:none; border-radius: var(--radius, 10px); cursor:pointer; color:#fff; background:var(--brand-ink); box-shadow:0 4px 10px rgba(21,73,101,.12); transition:.2s; }
+
+    .btn {
+      display:inline-flex; align-items:center; gap:.5rem;
+      padding:.6rem 1rem; border:none;
+      border-radius: var(--radius, 10px);
+      cursor:pointer; color:#fff;
+      background:var(--brand-ink);
+      box-shadow:0 4px 10px rgba(21,73,101,.12);
+      transition:.2s;
+    }
     .btn:hover { transform: translateY(-1px); box-shadow:0 6px 14px rgba(21,73,101,.16); }
     .btn-green  { background:var(--brand-ink); }
     .btn-blue   { background:var(--brand-ink); }
     .btn-red    { background:#c0392b; }
+    .btn-secondary { background:#6b7280; }
 
-    .form-grid { display:grid; grid-template-columns: 120px 1fr 220px 220px; gap:12px; align-items:end; }
+    /* Grid del formulario: ahora con columna de Estado */
+    .form-grid{
+      display:grid;
+      grid-template-columns: 120px 1fr 180px 150px 260px; /* ID, Usuario, Rol, Estado, Contraseña */
+      gap:12px 18px;
+      align-items:flex-start;
+    }
     .form-grid label { display:block; font-weight:600; margin-bottom:6px; color:#374151; }
-    .form-grid input, .form-grid select { width:100%; padding:10px; border:1px solid #e5e7eb; border-radius:8px; background:#fff; }
+    .form-grid input, .form-grid select {
+      width:100%; padding:10px;
+      border:1px solid #e5e7eb; border-radius:8px; background:#fff;
+    }
     .form-actions { display:flex; gap:.6rem; justify-content:flex-end; margin-top:.75rem; }
     .hint { color:#6b7280; font-size:.85rem; margin-top:4px; }
 
+    /* Tabla */
     .table thead th { background:var(--brand-ink); color:#fff; border-bottom:0; }
     .table tbody tr:hover { background:#f4f8fa; transform:none; }
+
+    /* Badge de estado */
+    .badge-estado{
+      display:inline-block;
+      padding:4px 10px;
+      border-radius:999px;
+      font-size:0.78rem;
+      font-weight:600;
+    }
+    .estado-activo{
+      background:#d1e7dd;
+      color:#0f5132;
+    }
+    .estado-inactivo{
+      background:#f8d7da;
+      color:#842029;
+    }
   </style>
 </head>
 <body>
@@ -113,6 +149,7 @@
               <th style="width:90px">ID</th>
               <th>Usuario</th>
               <th style="width:180px">Rol</th>
+              <th style="width:120px">Estado</th>
             </tr>
           </thead>
           <tbody id="usersBody"></tbody>
@@ -138,6 +175,15 @@
                 <option value="1">admin_sys</option>
                 <option value="2">coordinador</option>
                 <option value="3">supervisor</option>
+              </select>
+            </div>
+
+            <!-- NUEVO CAMPO: ESTADO -->
+            <div>
+              <label for="festado">Estado</label>
+              <select id="festado">
+                <option value="true">Activo</option>
+                <option value="false">Inactivo</option>
               </select>
             </div>
 
@@ -174,7 +220,6 @@
     if (!raw) location.href = 'login.html';
     const currentUser = JSON.parse(raw);
     const roleName = (id) => id == 1 ? 'admin_sys' : id == 2 ? 'coordinador' : 'supervisor';
-    const roleId   = (name) => name === 'admin_sys' ? 1 : name === 'coordinador' ? 2 : 3;
 
     if (Number(currentUser.id_rol) !== 1) {
       alert('Solo administradores pueden gestionar usuarios.');
@@ -182,16 +227,17 @@
     }
     document.body.setAttribute('data-role', 'admin_sys');
 
-    const tbody   = document.getElementById('usersBody');
-    const fId     = document.getElementById('fid');
-    const fUser   = document.getElementById('fusuario');
-    const fRol    = document.getElementById('frol');
-    const fPass   = document.getElementById('fpass');
-    const form    = document.getElementById('userForm');
-    const msg     = document.getElementById('msg');
-    const btnAdd  = document.getElementById('btnAdd');
-    const btnEdit = document.getElementById('btnEdit');
-    const btnDel  = document.getElementById('btnDelete');
+    const tbody     = document.getElementById('usersBody');
+    const fId       = document.getElementById('fid');
+    const fUser     = document.getElementById('fusuario');
+    const fRol      = document.getElementById('frol');
+    const fEstado   = document.getElementById('festado');
+    const fPass     = document.getElementById('fpass');
+    const form      = document.getElementById('userForm');
+    const msg       = document.getElementById('msg');
+    const btnAdd    = document.getElementById('btnAdd');
+    const btnEdit   = document.getElementById('btnEdit');
+    const btnDel    = document.getElementById('btnDelete');
     const btnCancel = document.getElementById('btnCancel');
 
     document.getElementById('year').textContent = new Date().getFullYear();
@@ -210,7 +256,8 @@
     function clearForm() {
       fId.value = '';
       fUser.value = '';
-      fRol.value = '2'; 
+      fRol.value = '2';
+      fEstado.value = 'true';    // por defecto activo
       fPass.value = '';
       setMessage('');
     }
@@ -220,27 +267,43 @@
       tr.classList.add('selected');
       selected = u;
 
-      fId.value   = u.id;
-      fUser.value = u.usuario || '';
-      fRol.value  = u.id_rol || 2;
-      fPass.value = '';
+      fId.value     = u.id;
+      fUser.value   = u.usuario || '';
+      fRol.value    = u.id_rol || 2;
+      fEstado.value = u.estado ? 'true' : 'false';
+      fPass.value   = '';
       setMessage(`Editando: ${u.usuario}`);
     }
 
     async function loadUsers() {
       selected = null;
       tbody.innerHTML = '';
-      const { data, error } = await supabase.from('usuarios').select('id, usuario, id_rol').order('id', { ascending: true });
-      if (error) { console.error(error); setMessage('Error al cargar usuarios'); return; }
+
+      const { data, error } = await supabase
+        .from('usuarios')
+        .select('id, usuario, id_rol, estado')
+        .order('id', { ascending: true });
+
+      if (error) {
+        console.error(error);
+        setMessage('Error al cargar usuarios');
+        return;
+      }
 
       for (const u of (data || [])) {
         const tr = document.createElement('tr');
+        const activo = u.estado === null ? true : !!u.estado; // por si hay null
         tr.innerHTML = `
           <td>${u.id}</td>
           <td>${u.usuario}</td>
           <td>${roleName(u.id_rol)}</td>
+          <td>
+            <span class="badge-estado ${activo ? 'estado-activo' : 'estado-inactivo'}">
+              ${activo ? 'Activo' : 'Inactivo'}
+            </span>
+          </td>
         `;
-        tr.addEventListener('click', () => selectRow(u, tr));
+        tr.addEventListener('click', () => selectRow({...u, estado: activo}, tr));
         tbody.appendChild(tr);
       }
     }
@@ -253,18 +316,23 @@
 
     btnEdit.addEventListener('click', () => {
       if (!selected) return setMessage('Selecciona un usuario de la tabla.');
-      fId.value   = selected.id;
-      fUser.value = selected.usuario || '';
-      fRol.value  = selected.id_rol || 2;
-      fPass.value = '';
+      fId.value     = selected.id;
+      fUser.value   = selected.usuario || '';
+      fRol.value    = selected.id_rol || 2;
+      fEstado.value = selected.estado ? 'true' : 'false';
+      fPass.value   = '';
       setMessage(`Editando: ${selected.usuario}`);
     });
 
     btnDel.addEventListener('click', async () => {
       if (!selected) return setMessage('Selecciona un usuario de la tabla.');
       if (!confirm(`¿Eliminar al usuario "${selected.usuario}"?`)) return;
+
       const { error } = await supabase.from('usuarios').delete().eq('id', selected.id);
-      if (error) { console.error(error); return setMessage('Error al eliminar'); }
+      if (error) {
+        console.error(error);
+        return setMessage('Error al eliminar');
+      }
       setMessage('Usuario eliminado', true);
       clearForm();
       await loadUsers();
@@ -280,19 +348,24 @@
       e.preventDefault();
       setMessage('');
 
-      const id    = fId.value.trim();
-      const user  = fUser.value.trim();
-      const idRol = Number(fRol.value || 2);
-      const pass  = fPass.value;
+      const id     = fId.value.trim();
+      const user   = fUser.value.trim();
+      const idRol  = Number(fRol.value || 2);
+      const pass   = fPass.value;
+      const estado = fEstado.value === 'true';
 
       if (!user) return setMessage('El usuario no puede ir vacío.');
 
-      const payload = { usuario: user, id_rol: idRol };
+      const payload = {
+        usuario: user,
+        id_rol: idRol,
+        estado: estado
+      };
 
       if (pass) {
         if (!bcrypt) return setMessage('Error con verificador de contraseñas.');
         const salt = bcrypt.genSaltSync(10);
-        payload.contrasena = bcrypt.hashSync(pass, salt); 
+        payload.contrasena = bcrypt.hashSync(pass, salt);
       } else if (!id) {
         return setMessage('Para crear un usuario debes indicar una contraseña.');
       }

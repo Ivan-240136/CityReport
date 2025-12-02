@@ -5,33 +5,120 @@
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>Editar Reporte - CityReport</title>
   <link rel="stylesheet" href="css/cityreport-theme.css">
+
   <style>
-    /* Estilos de botones con animación */
+    /* Botones principales con animación */
     .btn-action {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.5rem;
-      padding: 0.75rem 1.25rem;
-      text-decoration: none;
-      background: var(--brand-ink);
-      color: white !important;
-      font-weight: 500;
-      border-radius: 8px;
-      transition: all 0.2s ease;
-      box-shadow: 0 4px 6px -1px rgba(13,79,86,0.1);
-      border: none;
-      cursor: pointer;
-      transform: translateY(0);
+      display:inline-flex;
+      align-items:center;
+      gap:0.5rem;
+      padding:0.75rem 1.25rem;
+      text-decoration:none;
+      background:var(--brand-ink);
+      color:#fff !important;
+      font-weight:500;
+      border-radius:8px;
+      transition:all 0.2s ease;
+      box-shadow:0 4px 6px -1px rgba(13,79,86,0.1);
+      border:none;
+      cursor:pointer;
+      transform:translateY(0);
     }
-    
-    .btn-action:hover {
-      transform: translateY(-1px);
-      box-shadow: 0 6px 8px -1px rgba(13,79,86,0.15);
+    .btn-action:hover{
+      transform:translateY(-1px);
+      box-shadow:0 6px 8px -1px rgba(13,79,86,0.15);
+    }
+    .btn-action .icon{
+      width:16px;
+      height:16px;
     }
 
-    .btn-action .icon {
-      width: 16px;
-      height: 16px;
+    /* CONTENEDOR DE BÚSQUEDA */
+    .search-container{
+      margin-top:1.5rem;
+      background:#ffffff;
+      padding:16px 20px 14px;
+      border-radius:12px;
+      box-shadow:0 10px 30px rgba(21,40,60,0.06);
+    }
+    .search-input-group{
+      display:flex;
+      gap:.75rem;
+      align-items:stretch;
+    }
+    .search-input{
+      flex:1;
+      border-radius:999px;
+      border:1px solid #dbe5ef;
+      padding:0.75rem 1.1rem;
+      font-size:.9rem;
+      background:#f9fcff;
+      color:#1f2933;
+      transition:.18s ease;
+    }
+    .search-input::placeholder{
+      color:#9aa7b5;
+    }
+    .search-input:focus{
+      outline:none;
+      border-color:#11606a;
+      box-shadow:0 0 0 2px rgba(17,96,106,.15);
+      background:#ffffff;
+    }
+    .search-container .btn.btn-primary{
+      border-radius:999px;
+      display:inline-flex;
+      align-items:center;
+      gap:.35rem;
+      padding:0.7rem 1.2rem;
+      font-weight:600;
+    }
+
+    /* TABLA DE RESULTADOS DE BÚSQUEDA */
+    .results-table thead th{
+      background:#f8fafc;
+      font-weight:600;
+      color:#1f2933;
+      padding:10px 12px;
+      border-bottom:2px solid #edf2f7;
+      text-align:left;
+      font-size:.9rem;
+    }
+    .results-table tbody td{
+      padding:10px 12px;
+      border-bottom:1px solid #edf2f7;
+      font-size:.9rem;
+      color:#222;
+      vertical-align:middle;
+    }
+    .results-table tbody tr:hover{
+      background:#f5fafc;
+    }
+
+    /* Botón "Seleccionar" */
+    .btn-select{
+      display:inline-flex;
+      align-items:center;
+      gap:0.35rem;
+      padding:0.45rem 0.9rem;
+      border-radius:999px;
+      border:1px solid rgba(15,81,96,.18);
+      background:#f5fbff;
+      color:#0f5160;
+      font-size:.85rem;
+      font-weight:500;
+      cursor:pointer;
+      transition:.18s ease;
+    }
+    .btn-select:hover{
+      background:#0f5160;
+      color:#fff;
+      border-color:#0f5160;
+      box-shadow:0 4px 10px rgba(15,81,96,.22);
+    }
+    .btn-select .icon.small{
+      width:14px;
+      height:14px;
     }
   </style>
 </head>
@@ -40,12 +127,15 @@
     <div style="max-width:1200px;margin:0 auto;display:flex;align-items:center;gap:16px;padding:0 18px;">
       <div style="display:flex;align-items:center;gap:12px;padding:16px">
         <a href="index.html">
-          <img src="img/urbano.png" alt="Urbano" style="height:140px;background:white;padding:10px;border-radius:10px;transition:transform 0.2s ease;box-shadow:0 3px 6px rgba(0,0,0,0.15)">
+          <img src="img/urbano.png" alt="Urbano"
+               style="height:140px;background:white;padding:10px;border-radius:10px;transition:transform 0.2s ease;box-shadow:0 3px 6px rgba(0,0,0,0.15)">
         </a>
         <a href="index.html">
-          <img src="img/logo_city.png" alt="CityReport" style="height:138px;background:white;padding:10px;border-radius:10px;transition:transform 0.2s ease;box-shadow:0 3px 6px rgba(0,0,0,0.15)">
+          <img src="img/logo_city.png" alt="CityReport"
+               style="height:138px;background:white;padding:10px;border-radius:10px;transition:transform 0.2s ease;box-shadow:0 3px 6px rgba(0,0,0,0.15)">
         </a>
       </div>
+
       <div style="flex:1;text-align:center;">
         <h1 style="margin:0;font-size:26px;">Editar Reporte</h1>
         <div style="color:#dff3ff;margin-top:4px;font-size:14px;display:flex;align-items:center;justify-content:center;gap:6px;">
@@ -55,34 +145,54 @@
           Panel de edición
         </div>
       </div>
+
       <nav class="main-nav">
         <a href="index.html" class="nav-link">
           <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
           </svg>
           <span>Inicio</span>
         </a>
+
         <a href="reportes_consultar.html" class="nav-link">
           <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" />
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" />
           </svg>
           <span>Reportes</span>
         </a>
+
         <a href="estadisticas.html" class="nav-link">
           <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
           </svg>
           <span>Estadísticas</span>
         </a>
-        <a href="#" id="logout-link" style="color:#ffd;text-decoration:none;display:flex;align-items:center;gap:4px">
+
+        <!-- Enlace Usuarios: sólo admin, se muestra vía JS -->
+        <a href="usuarios.html"
+           class="nav-link admin-only"
+           style="display:none;align-items:center;gap:4px;color:#dff3ff;text-decoration:none">
+          <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:20px;height:20px">
+            <path d="M17 20h5v-2a4 4 0 00-5-3.87M9 20H4v-2a4 4 0 0 1 5-3.87M12 12a4 4 0 100-8 4 4 0 000 8z"/>
+          </svg>
+          <span>Usuarios</span>
+        </a>
+
+        <a href="#" id="logout-link"
+           style="color:#ffd;text-decoration:none;display:flex;align-items:center;gap:4px">
           <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
           </svg>
           <span>Cerrar sesión</span>
         </a>
       </nav>
     </div>
   </header>
+
   <main>
     <div class="content-panel">
       <div class="panel-header">
@@ -94,7 +204,7 @@
         </div>
         <div class="action-buttons">
           <a href="#" id="back-link" class="btn-action">
-            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16">
+            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <path d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
             </svg>
             Volver
@@ -114,9 +224,11 @@
         </div>
       </div>
 
-      <div class="search-container">
+      <!-- PANEL DE BÚSQUEDA -->
+      <div id="searchPanel" class="search-container">
         <div class="search-input-group">
-          <input id="searchInput" class="search-input" type="text" placeholder="Buscar por ID o remitente...">
+          <input id="searchInput" class="search-input" type="text"
+                 placeholder="Buscar por ID o remitente...">
           <button id="searchBtn" class="btn btn-primary btn-hover-lift" type="button">
             <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <path d="M21 21l-4.35-4.35"/>
@@ -125,6 +237,7 @@
             Buscar
           </button>
         </div>
+
         <div id="resultsTable" class="table-container" style="margin-top:1rem;display:none">
           <table class="results-table" style="width:100%">
             <thead>
@@ -140,7 +253,9 @@
         </div>
       </div>
 
-      <div id="summary" style="border-left:4px solid #11606a;padding:12px;margin-bottom:12px;background:#fbfdff;border-radius:6px;display:none">
+      <!-- RESUMEN DEL REPORTE SELECCIONADO -->
+      <div id="summary"
+           style="border-left:4px solid #11606a;padding:12px;margin-bottom:12px;background:#fbfdff;border-radius:6px;display:none">
         <div style="display:flex;justify-content:space-between;align-items:center">
           <div>
             <div style="font-size:12px;color:#6b7b84">ID</div>
@@ -157,23 +272,27 @@
         </div>
       </div>
 
-  <form id="formEdit" style="display:none;background:white;padding:24px;border-radius:12px;box-shadow:0 4px 12px rgba(0,0,0,0.05)">
+      <!-- FORMULARIO DE EDICIÓN -->
+      <form id="formEdit"
+            style="display:none;background:white;padding:24px;border-radius:12px;box-shadow:0 4px 12px rgba(0,0,0,0.05)">
         <input type="hidden" id="rid">
-        
+
         <div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(300px, 1fr));gap:20px;margin-bottom:24px">
           <div class="form-group">
             <label style="display:block;margin-bottom:8px;color:#374151;font-weight:500">
               Remitente
-              <input id="remitente" style="width:100%;padding:10px;border:1px solid #e5e7eb;border-radius:8px;
-                    margin-top:4px;font-size:14px;background:#f9fafb;transition:all 0.2s">
+              <input id="remitente"
+                     style="width:100%;padding:10px;border:1px solid #e5e7eb;border-radius:8px;
+                            margin-top:4px;font-size:14px;background:#f9fafb;transition:all 0.2s">
             </label>
           </div>
 
           <div class="form-group">
             <label style="display:block;margin-bottom:8px;color:#374151;font-weight:500">
               Clasificación
-              <select id="clasificacion" style="width:100%;padding:10px;border:1px solid #e5e7eb;border-radius:8px;
-                    margin-top:4px;font-size:14px;background:#f9fafb;transition:all 0.2s">
+              <select id="clasificacion"
+                      style="width:100%;padding:10px;border:1px solid #e5e7eb;border-radius:8px;
+                             margin-top:4px;font-size:14px;background:#f9fafb;transition:all 0.2s">
               </select>
             </label>
           </div>
@@ -181,8 +300,9 @@
           <div class="form-group">
             <label style="display:block;margin-bottom:8px;color:#374151;font-weight:500">
               Colonia
-              <select id="colonia" style="width:100%;padding:10px;border:1px solid #e5e7eb;border-radius:8px;
-                    margin-top:4px;font-size:14px;background:#f9fafb;transition:all 0.2s">
+              <select id="colonia"
+                      style="width:100%;padding:10px;border:1px solid #e5e7eb;border-radius:8px;
+                             margin-top:4px;font-size:14px;background:#f9fafb;transition:all 0.2s">
               </select>
             </label>
           </div>
@@ -190,8 +310,9 @@
           <div class="form-group">
             <label style="display:block;margin-bottom:8px;color:#374151;font-weight:500">
               Calle
-              <input id="calle" style="width:100%;padding:10px;border:1px solid #e5e7eb;border-radius:8px;
-                    margin-top:4px;font-size:14px;background:#f9fafb;transition:all 0.2s">
+              <input id="calle"
+                     style="width:100%;padding:10px;border:1px solid #e5e7eb;border-radius:8px;
+                            margin-top:4px;font-size:14px;background:#f9fafb;transition:all 0.2s">
             </label>
           </div>
         </div>
@@ -199,16 +320,18 @@
         <div style="margin-bottom:20px">
           <label style="display:block;margin-bottom:8px;color:#374151;font-weight:500">
             Detalles del reporte
-            <textarea id="detalles" rows="4" style="width:100%;padding:10px;border:1px solid #e5e7eb;border-radius:8px;
-                    margin-top:4px;font-size:14px;background:#f9fafb;transition:all 0.2s;resize:vertical"></textarea>
+            <textarea id="detalles" rows="4"
+                      style="width:100%;padding:10px;border:1px solid #e5e7eb;border-radius:8px;
+                             margin-top:4px;font-size:14px;background:#f9fafb;transition:all 0.2s;resize:vertical"></textarea>
           </label>
         </div>
 
         <div style="margin-bottom:24px">
           <label style="display:block;margin-bottom:8px;color:#374151;font-weight:500">
             Estado
-            <select id="estado" style="width:100%;max-width:200px;padding:10px;border:1px solid #e5e7eb;border-radius:8px;
-                    margin-top:4px;font-size:14px;background:#f9fafb;transition:all 0.2s">
+            <select id="estado"
+                    style="width:100%;max-width:200px;padding:10px;border:1px solid #e5e7eb;border-radius:8px;
+                           margin-top:4px;font-size:14px;background:#f9fafb;transition:all 0.2s">
               <option>Pendiente</option>
               <option>En Proceso</option>
               <option>Resuelto</option>
@@ -233,80 +356,99 @@
           </button>
         </div>
       </form>
-        <div id="evidencias" style="margin-top:18px;display:none">
-          <h3 style="margin:0 0 8px;color:#11606a">Evidencias</h3>
-          <div id="evidenciasList" style="display:flex;gap:12px;flex-wrap:wrap"></div>
-        </div>
+
+      <div id="evidencias" style="margin-top:18px;display:none">
+        <h3 style="margin:0 0 8px;color:#11606a">Evidencias</h3>
+        <div id="evidenciasList" style="display:flex;gap:12px;flex-wrap:wrap"></div>
+      </div>
+
       <div id="msg" style="margin-top:10px;color:crimson"></div>
     </div>
   </main>
 
   <script type="module">
     import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
+
     const SUPABASE_URL = 'https://ghywlqpirjqsmmlyomaw.supabase.co';
     const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdoeXdscXBpcmpxc21tbHlvbWF3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTk4MTYwMTYsImV4cCI6MjA3NTM5MjAxNn0.v8fs-lpmWu7cmqM45wKvsFNaHJxcJro4dSxknDWgVGI';
     const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-    if (!sessionStorage.getItem('user')) window.location.href='login.html';
+    // Protección de ruta
+    if (!sessionStorage.getItem('user')) window.location.href = 'login.html';
 
     const params = new URLSearchParams(location.search);
     const idParam = params.get('id');
 
-    const tableWrap = document.getElementById('tableWrap');
     const form = document.getElementById('formEdit');
-    const msg = document.getElementById('msg');
+    const msg  = document.getElementById('msg');
 
     const columnKeys = { clas: null, col: null, status: null };
 
     async function loadOptions(){
       const { data: clas } = await supabase.from('clasificaciones').select('id,nombre').order('nombre');
       const { data: cols } = await supabase.from('colonias').select('id,nombre_colonia').order('nombre_colonia');
-      document.getElementById('clasificacion').innerHTML = (clas||[]).map(c=>`<option value="${c.id}">${c.nombre}</option>`).join('');
-      document.getElementById('colonia').innerHTML = (cols||[]).map(c=>`<option value="${c.id}">${c.nombre_colonia}</option>`).join('');
+
+      document.getElementById('clasificacion').innerHTML =
+        (clas || []).map(c => `<option value="${c.id}">${c.nombre}</option>`).join('');
+
+      document.getElementById('colonia').innerHTML =
+        (cols || []).map(c => `<option value="${c.id}">${c.nombre_colonia}</option>`).join('');
+
       window._clasMap = {};
-      (clas||[]).forEach(c=>{ window._clasMap[c.id] = c.nombre; });
+      (clas || []).forEach(c => { window._clasMap[c.id] = c.nombre; });
+
       window._colsMap = {};
-      (cols||[]).forEach(c=>{ window._colsMap[c.id] = c.nombre_colonia; });
+      (cols || []).forEach(c => { window._colsMap[c.id] = c.nombre_colonia; });
     }
 
     async function loadTable(){
-      const panel = document.getElementById('searchPanel');
-      const resultsTable = document.getElementById('resultsTable');
+      const panel         = document.getElementById('searchPanel');
+      const resultsTable  = document.getElementById('resultsTable');
       const searchResults = document.getElementById('searchResults');
-      const searchInput = document.getElementById('searchInput');
-      const searchBtn = document.getElementById('searchBtn');
+      const searchInput   = document.getElementById('searchInput');
+      const searchBtn     = document.getElementById('searchBtn');
 
       function displayResults(results){
-        if(!results || !results.length){
-          searchResults.innerHTML = `<tr><td colspan="4" style="padding:12px;text-align:center;color:#666">No se encontraron reportes</td></tr>`;
+        if (!results || !results.length){
+          searchResults.innerHTML =
+            `<tr><td colspan="4" style="padding:12px;text-align:center;color:#666">No se encontraron reportes</td></tr>`;
           resultsTable.style.display = 'block';
           return;
         }
-        searchResults.innerHTML = results.map(r=>{
+
+        searchResults.innerHTML = results.map(r => {
           const nombre = r.remitente || 'N/A';
-          const clasField = r.clasificacion_nombre || r.clasificacion || r.id_clasificacion || r.clasificacion_id || r.id_clas || '';
+          const clasField = r.clasificacion_nombre || r.clasificacion || r.id_clasificacion ||
+                            r.clasificacion_id || r.id_clas || '';
+
           let clas = '';
-          if(clasField === null || clasField === undefined) clas = '';
-          else if(typeof clasField === 'number' || /^\d+$/.test(String(clasField))) {
-            clas = (window._clasMap && window._clasMap[clasField]) ? window._clasMap[clasField] : String(clasField);
+          if (clasField === null || clasField === undefined) {
+            clas = '';
+          } else if (typeof clasField === 'number' || /^\d+$/.test(String(clasField))) {
+            clas = (window._clasMap && window._clasMap[clasField])
+              ? window._clasMap[clasField]
+              : String(clasField);
           } else {
             clas = String(clasField);
           }
+
           return `
             <tr style="border-bottom:1px solid #f1f6f9">
               <td style="padding:8px">${r.id}</td>
               <td style="padding:8px">${nombre}</td>
               <td style="padding:8px">${clas}</td>
-            <td style="padding:8px">
-              <button class="btn-select" onclick="window.editarReporte('${r.id}')">
-                <svg class="icon small" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden>
-                  <path d="M3 21v-3.75L14.81 5.44a1.5 1.5 0 0 1 2.12 0l1.63 1.63a1.5 1.5 0 0 1 0 2.12L6.75 21H3z" stroke="#0f5160" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"/>
-                </svg>
-                Seleccionar
-              </button>
-            </td>
-            </tr>`
+              <td style="padding:8px">
+                <button class="btn-select" onclick="window.editarReporte('${r.id}')">
+                  <svg class="icon small" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden>
+                    <path d="M3 21v-3.75L14.81 5.44a1.5 1.5 0 0 1 2.12 0l1.63 1.63a1.5 1.5 0 0 1 0 2.12L6.75 21H3z"
+                          stroke="#0f5160" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                  Seleccionar
+                </button>
+              </td>
+            </tr>`;
         }).join('');
+
         resultsTable.style.display = 'block';
       }
 
@@ -314,113 +456,175 @@
         const q = searchInput.value.trim();
         try{
           let dbq = supabase.from('reportes').select('*');
-          if(!q){
+
+          if (!q){
             const { data, error } = await dbq.order('id', { ascending:false }).limit(10);
-            if(error) throw error;
+            if (error) throw error;
             displayResults(data || []);
             return;
           }
-          if(/^\d+$/.test(q)) dbq = dbq.eq('id', q);
+
+          if (/^\d+$/.test(q)) dbq = dbq.eq('id', q);
           else dbq = dbq.ilike('remitente', `%${q}%`);
+
           const { data, error } = await dbq.order('id', { ascending:false }).limit(20);
-          if(error) throw error;
-          const enriched = (data||[]).map(r=>({ ...r, clasificacion_nombre: r.clasificacion_nombre || r.clasificacion || '' }));
+          if (error) throw error;
+
+          const enriched = (data || []).map(r => ({
+            ...r,
+            clasificacion_nombre: r.clasificacion_nombre || r.clasificacion || ''
+          }));
           displayResults(enriched);
-        }catch(err){
+        } catch (err){
           console.error('Error en búsqueda:', err);
-          searchResults.innerHTML = `<tr><td colspan="4" style="padding:12px;color:crimson">Error en búsqueda: ${err.message||err}</td></tr>`;
+          searchResults.innerHTML =
+            `<tr><td colspan="4" style="padding:12px;color:crimson">Error en búsqueda: ${err.message || err}</td></tr>`;
           resultsTable.style.display = 'block';
         }
       }
 
       window.editarReporte = async function(id){
         await loadById(id);
-        if(panel){
+        if (panel){
           panel.classList.remove('animate-in');
           panel.classList.add('fade-out');
         }
         const formEl = document.getElementById('formEdit');
-        setTimeout(()=>{
-          if(panel) panel.style.display = 'none';
+        setTimeout(() => {
+          if (panel) panel.style.display = 'none';
           formEl.style.display = 'block';
           formEl.classList.remove('fade-out');
           formEl.classList.add('animate-in');
         }, 180);
-      }
+      };
 
       searchBtn.addEventListener('click', performSearch);
-      searchInput.addEventListener('keypress', (e)=>{ if(e.key==='Enter'){ e.preventDefault(); performSearch(); } });
+      searchInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter'){
+          e.preventDefault();
+          performSearch();
+        }
+      });
 
       const backLink = document.getElementById('back-link');
-      if(backLink){
-        backLink.addEventListener('click', (ev)=>{
+      if (backLink){
+        backLink.addEventListener('click', (ev) => {
           ev.preventDefault();
           try{
-            if(window.history && window.history.length > 1){ window.history.back(); return; }
-          }catch(e){}
+            if (window.history && window.history.length > 1){
+              window.history.back();
+              return;
+            }
+          } catch (e) {}
           window.location.href = 'reportes_consultar.html';
         });
       }
 
-  if(panel) panel.classList.add('animate-in');
-  await performSearch();
+      await performSearch();
     }
 
     function formatDateTime(d){
-      if(!d) return '-'
+      if (!d) return '-';
       try{
         const dt = new Date(d);
-        return dt.toLocaleString('es-MX',{year:'numeric',month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'})
-      }catch(e){ return String(d) }
+        return dt.toLocaleString('es-MX', {
+          year:'numeric', month:'short', day:'numeric',
+          hour:'2-digit', minute:'2-digit'
+        });
+      } catch (e){
+        return String(d);
+      }
     }
 
     async function loadById(id){
       const { data, error } = await supabase.from('reportes').select('*').eq('id', id).single();
-      if (error) { msg.textContent='Error al cargar'; console.error(error); return; }
+      if (error){
+        msg.textContent = 'Error al cargar';
+        console.error(error);
+        return;
+      }
 
-      const clasKey = data.id_clasificacion !== undefined ? 'id_clasificacion' : (data.clasificacion_id !== undefined ? 'clasificacion_id' : (data.id_clas !== undefined ? 'id_clas' : null));
-      const colKey = data.id_colonia !== undefined ? 'id_colonia' : (data.colonia_id !== undefined ? 'colonia_id' : null);
-      const statusKey = data.estatus !== undefined ? 'estatus' : (data.estado !== undefined ? 'estado' : (data.status !== undefined ? 'status' : null));
-      columnKeys.clas = clasKey; columnKeys.col = colKey; columnKeys.status = statusKey;
+      const clasKey = data.id_clasificacion !== undefined ? 'id_clasificacion'
+                    : data.clasificacion_id !== undefined ? 'clasificacion_id'
+                    : data.id_clas !== undefined ? 'id_clas' : null;
 
-      document.getElementById('rid').value = data.id;
-      document.getElementById('remitente').value = data.remitente || '';
+      const colKey  = data.id_colonia !== undefined ? 'id_colonia'
+                    : data.colonia_id !== undefined ? 'colonia_id' : null;
 
-      document.getElementById('summary-id').textContent = data.id;
+      const statusKey = data.estatus !== undefined ? 'estatus'
+                       : data.estado !== undefined ? 'estado'
+                       : data.status !== undefined ? 'status' : null;
+
+      columnKeys.clas   = clasKey;
+      columnKeys.col    = colKey;
+      columnKeys.status = statusKey;
+
+      document.getElementById('rid').value        = data.id;
+      document.getElementById('remitente').value  = data.remitente || '';
+      document.getElementById('calle').value      = data.calle || '';
+      document.getElementById('detalles').value   = data.detalles || '';
+
+      document.getElementById('summary-id').textContent        = data.id;
       document.getElementById('summary-remitente').textContent = data.remitente || '-';
-      document.getElementById('summary-creado').textContent = data.creado_en ? formatDateTime(data.creado_en) : '-';
+      document.getElementById('summary-creado').textContent    =
+        data.creado_en ? formatDateTime(data.creado_en) : '-';
       document.getElementById('summary').style.display = 'block';
 
       function setSelectValue(select, val){
-        if(!select) return;
-        if(val === undefined || val === null || val === ''){ select.value = ''; return }
+        if (!select) return;
+        if (val === undefined || val === null || val === ''){
+          select.value = '';
+          return;
+        }
         const v = String(val);
-        for(const o of select.options){ if(o.value === v){ select.value = v; return } }
-        const byText = Array.from(select.options).find(o=>o.text.trim().toLowerCase()===v.trim().toLowerCase());
-        if(byText){ select.value = byText.value; return }
-        const tmp = document.createElement('option'); tmp.value = v; tmp.text = v; tmp.selected = true; select.appendChild(tmp);
+        for (const o of select.options){
+          if (o.value === v){
+            select.value = v;
+            return;
+          }
+        }
+        const byText = Array.from(select.options)
+          .find(o => o.text.trim().toLowerCase() === v.trim().toLowerCase());
+        if (byText){
+          select.value = byText.value;
+          return;
+        }
+        const tmp = document.createElement('option');
+        tmp.value = v;
+        tmp.text  = v;
+        tmp.selected = true;
+        select.appendChild(tmp);
       }
 
       if (clasKey) setSelectValue(document.getElementById('clasificacion'), data[clasKey] || '');
-      if (colKey) setSelectValue(document.getElementById('colonia'), data[colKey] || '');
-      document.getElementById('calle').value = data.calle || '';
-      document.getElementById('detalles').value = data.detalles || '';
+      if (colKey)  setSelectValue(document.getElementById('colonia'),       data[colKey]  || '');
 
       if (statusKey){
         const s = data[statusKey] || '';
         setSelectValue(document.getElementById('estado'), s);
       }
 
-      window.scrollTo({top:0,behavior:'smooth'});
+      window.scrollTo({ top:0, behavior:'smooth' });
+
       const evList = document.getElementById('evidenciasList');
       evList.innerHTML = '';
+
       if (data.imagen_url){
         const img = document.createElement('img');
-        img.src = data.imagen_url; img.className = 'thumb'; img.style.cursor = 'pointer'; img.onclick = () => window.open(data.imagen_url, '_blank');
-        evList.appendChild(img); document.getElementById('evidencias').style.display = 'block';
+        img.src = data.imagen_url;
+        img.className = 'thumb';
+        img.style.cursor = 'pointer';
+        img.onclick = () => window.open(data.imagen_url, '_blank');
+        evList.appendChild(img);
+        document.getElementById('evidencias').style.display = 'block';
       } else if (data.evidencias && Array.isArray(data.evidencias) && data.evidencias.length){
-        data.evidencias.forEach(u=>{
-          const img = document.createElement('img'); img.src = u; img.className = 'thumb'; img.style.cursor = 'pointer'; img.onclick = () => window.open(u, '_blank'); evList.appendChild(img);
+        data.evidencias.forEach(u => {
+          const img = document.createElement('img');
+          img.src = u;
+          img.className = 'thumb';
+          img.style.cursor = 'pointer';
+          img.onclick = () => window.open(u, '_blank');
+          evList.appendChild(img);
         });
         document.getElementById('evidencias').style.display = 'block';
       } else {
@@ -428,68 +632,113 @@
       }
     }
 
-    document.getElementById('btnUpdate').addEventListener('click', async ()=>{
+    document.getElementById('btnUpdate').addEventListener('click', async () => {
       const id = document.getElementById('rid').value;
-      if (!id) { msg.textContent='Selecciona un reporte primero'; return; }
+      if (!id){
+        msg.textContent = 'Selecciona un reporte primero';
+        return;
+      }
       msg.textContent = '';
-      const remitente = document.getElementById('remitente').value;
-      const clasificacion = document.getElementById('clasificacion').value;
-      const colonia = document.getElementById('colonia').value;
-      const calle = document.getElementById('calle').value;
-      const detalles = document.getElementById('detalles').value;
-      const estado = (document.getElementById('estado') ? document.getElementById('estado').value : (document.getElementById('estatus') ? document.getElementById('estatus').value : ''));
 
-      const updates = { 
-        remitente, 
-        calle, 
+      const remitente    = document.getElementById('remitente').value;
+      const clasificacion = document.getElementById('clasificacion').value;
+      const colonia      = document.getElementById('colonia').value;
+      const calle        = document.getElementById('calle').value;
+      const detalles     = document.getElementById('detalles').value;
+      const estado       = document.getElementById('estado')
+                         ? document.getElementById('estado').value
+                         : 'Pendiente';
+
+      const updates = {
+        remitente,
+        calle,
         detalles,
         fecha_actualizacion: new Date().toISOString()
       };
+
       if (columnKeys.clas) updates[columnKeys.clas] = clasificacion;
       else updates['id_clasificacion'] = parseInt(clasificacion) || null;
+
       if (columnKeys.col) updates[columnKeys.col] = colonia;
       else updates['id_colonia'] = parseInt(colonia) || null;
+
       if (columnKeys.status) updates[columnKeys.status] = estado;
       else updates['estatus'] = estado;
 
       try{
         const { error } = await supabase.from('reportes').update(updates).eq('id', id);
-        if (error) {
-          msg.style.color='crimson';
+        if (error){
+          msg.style.color = 'crimson';
           msg.textContent = 'Error al actualizar: ' + (error.message || 'Error desconocido');
           console.error('Update error:', error);
           return;
         }
 
-        msg.style.color='green'; 
+        msg.style.color = 'green';
         msg.textContent = 'Actualizado correctamente';
         await loadTable();
-      }catch(err){
+      } catch (err){
         console.error(err);
-        msg.style.color='crimson'; msg.textContent = 'Error al actualizar: ' + (err.message || String(err));
+        msg.style.color = 'crimson';
+        msg.textContent = 'Error al actualizar: ' + (err.message || String(err));
       }
     });
 
-    document.getElementById('btnDelete').addEventListener('click', async ()=>{
+    document.getElementById('btnDelete').addEventListener('click', async () => {
       const id = document.getElementById('rid').value;
-      if (!id) { msg.textContent='Selecciona un reporte primero'; return; }
+      if (!id){
+        msg.textContent = 'Selecciona un reporte primero';
+        return;
+      }
       if (!confirm('¿Eliminar este reporte?')) return;
+
       const { error } = await supabase.from('reportes').delete().eq('id', id);
-      if (error) { msg.textContent='Error al eliminar'; console.error(error); return; }
-      msg.style.color='green'; msg.textContent='Eliminado'; form.reset(); loadTable();
+      if (error){
+        msg.textContent = 'Error al eliminar';
+        console.error(error);
+        return;
+      }
+      msg.style.color = 'green';
+      msg.textContent = 'Eliminado';
+      form.reset();
+      await loadTable();
     });
 
-  if (!sessionStorage.getItem('user')) window.location.href='login.html';
-  await loadOptions();
-  await loadTable();
-  if (idParam) {
-    if (typeof window.editarReporte === 'function') await window.editarReporte(idParam);
-    else await loadById(idParam);
-  }
+    await loadOptions();
+    await loadTable();
+
+    if (idParam){
+      if (typeof window.editarReporte === 'function') {
+        await window.editarReporte(idParam);
+      } else {
+        await loadById(idParam);
+      }
+    }
   </script>
+
+  <!-- Logout y visibilidad del menú Usuarios sólo para admin -->
   <script>
     const logoutLink = document.getElementById('logout-link');
-    if (logoutLink) logoutLink.addEventListener('click', (e)=>{ e.preventDefault(); sessionStorage.removeItem('user'); window.location.href='login.html'; });
+    if (logoutLink) {
+      logoutLink.addEventListener('click', (e) => {
+        e.preventDefault();
+        sessionStorage.removeItem('user');
+        window.location.href = 'login.html';
+      });
+    }
+
+    (function () {
+      const raw = sessionStorage.getItem('user');
+      if (!raw) return;
+      let u = null;
+      try { u = JSON.parse(raw); } catch (e) {}
+      if (!u || typeof u.id_rol === 'undefined') return;
+
+      const isAdmin = Number(u.id_rol) === 1;
+      document.querySelectorAll('.admin-only').forEach(el => {
+        el.style.display = isAdmin ? 'flex' : 'none';
+      });
+    })();
   </script>
 </body>
 </html>

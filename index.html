@@ -53,8 +53,12 @@
           Estadísticas
         </a>
 
-        <!-- Solo admin -->
-        <a href="usuarios.html" class="nav-link" data-role-allow="1" style="color:#dff3ff;text-decoration:none;display:flex;align-items:center;gap:4px"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:20px;height:20px"><path d="M17 20h5v-2a4 4 0 00-5-3.87M9 20H4v-2a4 4 0 0 1 5-3.87M12 12a4 4 0 100-8 4 4 0 000 8z"/></svg>Usuarios</a>
+        <a href="usuarios.html" class="nav-link" data-role-allow="1" style="color:#dff3ff;text-decoration:none;display:flex;align-items:center;gap:4px">
+          <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:20px;height:20px">
+            <path d="M17 20h5v-2a4 4 0 00-5-3.87M9 20H4v-2a4 4 0 0 1 5-3.87M12 12a4 4 0 100-8 4 4 0 000 8z"/>
+          </svg>
+          Usuarios
+        </a>
 
         <a href="#" id="logout-link" style="color:#ffd;text-decoration:none;display:flex;align-items:center;gap:4px">
           <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:20px;height:20px">
@@ -90,11 +94,8 @@
 
         <div class="action-buttons" style="display:flex;flex-wrap:wrap;gap:.6rem">
           <a class="btn btn-primary" href="reportes_consultar.html">Ver reportes</a>
-          <!-- Agregar: admin (1) y coordinador (2) -->
           <a class="btn btn-accent" href="reportes_agregar.html" data-role-allow="1,2">Crear reporte</a>
-          <!-- Editar: 1,2,3 -->
           <a class="btn btn-primary" href="reportes_editar.html" data-role-allow="1,2,3">Editar reportes</a>
-          <!-- Usuarios: solo admin -->
           <a class="btn btn-primary" href="usuarios.html" data-role-allow="1">Usuarios</a>
         </div>
 
@@ -110,13 +111,10 @@
         </div>
         <h3 style="text-align:center;font-size:24px">Accesos rápidos</h3>
         <div class="quick-links" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:.6rem;margin-top:.6rem">
-          <!-- Agregar: admin (1) y coordinador (2) -->
           <a href="reportes_agregar.html" class="quick-link btn btn-accent" data-role-allow="1,2">Agregar Reporte</a>
           <a href="reportes_consultar.html" class="quick-link btn btn-primary">Consultar Reporte</a>
-          <!-- Editar: 1,2,3 -->
           <a href="reportes_editar.html" class="quick-link btn btn-primary" data-role-allow="1,2,3">Editar Reporte</a>
           <a href="estadisticas.html" class="quick-link btn btn-primary">Estadísticas</a>
-          <!-- Usuarios: solo admin -->
           <a href="usuarios.html" class="quick-link btn btn-primary" data-role-allow="1">Gestión de Usuarios</a>
         </div>
       </div>
@@ -127,6 +125,7 @@
     <div class="contenedor">&copy; <span id="year"></span> CityReport — Todos los derechos reservados</div>
   </footer>
 
+  <!-- ================== SCRIPT =================== -->
   <script type="module">
     import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
 
@@ -134,72 +133,89 @@
     const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdoeXdscXBpcmpxc21tbHlvbWF3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTk4MTYwMTYsImV4cCI6MjA3NTM5MjAxNn0.v8fs-lpmWu7cmqM45wKvsFNaHJxcJro4dSxknDWgVGI';
     const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-    // ===== Sesión y permisos por rol =====
-    // ===== Sesión y permisos por rol =====
-    (function roleGate(){
+    // ==================== Sesión y roles ====================
+    (function roleGate() {
       const raw = sessionStorage.getItem('user');
-      if(!raw){ location.href='login.html'; return; }
-      let u=null; try{ u=JSON.parse(raw); }catch{}
-      if(!u || u.id_rol==null){ location.href='login.html'; return; }
+      if (!raw) { location.href='login.html'; return; }
 
-    const role = Number(u.id_rol); // 1 admin, 2 coordinador, 3 supervisor
-    document.body.dataset.role = role;
+      let u = null;
+      try { u = JSON.parse(raw); } catch {}
+      if (!u || u.id_rol == null) { location.href='login.html'; return; }
 
-    // Mostrar/ocultar elementos con data-role-allow="1,2,3"
-    document.querySelectorAll('[data-role-allow]').forEach(el=>{
-      const allow = el.getAttribute('data-role-allow')
-        .split(',').map(n=>Number(n.trim()));
-      if(!allow.includes(role)){ el.style.display = 'none'; }
-    });
+      const role = Number(u.id_rol);
+      document.body.dataset.role = role;
 
-    // Saludo
-    const h = new Date().getHours();
-    let saludo='Buenos días';
-    if(h>=12 && h<19) saludo='Buenas tardes';
-    else if(h>=19 || h<6) saludo='Buenas noches';
+      document.querySelectorAll('[data-role-allow]').forEach(el => {
+        const allow = el.getAttribute('data-role-allow')
+          .split(',').map(n => Number(n.trim()));
+        if (!allow.includes(role)) el.style.display = 'none';
+      });
 
-      // 🔹 Aquí se hace la adaptación del nombre para la vista
-    const rawName = u.usuario || 'usuario';
-    const name = rawName.replace(/_/g, ' ');
+      // ===== Función de capitalización =====
+      function toTitleCase(str) {
+        return str.toLowerCase().replace(/\b\w/g, l => l.toUpperCase());
+      }
 
-    const saludoEl = document.getElementById('saludo');
-    if(saludoEl) saludoEl.textContent = `${saludo}, ${name}. Bienvenido al panel de administración de CityReport.`;
-  })();
-  
-    // ===== Reloj =====
-    function updateDateTime(){
+      // ===== Saludo personalizado =====
+      const h = new Date().getHours();
+      let saludo = 'Buenos días';
+      if (h >= 12 && h < 19) saludo = 'Buenas tardes';
+      else if (h >= 19 || h < 6) saludo = 'Buenas noches';
+
+      const rawName = u.usuario || 'usuario';
+      let nameFormatted = rawName.replace(/_/g, ' ');
+      nameFormatted = toTitleCase(nameFormatted);
+
+      const saludoEl = document.getElementById('saludo');
+      if (saludoEl)
+        saludoEl.textContent = `${saludo}, ${nameFormatted}. Bienvenido al panel de administración de CityReport.`;
+    })();
+
+    // ==================== Reloj ====================
+    function updateDateTime() {
       const now = new Date();
-      const opts = {weekday:'long',year:'numeric',month:'long',day:'numeric',hour:'2-digit',minute:'2-digit'};
+      const opts = {
+        weekday:'long',
+        year:'numeric',
+        month:'long',
+        day:'numeric',
+        hour:'2-digit',
+        minute:'2-digit'
+      };
       const el = document.getElementById('current-time');
-      if(el) el.textContent = now.toLocaleDateString('es-MX', opts);
+      if (el) el.textContent = now.toLocaleDateString('es-MX', opts);
     }
 
-    // ===== Stats dashboard =====
-    async function loadDashboardStats(){
-      try{
-        const [t,p,r]=await Promise.all([
-          supabase.from('reportes').select('*',{count:'exact',head:true}),
-          supabase.from('reportes').select('*',{count:'exact',head:true}).eq('estatus','Pendiente'),
-          supabase.from('reportes').select('*',{count:'exact',head:true}).eq('estatus','Resuelto'),
+    // ==================== Stats ====================
+    async function loadDashboardStats() {
+      try {
+        const [t, p, r] = await Promise.all([
+          supabase.from('reportes').select('*', { count:'exact', head:true }),
+          supabase.from('reportes').select('*', { count:'exact', head:true }).eq('estatus','Pendiente'),
+          supabase.from('reportes').select('*', { count:'exact', head:true }).eq('estatus','Resuelto'),
         ]);
+
         document.getElementById('total-reportes').textContent = t.count ?? 0;
         document.getElementById('reportes-pendientes').textContent = p.count ?? 0;
         document.getElementById('reportes-resueltos').textContent = r.count ?? 0;
-      }catch(err){
-        console.error('Error stats:',err);
+      } catch (err) {
+        console.error('Error stats:', err);
       }
     }
 
-    // ===== Logout =====
-    function logout(){ sessionStorage.removeItem('user'); location.href='login.html'; }
+    // ==================== Logout ====================
+    function logout() {
+      sessionStorage.removeItem('user');
+      location.href='login.html';
+    }
     document.getElementById('logout-btn')?.addEventListener('click', logout);
-    document.getElementById('logout-link')?.addEventListener('click', e=>{ e.preventDefault(); logout(); });
+    document.getElementById('logout-link')?.addEventListener('click', e => { e.preventDefault(); logout(); });
 
-    // Init
+    // Inicialización
     document.getElementById('year').textContent = new Date().getFullYear();
-    updateDateTime(); setInterval(updateDateTime, 60000);
+    updateDateTime(); 
+    setInterval(updateDateTime, 60000);
     loadDashboardStats();
   </script>
 </body>
 </html>
-

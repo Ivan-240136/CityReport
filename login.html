@@ -40,15 +40,43 @@
     const form = document.getElementById('login-form');
     const alertEl = document.getElementById('alert');
 
+    // Fondo particles
     (function particles() {
       const c = document.querySelector('.particles'); if (!c) return;
       const ctx = c.getContext('2d'); let w = innerWidth, h = innerHeight; c.width = w; c.height = h;
-      const ps = Array.from({length: 35}, () => ({x:Math.random()*w,y:Math.random()*h,r:2+Math.random()*2,dx:-.3+Math.random()*.6,dy:-.3+Math.random()*.6,o:.1+Math.random()*.2}));
-      const draw = ()=>{ctx.clearRect(0,0,w,h); for(const p of ps){ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);ctx.fillStyle=`rgba(84,160,255,${p.o})`;ctx.fill();p.x+=p.dx;p.y+=p.dy;if(p.x<0)p.x=w;if(p.x>w)p.x=0;if(p.y<0)p.y=h;if(p.y>h)p.y=0;} requestAnimationFrame(draw);} ; draw();
-      addEventListener('resize',()=>{w=innerWidth;h=innerHeight;c.width=w;c.height=h;});
+      const ps = Array.from({length: 35}, () => ({
+        x:Math.random()*w,
+        y:Math.random()*h,
+        r:2+Math.random()*2,
+        dx:-.3+Math.random()*.6,
+        dy:-.3+Math.random()*.6,
+        o:.1+Math.random()*.2
+      }));
+      const draw = () => {
+        ctx.clearRect(0,0,w,h);
+        for(const p of ps){
+          ctx.beginPath();
+          ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+          ctx.fillStyle=`rgba(84,160,255,${p.o})`;
+          ctx.fill();
+          p.x+=p.dx; p.y+=p.dy;
+          if(p.x<0) p.x=w;
+          if(p.x>w) p.x=0;
+          if(p.y<0) p.y=h;
+          if(p.y>h) p.y=0;
+        }
+        requestAnimationFrame(draw);
+      };
+      draw();
+      addEventListener('resize',()=>{
+        w=innerWidth; h=innerHeight; c.width=w; c.height=h;
+      });
     })();
 
-    const showError = (msg)=>{ alertEl.textContent = msg; alertEl.style.display = 'block'; };
+    const showError = (msg) => {
+      alertEl.textContent = msg;
+      alertEl.style.display = 'block';
+    };
 
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
@@ -63,17 +91,27 @@
       try {
         const { data: user, error } = await supabase
           .from('usuarios')
-          .select('id, usuario, contrasena, id_rol')
+          .select('id, usuario, contrasena, id_rol, estado')
           .eq('usuario', usuario)
           .limit(1)
           .single();
 
         if (error || !user) return showError('Usuario o contraseña incorrectos.');
+
         const ok = bcrypt.compareSync(contrasena, user.contrasena || '');
         if (!ok) return showError('Usuario o contraseña incorrectos.');
 
+        // ===== Validación de estado =====
+        const activo = (user.estado === null || user.estado === undefined) ? true : !!user.estado;
+        if (!activo) {
+          return showError('Tu cuenta está inhabilitada. Contacta al administrador del sistema.');
+        }
+
+        // ===== Login correcto y cuenta activa =====
         sessionStorage.setItem('user', JSON.stringify({
-          id: user.id, usuario: user.usuario, id_rol: user.id_rol
+          id: user.id,
+          usuario: user.usuario,
+          id_rol: user.id_rol
         }));
         window.location.href = 'index.html';
       } catch (err) {
