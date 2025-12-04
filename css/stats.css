@@ -77,6 +77,11 @@
   box-shadow: 0 10px 30px rgba(0,0,0,0.1);
   animation: slideIn 0.5s ease-out forwards;
   opacity: 0;
+
+  /* Corrección: Centrado perfecto del contenido */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .stat-card:hover {
@@ -117,12 +122,14 @@
   animation: fadeIn 0.5s ease-out forwards 0.4s;
 }
 
+/* CORREGIDO: Íconos centrados arriba */
 .stat-card .nav-icon {
   width: 32px;
   height: 32px;
   color: #11606a;
   opacity: 0.7;
-  margin-bottom: 1rem;
+  display: block; /* Centrado */
+  margin: 0 auto 1rem; /* Centrado */
   opacity: 0;
   animation: fadeIn 0.5s ease-out forwards 0.2s;
 }
@@ -130,7 +137,7 @@
 /* Info Grid (las 4 tarjetas de abajo) */
 .stats-grid {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr)); /* 2 columnas fijas */
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 1.5rem;
   justify-items: stretch;
   align-items: stretch;
@@ -148,6 +155,11 @@
   box-shadow: 0 10px 30px rgba(0,0,0,0.1);
   animation: slideIn 0.5s ease-out forwards;
   opacity: 0;
+
+  /* Corrección: Centrado perfecto del contenido */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .info-card:hover {
@@ -172,11 +184,13 @@
   animation: fadeIn 0.5s ease-out forwards 0.6s;
 }
 
+/* CORREGIDO: Íconos centrados arriba */
 .info-card .nav-icon {
   width: 40px;
   height: 40px;
   color: #11606a;
-  margin-bottom: 1rem;
+  display: block; /* Centrado */
+  margin: 0 auto 1rem; /* Centrado */
   opacity: 0;
   animation: fadeIn 0.5s ease-out forwards 0.3s;
 }
@@ -250,7 +264,6 @@
     grid-template-columns: 1fr;
   }
 
-  /* En móvil, las 4 tarjetas en una sola columna */
   .stats-grid {
     grid-template-columns: 1fr;
   }
@@ -274,20 +287,20 @@
 .panel-header {
   display: flex;
   justify-content: space-between;
-  align-items: center;   /* centra título vs bloque derecho */
+  align-items: center;
 }
 
 /* Bloque fecha + botón */
 .action-buttons {
   display: flex;
-  align-items: center;   /* centra fecha con el botón */
-  gap: 16px;             /* separación entre fecha e Inicio */
+  align-items: center;
+  gap: 16px;
 }
 
-/* Ajuste fino de la fecha */
+/* Ajuste de la fecha */
 .stats-date {
   display: flex;
   align-items: center;
   margin: 0;
-  line-height: 1;        /* evita que se vea “más arriba” */
+  line-height: 1;
 }
