@@ -132,7 +132,7 @@
   </style>
 </head>
 <body>
-  <!-- Loader global nuevo -->
+  <!-- Loader global -->
   <div id="loader" class="loader-wrapper">
     <div class="container">
       <div class="dot"></div>
@@ -167,7 +167,7 @@
         <h1 style="margin:0;font-size:26px;">Consultar Reportes</h1>
       </div>
 
-      <!-- NAV con enlace Usuarios (solo admin) -->
+      <!-- NAV -->
       <nav style="display:flex;gap:12px;align-items:center">
         <a href="index.html" style="color:#dff3ff;text-decoration:none;display:flex;align-items:center;gap:4px">
           <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:20px;height:20px">
@@ -219,21 +219,22 @@
       if (!u || typeof u.id_rol === 'undefined') { window.location.href = 'login.html'; return; }
 
       const role = Number(u.id_rol);
-      const isAdmin = role === 1;
-      const canCreate = role === 1 || role === 2; // Admin y Coordinador
+      const isAdmin   = role === 1;
+      const canCreate = role === 1 || role === 2; // Admin + Coordinador
 
-      // Mostrar enlace Usuarios solo a admin
-      document.querySelectorAll('.admin-only').forEach(el => { el.style.display = isAdmin ? 'flex' : 'none'; });
+      document.querySelectorAll('.admin-only').forEach(el => {
+        el.style.display = isAdmin ? 'flex' : 'none';
+      });
 
-      // Ocultar botón "Nuevo Reporte" si no puede crear
       window.addEventListener('DOMContentLoaded', () => {
         const btnNuevo = document.getElementById('btnNuevoReporte');
         if (btnNuevo && !canCreate) btnNuevo.style.display = 'none';
       });
 
-      // Logout
       document.getElementById('logout-link')?.addEventListener('click', (e)=>{
-        e.preventDefault(); sessionStorage.removeItem('user'); window.location.href='login.html';
+        e.preventDefault();
+        sessionStorage.removeItem('user');
+        window.location.href='login.html';
       });
     })();
   </script>
@@ -263,7 +264,6 @@
             Buscar
           </button>
         </div>
-        <!-- Botón que se oculta si el rol no puede crear -->
         <a id="btnNuevoReporte" href="reportes_agregar.html" class="btn btn-primary btn-action">
           <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <path d="M12 4v16m8-8H4"/>
@@ -274,7 +274,6 @@
 
       <div id="list-container" class="loading-overlay">
         <div id="list"></div>
-        <!-- Loader interno eliminado -->
       </div>
     </div>
   </main>
@@ -297,12 +296,17 @@
     </div>
   </div>
 
+  <!-- Funciones de detalle / modal -->
   <script>
     function showReporteDetails(reporte) {
       const modal = document.getElementById('reporteModal');
       const details = document.getElementById('reporteDetails');
 
-      const fechaCreacion = reporte.creado_en ? new Date(reporte.creado_en).toLocaleDateString('es-MX',{year:'numeric',month:'long',day:'numeric',hour:'2-digit',minute:'2-digit'}) : 'N/A';
+      const fechaCreacion = reporte.creado_en
+        ? new Date(reporte.creado_en).toLocaleDateString('es-MX',{
+            year:'numeric',month:'long',day:'numeric',hour:'2-digit',minute:'2-digit'
+          })
+        : 'N/A';
 
       details.innerHTML = `
         <div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(300px, 1fr));gap:20px">
@@ -357,71 +361,134 @@
     document.addEventListener('keydown',(e)=>{ if(e.key==='Escape') closeModal(); });
   </script>
 
-  <script type="module">
-    import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
-    const SUPABASE_URL = 'https://ghywlqpirjqsmmlyomaw.supabase.co';
-    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdoeXdscXBpcmpxc21tbHlvbWF3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTk4MTYwMTYsImV4cCI6MjA3NTM5MjAxNn0.v8fs-lpmWu7cmqM45wKvsFNaHJxcJro4dSxknDWgVGI';
-    const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+  <!-- Script principal: REST Supabase (sin supabase-js) -->
+  <script>
+    // Bloqueo por sesión
+    if (!sessionStorage.getItem('user')) {
+      window.location.href = 'login.html';
+    }
 
-    if (!sessionStorage.getItem('user')) window.location.href = 'login.html';
+    const SUPABASE_URL = 'https://ghywlqpirjqsmmlyomaw.supabase.co';
+    const SUPABASE_ANON_KEY =
+      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdoeXdscXBpcmpxc21tbHlvbWF3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTk4MTYwMTYsImV4cCI6MjA3NTM5MjAxNn0.v8fs-lpmWu7cmqM45wKvsFNaHJxcJro4dSxknDWgVGI';
 
     const list = document.getElementById('list');
-    const q = document.getElementById('q');
+    const q    = document.getElementById('q');
 
-    // >>> Loader global conectado a las operaciones de Supabase <<<
     function showLoading(){
       const l = document.getElementById('loader');
-      if(l){
-        l.style.display = 'flex';
-      }
+      if (l) l.style.display = 'flex';
     }
     function hideLoading(){
       const l = document.getElementById('loader');
-      if(l){
-        l.style.display = 'none';
+      if (l) l.style.display = 'none';
+    }
+
+    // Helper genérico para llamadas REST
+    async function restSelect(table, options = {}) {
+      const { select = '*', ...filters } = options;
+      const url = new URL(SUPABASE_URL + '/rest/v1/' + table);
+      url.searchParams.set('select', select);
+      Object.entries(filters).forEach(([k,v]) => url.searchParams.append(k, v));
+
+      const resp = await fetch(url.toString(), {
+        method: 'GET',
+        headers: {
+          apikey: SUPABASE_ANON_KEY,
+          Authorization: 'Bearer ' + SUPABASE_ANON_KEY,
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (!resp.ok) {
+        const txt = await resp.text();
+        throw new Error(txt || ('Error HTTP ' + resp.status));
       }
+      return await resp.json();
     }
 
     async function enrichWithNames(rows){
       if(!rows || !rows.length) return rows;
       const first = rows[0];
+
       const possibleClasKeys = ['clasificacion_id','clasificacion','id_clasificacion'];
-      const possibleColKeys = ['colonia_id','colonia','id_colonia'];
+      const possibleColKeys  = ['colonia_id','colonia','id_colonia'];
       const clasKey = possibleClasKeys.find(k=>k in first);
       const colKey  = possibleColKeys.find(k=>k in first);
 
       const klasIds = clasKey ? [...new Set(rows.map(r=>r[clasKey]).filter(Boolean))] : [];
-      const colIds  = colKey  ? [...new Set(rows.map(r=>r[colKey]).filter(Boolean))] : [];
+      const colIds  = colKey  ? [...new Set(rows.map(r=>r[colKey]).filter(Boolean))]  : [];
       const klasMap={}, colMap={}, userMap={};
 
       try{
         if(klasIds.length){
-          const {data:kdata}=await supabase.from('clasificaciones').select('id,nombre').in('id',klasIds);
+          const inList = '(' + klasIds.join(',') + ')';
+          const kdata = await restSelect('clasificaciones', {
+            select: 'id,nombre',
+            id: 'in.' + inList
+          });
           (kdata||[]).forEach(x=>klasMap[x.id]=x.nombre);
         }
         if(colIds.length){
-          const {data:cdata}=await supabase.from('colonias').select('id,nombre_colonia').in('id',colIds);
-          (cdata||[]).forEach(x=>colMap[x.id]=x.nombre_colonia||x.nombre);
+          const inList = '(' + colIds.join(',') + ')';
+          const cdata = await restSelect('colonias', {
+            select: 'id,nombre_colonia',
+            id: 'in.' + inList
+          });
+          (cdata||[]).forEach(x=>colMap[x.id]=x.nombre_colonia || x.nombre);
         }
-        const userKey = ('creado_por' in first)?'creado_por':(('creador_id' in first)?'creador_id':(('creado_por_id'in first)?'creado_por_id':null));
+
+        const userKey = ('creado_por' in first)
+          ? 'creado_por'
+          : (('creador_id' in first)
+              ? 'creador_id'
+              : (('creado_por_id' in first) ? 'creado_por_id' : null));
+
         if(userKey){
           const userIds=[...new Set(rows.map(r=>r[userKey]).filter(Boolean))];
+          const inList = '(' + userIds.join(',') + ')';
           const tables=['backup_usuarios_20250820','usuarios','users'];
+
           for(const t of tables){
-            const {data:udata,error:uerr}=await supabase.from(t).select('id,usuario,nombre,nombre_completo,email').in('id',userIds);
-            if(!uerr && udata && udata.length){
-              udata.forEach(u=>userMap[u.id]=u.nombre||u.nombre_completo||u.usuario||u.email||(`#${u.id}`));
-              break;
+            try{
+              const udata = await restSelect(t,{
+                select:'id,usuario,nombre,nombre_completo,email',
+                id:'in.'+inList
+              });
+              if(udata && udata.length){
+                udata.forEach(u=>{
+                  userMap[u.id]=u.nombre||u.nombre_completo||u.usuario||u.email||(`#${u.id}`);
+                });
+                break;
+              }
+            }catch(e){
+              console.warn('Error leyendo tabla usuarios auxiliar', t, e.message);
             }
           }
         }
-      }catch(e){ console.warn(e); }
+      }catch(e){
+        console.warn('Error enriquecer nombres:', e);
+      }
 
       return rows.map(r=>({
         ...r,
-        clasificacion_name: clasKey ? (typeof r[clasKey]==='object' ? (r[clasKey].nombre||r[clasKey].nombre_clasificacion) : (klasMap[r[clasKey]]||null)) : null,
-        colonia_name:       colKey  ? (typeof r[colKey]==='object'  ? (r[colKey].nombre_colonia||r[colKey].nombre)     : (colMap[r[colKey]]||null))  : null,
-        creador_nombre: ('creado_por' in r ? userMap[r.creado_por] : ('creador_id' in r ? userMap[r.creador_id] : ('creado_por_id' in r ? userMap[r.creado_por_id] : null)))
+        clasificacion_name: clasKey
+          ? (typeof r[clasKey]==='object'
+             ? (r[clasKey].nombre||r[clasKey].nombre_clasificacion)
+             : (klasMap[r[clasKey]]||null))
+          : null,
+        colonia_name: colKey
+          ? (typeof r[colKey]==='object'
+             ? (r[colKey].nombre_colonia||r[colKey].nombre)
+             : (colMap[r[colKey]]||null))
+          : null,
+        creador_nombre: ('creado_por' in r
+          ? userMap[r.creado_por]
+          : ('creador_id' in r
+              ? userMap[r.creador_id]
+              : ('creado_por_id' in r
+                  ? userMap[r.creado_por_id]
+                  : null)))
       }));
     }
 
@@ -440,15 +507,19 @@
           </thead><tbody>`];
 
       rows.forEach(r=>{
-        const fechaCreacion = r.creado_en ? new Date(r.creado_en).toLocaleDateString('es-MX',{year:'numeric',month:'long',day:'numeric',hour:'2-digit',minute:'2-digit'}) : 'N/A';
-        const clas = r.clasificacion_name || 'N/A';
-        const col  = r.colonia_name || 'N/A';
+        const fechaCreacion = r.creado_en
+          ? new Date(r.creado_en).toLocaleDateString('es-MX',{year:'numeric',month:'long',day:'numeric',hour:'2-digit',minute:'2-digit'})
+          : 'N/A';
+        const clas  = r.clasificacion_name || 'N/A';
+        const col   = r.colonia_name || 'N/A';
         const calle = r.calle || r.direccion || 'N/A';
         const creadoPor = r.creador_nombre || r.creado_por || 'N/A';
         const imagen = r.imagen_url || r.imagen || null;
 
+        const jsonRow = JSON.stringify(r).replace(/"/g,'&quot;');
+
         html.push(`
-          <tr data-id="${r.id}" onclick="showReporteDetails(${JSON.stringify(r).replace(/"/g,'&quot;')})">
+          <tr data-id="${r.id}" onclick="showReporteDetails(${jsonRow})">
             <td>${r.id || 'N/A'}</td>
             <td>${r.remitente || 'N/A'}</td>
             <td>${clas}</td>
@@ -458,7 +529,7 @@
             <td>${creadoPor}</td>
             <td><span class="status-badge ${r.estatus?.toLowerCase()==='pendiente'?'status-pendiente':'status-completado'}">${r.estatus || 'Pendiente'}</span></td>
             <td style="display:flex;gap:8px;align-items:center">
-              <button onclick="event.stopPropagation(); showReporteDetails(${JSON.stringify(r).replace(/"/g,'&quot;')})" class="btn-action">Ver</button>
+              <button onclick="event.stopPropagation(); showReporteDetails(${jsonRow})" class="btn-action">Ver</button>
               <button onclick="event.stopPropagation(); window.location.href='reportes_editar.html?id=${r.id}'" class="btn-action">Editar</button>
               ${imagen ? `<button onclick="event.stopPropagation(); showImagePreview('${imagen}')" class="btn btn-primary btn-action">Imagen</button>` : ``}
             </td>
@@ -478,8 +549,10 @@
     async function loadAll(){
       showLoading();
       try{
-        const {data,error} = await supabase.from('reportes').select('*').order('id',{ascending:false});
-        if(error) throw error;
+        const data = await restSelect('reportes', {
+          select:'*',
+          order:'id.desc'
+        });
         if(!data || !data.length){
           list.innerHTML='<div style="padding:10px;background:#f5f5f5;border-radius:4px;">No hay reportes disponibles</div>';
           return;
@@ -487,6 +560,7 @@
         const enriched = await enrichWithNames(data);
         renderTable(enriched);
       }catch(err){
+        console.error(err);
         list.innerHTML = `<div style="color:crimson;padding:10px;background:#fee;border-radius:4px;">Error: ${err.message||'desconocido'}</div>`;
       }finally{ hideLoading(); }
     }
@@ -496,11 +570,16 @@
       if(!v){ loadAll(); return; }
       showLoading();
       try{
-        let query = supabase.from('reportes').select('*');
-        if(/^\d+$/.test(v)){ query = query.eq('id', parseInt(v)).limit(1); }
-        else{ query = query.ilike('remitente', `%${v}%`).order('id',{ascending:false}); }
-        const {data,error} = await query;
-        if(error) throw error;
+        let params = { select:'*' };
+
+        if(/^\d+$/.test(v)){         // buscar por ID
+          params.id = 'eq.' + parseInt(v);
+        } else {                     // buscar por remitente (ilike)
+          params.remitente = 'ilike.*' + v + '*';
+          params.order = 'id.desc';
+        }
+
+        const data = await restSelect('reportes', params);
         if(!data || !data.length){
           list.innerHTML='<div style="padding:10px;background:#f5f5f5;border-radius:4px;">No se encontraron reportes</div>';
           return;
@@ -508,10 +587,12 @@
         const enriched = await enrichWithNames(data);
         renderTable(enriched);
       }catch(err){
+        console.error(err);
         list.innerHTML = `<div style="color:crimson;padding:10px;background:#fee;border-radius:4px;">Error búsqueda: ${err.message||'desconocido'}</div>`;
       }finally{ hideLoading(); }
     });
 
+    // Carga inicial
     loadAll();
   </script>
 </body>

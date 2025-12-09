@@ -32,10 +32,9 @@
     .btn-red    { background:#c0392b; }
     .btn-secondary { background:#6b7280; }
 
-    /* Grid del formulario: ahora con columna de Estado */
     .form-grid{
       display:grid;
-      grid-template-columns: 120px 1fr 180px 150px 260px; /* ID, Usuario, Rol, Estado, Contraseña */
+      grid-template-columns: 120px 1fr 180px 150px 260px;
       gap:12px 18px;
       align-items:flex-start;
     }
@@ -47,11 +46,9 @@
     .form-actions { display:flex; gap:.6rem; justify-content:flex-end; margin-top:.75rem; }
     .hint { color:#6b7280; font-size:.85rem; margin-top:4px; }
 
-    /* Tabla */
     .table thead th { background:var(--brand-ink); color:#fff; border-bottom:0; }
     .table tbody tr:hover { background:#f4f8fa; transform:none; }
 
-    /* Badge de estado */
     .badge-estado{
       display:inline-block;
       padding:4px 10px;
@@ -67,30 +64,37 @@
       background:#f8d7da;
       color:#842029;
     }
+
+    tbody tr.selected {
+      background:#e0f2fe;
+    }
   </style>
 </head>
 <body>
+  <!-- Loader -->
   <div id="loader" class="loader-wrapper">
-  <div class="container">
-    <div class="dot"></div>
-    <div class="traveler"></div>
+    <div class="container">
+      <div class="dot"></div>
+      <div class="traveler"></div>
+    </div>
+
+    <svg width="0" height="0" class="svg">
+      <defs>
+        <filter id="uib-jelly-triangle-ooze">
+          <feGaussianBlur in="SourceGraphic" stdDeviation="3.333" result="blur" />
+          <feColorMatrix
+            in="blur"
+            mode="matrix"
+            values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 18 -7"
+            result="ooze"
+          />
+          <feBlend in="SourceGraphic" in2="ooze" />
+        </filter>
+      </defs>
+    </svg>
   </div>
 
-  <svg width="0" height="0" class="svg">
-    <defs>
-      <filter id="uib-jelly-triangle-ooze">
-        <feGaussianBlur in="SourceGraphic" stdDeviation="3.333" result="blur" />
-        <feColorMatrix
-          in="blur"
-          mode="matrix"
-          values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 18 -7"
-          result="ooze"
-        />
-        <feBlend in="SourceGraphic" in2="ooze" />
-      </filter>
-    </defs>
-  </svg>
-</div>
+  <!-- Header -->
   <header class="main-header">
     <div class="header-container">
       <div class="logo-container">
@@ -142,7 +146,8 @@
           Usuarios
         </a>
 
-        <a href="#" id="logout-link" style="color:#ffd;text-decoration:none;display:flex;align-items:center;gap:4px">
+        <a href="#" id="logout-link"
+           style="color:#ffd;text-decoration:none;display:flex;align-items:center;gap:4px">
           <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:20px;height:20px">
             <path d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
           </svg>
@@ -152,6 +157,7 @@
     </div>
   </header>
 
+  <!-- Contenido principal -->
   <main class="page-wrap">
     <div class="panel">
       <div class="title">Gestión de Usuarios</div>
@@ -198,7 +204,6 @@
               </select>
             </div>
 
-            <!-- NUEVO CAMPO: ESTADO -->
             <div>
               <label for="festado">Estado</label>
               <select id="festado">
@@ -224,21 +229,26 @@
     </div>
   </main>
 
+  <!-- Footer -->
   <footer class="pie">
     <div class="contenedor">&copy; <span id="year"></span> CityReport — Todos los derechos reservados</div>
   </footer>
 
+  <!-- Lógica de negocio -->
   <script type="module">
-    import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
+    import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.48.0';
 
     const SUPABASE_URL = 'https://ghywlqpirjqsmmlyomaw.supabase.co';
     const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdoeXdscXBpcmpxc21tbHlvbWF3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTk4MTYwMTYsImV4cCI6MjA3NTM5MjAxNn0.v8fs-lpmWu7cmqM45wKvsFNaHJxcJro4dSxknDWgVGI';
     const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    window.supabase = supabase; // solo para pruebas
+
     const bcrypt = window.dcodeIO?.bcrypt;
 
     const raw = sessionStorage.getItem('user');
     if (!raw) location.href = 'login.html';
     const currentUser = JSON.parse(raw);
+
     const roleName = (id) => id == 1 ? 'admin_sys' : id == 2 ? 'coordinador' : 'supervisor';
 
     if (Number(currentUser.id_rol) !== 1) {
@@ -263,12 +273,14 @@
     document.getElementById('year').textContent = new Date().getFullYear();
 
     document.getElementById('logout-link').addEventListener('click', (e) => {
-      e.preventDefault(); sessionStorage.removeItem('user'); location.href = 'login.html';
+      e.preventDefault();
+      sessionStorage.removeItem('user');
+      location.href = 'login.html';
     });
 
     let selected = null;
 
-    function setMessage(text, ok=false) {
+    function setMessage(text, ok = false) {
       msg.textContent = text || '';
       msg.style.color = ok ? 'green' : '#6b7280';
     }
@@ -277,7 +289,7 @@
       fId.value = '';
       fUser.value = '';
       fRol.value = '2';
-      fEstado.value = 'true';    // por defecto activo
+      fEstado.value = 'true';
       fPass.value = '';
       setMessage('');
     }
@@ -305,14 +317,19 @@
         .order('id', { ascending: true });
 
       if (error) {
-        console.error(error);
-        setMessage('Error al cargar usuarios');
+        console.error('Error SELECT usuarios:', error);
+        setMessage(`Error al cargar usuarios: ${error.message || ''}`);
         return;
       }
 
-      for (const u of (data || [])) {
+      if (!data || data.length === 0) {
+        setMessage('No hay usuarios visibles. Revisa RLS o que existan datos en la tabla.');
+        return;
+      }
+
+      for (const u of data) {
         const tr = document.createElement('tr');
-        const activo = u.estado === null ? true : !!u.estado; // por si hay null
+        const activo = u.estado === null ? true : !!u.estado;
         tr.innerHTML = `
           <td>${u.id}</td>
           <td>${u.usuario}</td>
@@ -323,7 +340,7 @@
             </span>
           </td>
         `;
-        tr.addEventListener('click', () => selectRow({...u, estado: activo}, tr));
+        tr.addEventListener('click', () => selectRow({ ...u, estado: activo }, tr));
         tbody.appendChild(tr);
       }
     }
@@ -350,8 +367,8 @@
 
       const { error } = await supabase.from('usuarios').delete().eq('id', selected.id);
       if (error) {
-        console.error(error);
-        return setMessage('Error al eliminar');
+        console.error('Error DELETE usuario:', error);
+        return setMessage('Error al eliminar usuario.');
       }
       setMessage('Usuario eliminado', true);
       clearForm();
@@ -403,19 +420,22 @@
         clearForm();
         await loadUsers();
       } catch (err) {
-        console.error(err);
-        setMessage('Error al guardar');
+        console.error('Error al guardar usuario:', err);
+        setMessage('Error al guardar usuario.');
       }
     });
 
     await loadUsers();
   </script>
+
+  <!-- Ocultar loader -->
   <script>
-    window.addEventListener("load", () => { setTimeout(() => {
-      const loader = document.getElementById("loader");
-      if (loader) loader.style.display = "none";
-    }, 2000); //segundos
-  });
+    window.addEventListener("load", () => {
+      setTimeout(() => {
+        const loader = document.getElementById("loader");
+        if (loader) loader.style.display = "none";
+      }, 2000);
+    });
   </script>
 </body>
 </html>

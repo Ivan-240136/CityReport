@@ -6,6 +6,8 @@
   <title>Iniciar sesión - CityReport</title>
   <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
   <link rel="stylesheet" href="css/cityreport-theme.css" />
+
+  <!-- Bcrypt para validar hashes -->
   <script src="https://cdn.jsdelivr.net/npm/bcryptjs@2.4.3/dist/bcrypt.min.js"></script>
 </head>
 <body class="login-page">
@@ -19,7 +21,7 @@
     <h2>CityReport</h2>
     <p class="welcome">¡Bienvenido! Por favor, inicia sesión para continuar.</p>
 
-    <div id="alert" class="error"></div>
+    <div id="alert" class="error" style="display:none;"></div>
 
     <form id="login-form" autocomplete="off">
       <label for="usuario">Nombre de Usuario</label>
@@ -30,21 +32,31 @@
     </form>
   </div>
 
-  <script type="module">
-    import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
-
+  <script>
+    // ================= CONFIG SUPABASE (REST) =================
     const SUPABASE_URL = 'https://ghywlqpirjqsmmlyomaw.supabase.co';
-    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdoeXdscXBpcmpxc21tbHlvbWF3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTk4MTYwMTYsImV4cCI6MjA3NTM5MjAxNn0.v8fs-lpmWu7cmqM45wKvsFNaHJxcJro4dSxknDWgVGI';
-    const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-    const bcrypt = window.dcodeIO?.bcrypt;
+    const SUPABASE_ANON_KEY =
+      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdoeXdscXBpcmpxc21tbHlvbWF3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTk4MTYwMTYsImV4cCI6MjA3NTM5MjAxNn0.v8fs-lpmWu7cmqM45wKvsFNaHJxcJro4dSxknDWgVGI';
 
-    const form = document.getElementById('login-form');
+    // ================= UTILIDADES UI =================
+    const form    = document.getElementById('login-form');
     const alertEl = document.getElementById('alert');
+    const bcrypt  = window.dcodeIO?.bcrypt;
 
-    // Fondo particles
+    const debug = (...args) => console.log('[LOGIN]', ...args);
+
+    const showError = (msg) => {
+      alertEl.textContent = msg;
+      alertEl.style.display = 'block';
+    };
+
+    // ================= BACKGROUND PARTICLES =================
     (function particles() {
       const c = document.querySelector('.particles'); if (!c) return;
-      const ctx = c.getContext('2d'); let w = innerWidth, h = innerHeight; c.width = w; c.height = h;
+      const ctx = c.getContext('2d');
+      let w = innerWidth, h = innerHeight;
+      c.width = w; c.height = h;
+
       const ps = Array.from({length: 35}, () => ({
         x:Math.random()*w,
         y:Math.random()*h,
@@ -53,6 +65,7 @@
         dy:-.3+Math.random()*.6,
         o:.1+Math.random()*.2
       }));
+
       const draw = () => {
         ctx.clearRect(0,0,w,h);
         for(const p of ps){
@@ -74,49 +87,98 @@
       });
     })();
 
-    const showError = (msg) => {
-      alertEl.textContent = msg;
-      alertEl.style.display = 'block';
-    };
-
+    // ================= LOGIN =================
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
       alertEl.style.display = 'none';
 
-      const usuario = document.getElementById('usuario').value.trim();
+      const usuario    = document.getElementById('usuario').value.trim();
       const contrasena = document.getElementById('contrasena').value;
 
-      if (!usuario || !contrasena) return showError('Completa usuario y contraseña.');
-      if (!bcrypt) return showError('No se pudo cargar el verificador de contraseñas.');
+      if (!usuario || !contrasena) {
+        return showError('Completa usuario y contraseña.');
+      }
+
+      if (!bcrypt) {
+        console.error('Bcrypt no está disponible:', window.dcodeIO);
+        return showError('Error interno al validar la contraseña.');
+      }
+
+      debug('Intentando login para:', usuario);
 
       try {
-        const { data: user, error } = await supabase
-          .from('usuarios')
-          .select('id, usuario, contrasena, id_rol, estado')
-          .eq('usuario', usuario)
-          .limit(1)
-          .single();
+        // ===== 1) LLAMADA DIRECTA AL REST DE SUPABASE =====
+        const query =
+          SUPABASE_URL +
+          '/rest/v1/usuarios' +
+          '?select=id,usuario,contrasena,id_rol,estado' +
+          '&usuario=eq.' + encodeURIComponent(usuario) +
+          '&limit=1';
 
-        if (error || !user) return showError('Usuario o contraseña incorrectos.');
+        const resp = await fetch(query, {
+          method: 'GET',
+          headers: {
+            'apikey'       : SUPABASE_ANON_KEY,
+            'Authorization': 'Bearer ' + SUPABASE_ANON_KEY,
+            'Content-Type' : 'application/json',
+          },
+        });
 
-        const ok = bcrypt.compareSync(contrasena, user.contrasena || '');
-        if (!ok) return showError('Usuario o contraseña incorrectos.');
+        if (!resp.ok) {
+          const txt = await resp.text();
+          console.error('Error HTTP Supabase:', resp.status, txt);
+          return showError('Error al consultar usuarios (' + resp.status + ').');
+        }
 
-        // ===== Validación de estado =====
-        const activo = (user.estado === null || user.estado === undefined) ? true : !!user.estado;
+        const rows = await resp.json();
+        debug('Respuesta REST Supabase =>', rows);
+
+        if (!rows || rows.length === 0) {
+          return showError('Usuario o contraseña incorrectos.');
+        }
+
+        const user = rows[0];
+
+        // ===== 2) VALIDAR CONTRASEÑA (HASH BCRYPT) =====
+        const hash = user.contrasena || '';
+
+        let passwordOk = false;
+        if (hash.startsWith('$2a$') || hash.startsWith('$2b$') || hash.startsWith('$2y$')) {
+          passwordOk = bcrypt.compareSync(contrasena, hash);
+        } else {
+          // fallback si la contraseña estuviera guardada en texto plano
+          passwordOk = (contrasena === hash);
+        }
+
+        debug('Password OK?', passwordOk);
+
+        if (!passwordOk) {
+          return showError('Usuario o contraseña incorrectos.');
+        }
+
+        // ===== 3) VALIDAR ESTADO =====
+        const activo = (user.estado === null || user.estado === undefined)
+          ? true
+          : !!user.estado;
+
+        debug('Estado en BD:', user.estado, 'Activo?', activo);
+
         if (!activo) {
           return showError('Tu cuenta está inhabilitada. Contacta al administrador del sistema.');
         }
 
-        // ===== Login correcto y cuenta activa =====
+        // ===== 4) GUARDAR SESIÓN Y REDIRIGIR =====
         sessionStorage.setItem('user', JSON.stringify({
-          id: user.id,
+          id     : user.id,
           usuario: user.usuario,
-          id_rol: user.id_rol
+          id_rol : user.id_rol
         }));
+
+        debug('Login correcto. Redirigiendo a index.html');
         window.location.href = 'index.html';
+
       } catch (err) {
-        console.error(err);
+        console.error('Error inesperado en login:', err);
         showError('Error al intentar iniciar sesión.');
       }
     });

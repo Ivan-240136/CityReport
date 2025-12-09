@@ -125,26 +125,26 @@
 </head>
 <body>
   <div id="loader" class="loader-wrapper">
-  <div class="container">
-    <div class="dot"></div>
-    <div class="traveler"></div>
-  </div>
+    <div class="container">
+      <div class="dot"></div>
+      <div class="traveler"></div>
+    </div>
 
-  <svg width="0" height="0" class="svg">
-    <defs>
-      <filter id="uib-jelly-triangle-ooze">
-        <feGaussianBlur in="SourceGraphic" stdDeviation="3.333" result="blur" />
-        <feColorMatrix
-          in="blur"
-          mode="matrix"
-          values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 18 -7"
-          result="ooze"
-        />
-        <feBlend in="SourceGraphic" in2="ooze" />
-      </filter>
-    </defs>
-  </svg>
-</div>
+    <svg width="0" height="0" class="svg">
+      <defs>
+        <filter id="uib-jelly-triangle-ooze">
+          <feGaussianBlur in="SourceGraphic" stdDeviation="3.333" result="blur" />
+          <feColorMatrix
+            in="blur"
+            mode="matrix"
+            values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 18 -7"
+            result="ooze"
+          />
+          <feBlend in="SourceGraphic" in2="ooze" />
+        </filter>
+      </defs>
+    </svg>
+  </div>
 
   <header style="background:linear-gradient(180deg,#154965,#154965);color:#fff;padding:18px 0;">
     <div style="max-width:1200px;margin:0 auto;display:flex;align-items:center;gap:16px;padding:0 18px;">
@@ -389,12 +389,11 @@
     </div>
   </main>
 
+  <!-- ================== LÓGICA JS CON REST API ================== -->
   <script type="module">
-    import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
-
     const SUPABASE_URL = 'https://ghywlqpirjqsmmlyomaw.supabase.co';
-    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdoeXdscXBpcmpxc21tbHlvbWF3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTk4MTYwMTYsImV4cCI6MjA3NTM5MjAxNn0.v8fs-lpmWu7cmqM45wKvsFNaHJxcJro4dSxknDWgVGI';
-    const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    const SUPABASE_ANON_KEY =
+      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdoeXdscXBpcmpxc21tbHlvbWF3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTk4MTYwMTYsImV4cCI6MjA3NTM5MjAxNn0.v8fs-lpmWu7cmqM45wKvsFNaHJxcJro4dSxknDWgVGI';
 
     // Protección de ruta
     if (!sessionStorage.getItem('user')) window.location.href = 'login.html';
@@ -407,32 +406,258 @@
 
     const columnKeys = { clas: null, col: null, status: null };
 
-    async function loadOptions(){
-      const { data: clas } = await supabase.from('clasificaciones').select('id,nombre').order('nombre');
-      const { data: cols } = await supabase.from('colonias').select('id,nombre_colonia').order('nombre_colonia');
-
-      document.getElementById('clasificacion').innerHTML =
-        (clas || []).map(c => `<option value="${c.id}">${c.nombre}</option>`).join('');
-
-      document.getElementById('colonia').innerHTML =
-        (cols || []).map(c => `<option value="${c.id}">${c.nombre_colonia}</option>`).join('');
-
-      window._clasMap = {};
-      (clas || []).forEach(c => { window._clasMap[c.id] = c.nombre; });
-
-      window._colsMap = {};
-      (cols || []).forEach(c => { window._colsMap[c.id] = c.nombre_colonia; });
+    // ===== Helpers loader =====
+    function showLoading() {
+      const l = document.getElementById('loader');
+      if (l) l.style.display = 'flex';
+    }
+    function hideLoading() {
+      const l = document.getElementById('loader');
+      if (l) l.style.display = 'none';
     }
 
-    async function loadTable(){
+    // ===== Helper para construir URL REST =====
+    function buildUrl(table, { select='*', filters={}, order, limit } = {}) {
+      const url = new URL(SUPABASE_URL + '/rest/v1/' + table);
+      url.searchParams.set('select', select);
+      Object.entries(filters).forEach(([col, cond]) => {
+        if (cond != null && cond !== '') url.searchParams.set(col, cond);
+      });
+      if (order) url.searchParams.set('order', order);
+      if (limit) url.searchParams.set('limit', String(limit));
+      return url;
+    }
+
+    async function restGet(table, options = {}) {
+      const url = buildUrl(table, options);
+      const resp = await fetch(url.toString(), {
+        method: 'GET',
+        headers: {
+          apikey: SUPABASE_ANON_KEY,
+          Authorization: 'Bearer ' + SUPABASE_ANON_KEY,
+          'Content-Type': 'application/json'
+        }
+      });
+      if (!resp.ok) {
+        const txt = await resp.text();
+        throw new Error(txt || 'Error HTTP ' + resp.status);
+      }
+      return await resp.json();
+    }
+
+    async function restUpdate(table, filters, payload) {
+      const url = new URL(SUPABASE_URL + '/rest/v1/' + table);
+      Object.entries(filters).forEach(([col, cond]) => {
+        url.searchParams.set(col, cond);
+      });
+      const resp = await fetch(url.toString(), {
+        method: 'PATCH',
+        headers: {
+          apikey: SUPABASE_ANON_KEY,
+          Authorization: 'Bearer ' + SUPABASE_ANON_KEY,
+          'Content-Type': 'application/json',
+          Prefer: 'return=minimal'
+        },
+        body: JSON.stringify(payload)
+      });
+      if (!resp.ok) {
+        const txt = await resp.text();
+        throw new Error(txt || 'Error HTTP ' + resp.status);
+      }
+    }
+
+    async function restDelete(table, filters) {
+      const url = new URL(SUPABASE_URL + '/rest/v1/' + table);
+      Object.entries(filters).forEach(([col, cond]) => {
+        url.searchParams.set(col, cond);
+      });
+      const resp = await fetch(url.toString(), {
+        method: 'DELETE',
+        headers: {
+          apikey: SUPABASE_ANON_KEY,
+          Authorization: 'Bearer ' + SUPABASE_ANON_KEY,
+          'Content-Type': 'application/json',
+          Prefer: 'return=minimal'
+        }
+      });
+      if (!resp.ok) {
+        const txt = await resp.text();
+        throw new Error(txt || 'Error HTTP ' + resp.status);
+      }
+    }
+
+    // ===== Carga de combos clasificaciones y colonias =====
+    async function loadOptions() {
+      showLoading();
+      try {
+        const clas = await restGet('clasificaciones', {
+          select: 'id,nombre',
+          order: 'nombre.asc'
+        });
+        const cols = await restGet('colonias', {
+          select: 'id,nombre_colonia',
+          order: 'nombre_colonia.asc'
+        });
+
+        document.getElementById('clasificacion').innerHTML =
+          (clas || []).map(c => `<option value="${c.id}">${c.nombre}</option>`).join('');
+
+        document.getElementById('colonia').innerHTML =
+          (cols || []).map(c => `<option value="${c.id}">${c.nombre_colonia}</option>`).join('');
+
+        // Mapas para nombres
+        window._clasMap = {};
+        (clas || []).forEach(c => { window._clasMap[c.id] = c.nombre; });
+
+        window._colsMap = {};
+        (cols || []).forEach(c => { window._colsMap[c.id] = c.nombre_colonia; });
+      } catch (e) {
+        console.error(e);
+        msg.style.color = 'crimson';
+        msg.textContent = e.message || 'Error cargando catálogos';
+      } finally {
+        hideLoading();
+      }
+    }
+
+    // ===== Utilidad fecha =====
+    function formatDateTime(d) {
+      if (!d) return '-';
+      try {
+        const dt = new Date(d);
+        return dt.toLocaleString('es-MX', {
+          year:'numeric', month:'short', day:'numeric',
+          hour:'2-digit', minute:'2-digit'
+        });
+      } catch (e) {
+        return String(d);
+      }
+    }
+
+    // ===== Cargar reporte por ID =====
+    async function loadById(id) {
+      showLoading();
+      try {
+        const dataArr = await restGet('reportes', {
+          select: '*',
+          filters: { id: 'eq.' + id },
+          limit: 1
+        });
+        const data = (dataArr && dataArr[0]) || null;
+        if (!data) {
+          msg.textContent = 'No se encontró el reporte';
+          return;
+        }
+
+        const clasKey = data.id_clasificacion !== undefined ? 'id_clasificacion'
+                      : data.clasificacion_id !== undefined ? 'clasificacion_id'
+                      : data.id_clas !== undefined ? 'id_clas' : null;
+
+        const colKey  = data.id_colonia !== undefined ? 'id_colonia'
+                      : data.colonia_id !== undefined ? 'colonia_id' : null;
+
+        const statusKey = data.estatus !== undefined ? 'estatus'
+                         : data.estado !== undefined ? 'estado'
+                         : data.status !== undefined ? 'status' : null;
+
+        columnKeys.clas   = clasKey;
+        columnKeys.col    = colKey;
+        columnKeys.status = statusKey;
+
+        document.getElementById('rid').value        = data.id;
+        document.getElementById('remitente').value  = data.remitente || '';
+        document.getElementById('calle').value      = data.calle || '';
+        document.getElementById('detalles').value   = data.detalles || '';
+
+        document.getElementById('summary-id').textContent        = data.id;
+        document.getElementById('summary-remitente').textContent = data.remitente || '-';
+        document.getElementById('summary-creado').textContent    =
+          data.creado_en ? formatDateTime(data.creado_en) : '-';
+        document.getElementById('summary').style.display = 'block';
+
+        function setSelectValue(select, val) {
+          if (!select) return;
+          if (val === undefined || val === null || val === '') {
+            select.value = '';
+            return;
+          }
+          const v = String(val);
+          for (const o of select.options) {
+            if (o.value === v) {
+              select.value = v;
+              return;
+            }
+          }
+          const byText = Array.from(select.options)
+            .find(o => o.text.trim().toLowerCase() === v.trim().toLowerCase());
+          if (byText) {
+            select.value = byText.value;
+            return;
+          }
+          const tmp = document.createElement('option');
+          tmp.value = v;
+          tmp.text  = v;
+          tmp.selected = true;
+          select.appendChild(tmp);
+        }
+
+        if (clasKey) setSelectValue(document.getElementById('clasificacion'), data[clasKey] || '');
+        if (colKey)  setSelectValue(document.getElementById('colonia'),       data[colKey]  || '');
+
+        if (statusKey) {
+          const s = data[statusKey] || '';
+          setSelectValue(document.getElementById('estado'), s);
+        }
+
+        window.scrollTo({ top:0, behavior:'smooth' });
+
+        // Evidencias
+        const evList = document.getElementById('evidenciasList');
+        evList.innerHTML = '';
+
+        if (data.imagen_url) {
+          const img = document.createElement('img');
+          img.src = data.imagen_url;
+          img.className = 'thumb';
+          img.style.cursor = 'pointer';
+          img.onclick = () => window.open(data.imagen_url, '_blank');
+          evList.appendChild(img);
+          document.getElementById('evidencias').style.display = 'block';
+        } else if (data.evidencias && Array.isArray(data.evidencias) && data.evidencias.length) {
+          data.evidencias.forEach(u => {
+            const img = document.createElement('img');
+            img.src = u;
+            img.className = 'thumb';
+            img.style.cursor = 'pointer';
+            img.onclick = () => window.open(u, '_blank');
+            evList.appendChild(img);
+          });
+          document.getElementById('evidencias').style.display = 'block';
+        } else {
+          document.getElementById('evidencias').style.display = 'none';
+        }
+
+        // Mostrar formulario si estaba oculto
+        form.style.display = 'block';
+      } catch (e) {
+        console.error(e);
+        msg.style.color = 'crimson';
+        msg.textContent = 'Error al cargar: ' + (e.message || e);
+      } finally {
+        hideLoading();
+      }
+    }
+
+    // ===== Tabla / buscador =====
+    async function loadTable() {
       const panel         = document.getElementById('searchPanel');
       const resultsTable  = document.getElementById('resultsTable');
       const searchResults = document.getElementById('searchResults');
       const searchInput   = document.getElementById('searchInput');
       const searchBtn     = document.getElementById('searchBtn');
 
-      function displayResults(results){
-        if (!results || !results.length){
+      function displayResults(results) {
+        if (!results || !results.length) {
           searchResults.innerHTML =
             `<tr><td colspan="4" style="padding:12px;text-align:center;color:#666">No se encontraron reportes</td></tr>`;
           resultsTable.style.display = 'block';
@@ -475,38 +700,48 @@
         resultsTable.style.display = 'block';
       }
 
-      async function performSearch(){
+      async function performSearch() {
         const q = searchInput.value.trim();
-        try{
-          let dbq = supabase.from('reportes').select('*');
+        showLoading();
+        try {
+          let filters = {};
+          let limit   = 10;
 
-          if (!q){
-            const { data, error } = await dbq.order('id', { ascending:false }).limit(10);
-            if (error) throw error;
-            displayResults(data || []);
-            return;
+          if (!q) {
+            limit = 10;
+          } else if (/^\d+$/.test(q)) {
+            filters.id = 'eq.' + q;
+            limit = 20;
+          } else {
+            filters.remitente = 'ilike.*' + q + '*';
+            limit = 20;
           }
 
-          if (/^\d+$/.test(q)) dbq = dbq.eq('id', q);
-          else dbq = dbq.ilike('remitente', `%${q}%`);
-
-          const { data, error } = await dbq.order('id', { ascending:false }).limit(20);
-          if (error) throw error;
+          const data = await restGet('reportes', {
+            select: '*',
+            filters,
+            order: 'id.desc',
+            limit
+          });
 
           const enriched = (data || []).map(r => ({
             ...r,
             clasificacion_nombre: r.clasificacion_nombre || r.clasificacion || ''
           }));
+
           displayResults(enriched);
-        } catch (err){
+        } catch (err) {
           console.error('Error en búsqueda:', err);
           searchResults.innerHTML =
             `<tr><td colspan="4" style="padding:12px;color:crimson">Error en búsqueda: ${err.message || err}</td></tr>`;
           resultsTable.style.display = 'block';
+        } finally {
+          hideLoading();
         }
       }
 
-      window.editarReporte = async function(id){
+      // Función global para seleccionar reporte
+      window.editarReporte = async function(id) {
         await loadById(id);
         if (panel){
           panel.classList.remove('animate-in');
@@ -523,18 +758,18 @@
 
       searchBtn.addEventListener('click', performSearch);
       searchInput.addEventListener('keypress', (e) => {
-        if (e.key === 'Enter'){
+        if (e.key === 'Enter') {
           e.preventDefault();
           performSearch();
         }
       });
 
       const backLink = document.getElementById('back-link');
-      if (backLink){
+      if (backLink) {
         backLink.addEventListener('click', (ev) => {
           ev.preventDefault();
-          try{
-            if (window.history && window.history.length > 1){
+          try {
+            if (window.history && window.history.length > 1) {
               window.history.back();
               return;
             }
@@ -546,131 +781,23 @@
       await performSearch();
     }
 
-    function formatDateTime(d){
-      if (!d) return '-';
-      try{
-        const dt = new Date(d);
-        return dt.toLocaleString('es-MX', {
-          year:'numeric', month:'short', day:'numeric',
-          hour:'2-digit', minute:'2-digit'
-        });
-      } catch (e){
-        return String(d);
-      }
-    }
-
-    async function loadById(id){
-      const { data, error } = await supabase.from('reportes').select('*').eq('id', id).single();
-      if (error){
-        msg.textContent = 'Error al cargar';
-        console.error(error);
-        return;
-      }
-
-      const clasKey = data.id_clasificacion !== undefined ? 'id_clasificacion'
-                    : data.clasificacion_id !== undefined ? 'clasificacion_id'
-                    : data.id_clas !== undefined ? 'id_clas' : null;
-
-      const colKey  = data.id_colonia !== undefined ? 'id_colonia'
-                    : data.colonia_id !== undefined ? 'colonia_id' : null;
-
-      const statusKey = data.estatus !== undefined ? 'estatus'
-                       : data.estado !== undefined ? 'estado'
-                       : data.status !== undefined ? 'status' : null;
-
-      columnKeys.clas   = clasKey;
-      columnKeys.col    = colKey;
-      columnKeys.status = statusKey;
-
-      document.getElementById('rid').value        = data.id;
-      document.getElementById('remitente').value  = data.remitente || '';
-      document.getElementById('calle').value      = data.calle || '';
-      document.getElementById('detalles').value   = data.detalles || '';
-
-      document.getElementById('summary-id').textContent        = data.id;
-      document.getElementById('summary-remitente').textContent = data.remitente || '-';
-      document.getElementById('summary-creado').textContent    =
-        data.creado_en ? formatDateTime(data.creado_en) : '-';
-      document.getElementById('summary').style.display = 'block';
-
-      function setSelectValue(select, val){
-        if (!select) return;
-        if (val === undefined || val === null || val === ''){
-          select.value = '';
-          return;
-        }
-        const v = String(val);
-        for (const o of select.options){
-          if (o.value === v){
-            select.value = v;
-            return;
-          }
-        }
-        const byText = Array.from(select.options)
-          .find(o => o.text.trim().toLowerCase() === v.trim().toLowerCase());
-        if (byText){
-          select.value = byText.value;
-          return;
-        }
-        const tmp = document.createElement('option');
-        tmp.value = v;
-        tmp.text  = v;
-        tmp.selected = true;
-        select.appendChild(tmp);
-      }
-
-      if (clasKey) setSelectValue(document.getElementById('clasificacion'), data[clasKey] || '');
-      if (colKey)  setSelectValue(document.getElementById('colonia'),       data[colKey]  || '');
-
-      if (statusKey){
-        const s = data[statusKey] || '';
-        setSelectValue(document.getElementById('estado'), s);
-      }
-
-      window.scrollTo({ top:0, behavior:'smooth' });
-
-      const evList = document.getElementById('evidenciasList');
-      evList.innerHTML = '';
-
-      if (data.imagen_url){
-        const img = document.createElement('img');
-        img.src = data.imagen_url;
-        img.className = 'thumb';
-        img.style.cursor = 'pointer';
-        img.onclick = () => window.open(data.imagen_url, '_blank');
-        evList.appendChild(img);
-        document.getElementById('evidencias').style.display = 'block';
-      } else if (data.evidencias && Array.isArray(data.evidencias) && data.evidencias.length){
-        data.evidencias.forEach(u => {
-          const img = document.createElement('img');
-          img.src = u;
-          img.className = 'thumb';
-          img.style.cursor = 'pointer';
-          img.onclick = () => window.open(u, '_blank');
-          evList.appendChild(img);
-        });
-        document.getElementById('evidencias').style.display = 'block';
-      } else {
-        document.getElementById('evidencias').style.display = 'none';
-      }
-    }
-
+    // ===== Actualizar =====
     document.getElementById('btnUpdate').addEventListener('click', async () => {
       const id = document.getElementById('rid').value;
-      if (!id){
+      if (!id) {
         msg.textContent = 'Selecciona un reporte primero';
         return;
       }
       msg.textContent = '';
 
-      const remitente    = document.getElementById('remitente').value;
+      const remitente     = document.getElementById('remitente').value;
       const clasificacion = document.getElementById('clasificacion').value;
-      const colonia      = document.getElementById('colonia').value;
-      const calle        = document.getElementById('calle').value;
-      const detalles     = document.getElementById('detalles').value;
-      const estado       = document.getElementById('estado')
-                         ? document.getElementById('estado').value
-                         : 'Pendiente';
+      const colonia       = document.getElementById('colonia').value;
+      const calle         = document.getElementById('calle').value;
+      const detalles      = document.getElementById('detalles').value;
+      const estado        = document.getElementById('estado')
+                           ? document.getElementById('estado').value
+                           : 'Pendiente';
 
       const updates = {
         remitente,
@@ -679,63 +806,63 @@
         fecha_actualizacion: new Date().toISOString()
       };
 
-      if (columnKeys.clas) updates[columnKeys.clas] = clasificacion;
-      else updates['id_clasificacion'] = parseInt(clasificacion) || null;
+      if (columnKeys.clas) updates[columnKeys.clas] = clasificacion || null;
+      else updates['id_clasificacion'] = clasificacion ? parseInt(clasificacion) : null;
 
-      if (columnKeys.col) updates[columnKeys.col] = colonia;
-      else updates['id_colonia'] = parseInt(colonia) || null;
+      if (columnKeys.col) updates[columnKeys.col] = colonia || null;
+      else updates['id_colonia'] = colonia ? parseInt(colonia) : null;
 
       if (columnKeys.status) updates[columnKeys.status] = estado;
       else updates['estatus'] = estado;
 
-      try{
-        const { error } = await supabase.from('reportes').update(updates).eq('id', id);
-        if (error){
-          msg.style.color = 'crimson';
-          msg.textContent = 'Error al actualizar: ' + (error.message || 'Error desconocido');
-          console.error('Update error:', error);
-          return;
-        }
-
+      showLoading();
+      try {
+        await restUpdate('reportes', { id: 'eq.' + id }, updates);
         msg.style.color = 'green';
         msg.textContent = 'Actualizado correctamente';
         await loadTable();
-      } catch (err){
+      } catch (err) {
         console.error(err);
         msg.style.color = 'crimson';
         msg.textContent = 'Error al actualizar: ' + (err.message || String(err));
+      } finally {
+        hideLoading();
       }
     });
 
+    // ===== Eliminar =====
     document.getElementById('btnDelete').addEventListener('click', async () => {
       const id = document.getElementById('rid').value;
-      if (!id){
+      if (!id) {
         msg.textContent = 'Selecciona un reporte primero';
         return;
       }
       if (!confirm('¿Eliminar este reporte?')) return;
 
-      const { error } = await supabase.from('reportes').delete().eq('id', id);
-      if (error){
-        msg.textContent = 'Error al eliminar';
-        console.error(error);
-        return;
+      showLoading();
+      try {
+        await restDelete('reportes', { id: 'eq.' + id });
+        msg.style.color = 'green';
+        msg.textContent = 'Eliminado';
+        form.reset();
+        document.getElementById('summary').style.display = 'none';
+        await loadTable();
+      } catch (err) {
+        console.error(err);
+        msg.style.color = 'crimson';
+        msg.textContent = 'Error al eliminar: ' + (err.message || String(err));
+      } finally {
+        hideLoading();
       }
-      msg.style.color = 'green';
-      msg.textContent = 'Eliminado';
-      form.reset();
-      await loadTable();
     });
 
+    // ===== Secuencia de carga inicial =====
     await loadOptions();
     await loadTable();
 
-    if (idParam){
-      if (typeof window.editarReporte === 'function') {
-        await window.editarReporte(idParam);
-      } else {
-        await loadById(idParam);
-      }
+    if (idParam) {
+      // Si viene ?id= desde consultar, carga directamente ese reporte
+      await loadById(idParam);
     }
   </script>
 
@@ -764,11 +891,12 @@
     })();
   </script>
   <script>
-    window.addEventListener("load", () => { setTimeout(() => {
-      const loader = document.getElementById("loader");
-      if (loader) loader.style.display = "none";
-    }, 2000); //segundos
-  });
+    window.addEventListener("load", () => { 
+      setTimeout(() => {
+        const loader = document.getElementById("loader");
+        if (loader) loader.style.display = "none";
+      }, 2000);
+    });
   </script>
 </body>
 </html>

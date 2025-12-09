@@ -151,7 +151,6 @@
       </div>
 
       <div class="mb-16">
-        <!-- CAMBIO: ahora btn-primary para que sea azul lleno -->
         <a href="index.html" class="btn btn-primary">
           <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <path d="M10 19l-7-7 7-7M3 12h18"/>
@@ -191,6 +190,7 @@
             <textarea id="detalles" name="detalles" class="form-control" rows="6" placeholder="Describe los detalles del reporte..."></textarea>
           </div>
 
+          <!-- Futuro uso para imagen -->
           <input type="file" id="imagen" accept="image/*" hidden>
 
           <div class="form-group full">
@@ -211,97 +211,159 @@
     </div>
   </main>
 
-  <script type="module">
-    import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
-
+  <!-- =================== LÓGICA JS (REST Supabase) =================== -->
+  <script>
     const SUPABASE_URL = 'https://ghywlqpirjqsmmlyomaw.supabase.co';
-    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdoeXdscXBpcmpxc21tbHlvbWF3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTk4MTYwMTYsImV4cCI6MjA3NTM5MjAxNn0.v8fs-lpmWu7cmqM45wKvsFNaHJxcJro4dSxknDWgVGI';
-    const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    const SUPABASE_ANON_KEY =
+      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdoeXdscXBpcmpxc21tbHlvbWF3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTk4MTYwMTYsImV4cCI6MjA3NTM5MjAxNn0.v8fs-lpmWu7cmqM45wKvsFNaHJxcJro4dSxknDWgVGI';
+
+    // Helpers loader
+    function showLoading() {
+      const l = document.getElementById('loader');
+      if (l) l.style.display = 'flex';
+    }
+    function hideLoading() {
+      const l = document.getElementById('loader');
+      if (l) l.style.display = 'none';
+    }
+
+    // Helper genérico SELECT
+    async function restSelect(table, options = {}) {
+      const { select = '*', ...filters } = options;
+      const url = new URL(SUPABASE_URL + '/rest/v1/' + table);
+      url.searchParams.set('select', select);
+      Object.entries(filters).forEach(([k,v]) => {
+        if (v != null && v !== '') url.searchParams.append(k, v);
+      });
+
+      const resp = await fetch(url.toString(), {
+        method: 'GET',
+        headers: {
+          apikey: SUPABASE_ANON_KEY,
+          Authorization: 'Bearer ' + SUPABASE_ANON_KEY,
+          'Content-Type': 'application/json'
+        }
+      });
+
+      if (!resp.ok) {
+        const txt = await resp.text();
+        throw new Error(txt || ('Error HTTP ' + resp.status));
+      }
+      return await resp.json();
+    }
+
+    // Helper INSERT
+    async function restInsert(table, rows) {
+      const resp = await fetch(SUPABASE_URL + '/rest/v1/' + table, {
+        method: 'POST',
+        headers: {
+          apikey: SUPABASE_ANON_KEY,
+          Authorization: 'Bearer ' + SUPABASE_ANON_KEY,
+          'Content-Type': 'application/json',
+          Prefer: 'return=minimal'
+        },
+        body: JSON.stringify(rows)
+      });
+
+      if (!resp.ok) {
+        const txt = await resp.text();
+        throw new Error(txt || ('Error HTTP ' + resp.status));
+      }
+    }
 
     // ===== Sesión y roles =====
     const allowedRoles = [1, 2]; // Admin, Coordinador
-    const raw = sessionStorage.getItem('user');
-    if (!raw) location.href = 'login.html';
+    const rawUser = sessionStorage.getItem('user');
+    if (!rawUser) window.location.href = 'login.html';
 
     let currentUser = null;
-    try { currentUser = JSON.parse(raw); } catch {}
+    try { currentUser = JSON.parse(rawUser); } catch {}
     const role = Number(currentUser?.id_rol);
 
-    // Mostrar/ocultar enlaces por rol
-    document.querySelectorAll('[data-role-allow]').forEach(el=>{
-      const allow = el.getAttribute('data-role-allow').split(',').map(n=>Number(n.trim()));
-      if(!allow.includes(role)) el.style.display = 'none';
+    // Control de visibilidad de enlaces por rol
+    document.querySelectorAll('[data-role-allow]').forEach(el => {
+      const allow = el.getAttribute('data-role-allow')
+        .split(',')
+        .map(n => Number(n.trim()));
+      if (!allow.includes(role)) el.style.display = 'none';
     });
 
     const form = document.getElementById('formAdd');
-    const msg = document.getElementById('msg');
+    const msg  = document.getElementById('msg');
     const forbiddenMsg = document.getElementById('forbiddenMsg');
 
-    function blockAccess(){
+    function blockAccess() {
       forbiddenMsg.style.display = 'block';
-      form.querySelectorAll('input,select,textarea,button').forEach(el=>el.disabled=true);
-      setTimeout(()=>location.href='index.html', 1500);
+      form.querySelectorAll('input,select,textarea,button').forEach(el => el.disabled = true);
+      setTimeout(() => window.location.href = 'index.html', 1500);
     }
     if (!allowedRoles.includes(role)) blockAccess();
 
-    // ===== Combos =====
-    async function loadOptions(){
+    // ===== Carga de combos (clasificación y colonia) =====
+    async function loadOptions() {
       if (!allowedRoles.includes(role)) return;
-      const selC = document.getElementById('clasificacion');
+
+      const selC  = document.getElementById('clasificacion');
       const selCol = document.getElementById('colonia');
-      try{
-        const [clasResult, colResult] = await Promise.all([
-          supabase.from('clasificaciones').select('id,nombre').order('nombre'),
-          supabase.from('colonias').select('id,nombre_colonia').order('nombre_colonia')
+
+      showLoading();
+      try {
+        const [clasData, colData] = await Promise.all([
+          restSelect('clasificaciones', { select: 'id,nombre', order: 'nombre' }),
+          restSelect('colonias', { select: 'id,nombre_colonia', order: 'nombre_colonia' })
         ]);
-        if (clasResult.error) throw clasResult.error;
-        if (colResult.error) throw colResult.error;
 
         selC.innerHTML = `<option value="">Seleccionar clasificación...</option>${
-          (clasResult.data||[]).map(r=>`<option value="${r.id}">${r.nombre}</option>`).join('')
+          (clasData || []).map(r => `<option value="${r.id}">${r.nombre}</option>`).join('')
         }`;
+
         selCol.innerHTML = `<option value="">Seleccionar colonia...</option>${
-          (colResult.data||[]).map(r=>`<option value="${r.id}">${r.nombre_colonia}</option>`).join('')
+          (colData || []).map(r => `<option value="${r.id}">${r.nombre_colonia}</option>`).join('')
         }`;
 
         msg.textContent = '';
         document.getElementById('remitente')?.focus();
-      }catch(error){
-        msg.className='alert error';
+      } catch (error) {
+        console.error(error);
+        msg.className = 'alert error';
         msg.textContent = error.message || 'Error cargando datos';
-        form.querySelectorAll('input,select,button,textarea').forEach(el=>el.disabled=true);
+        form.querySelectorAll('input,select,button,textarea').forEach(el => el.disabled = true);
+      } finally {
+        hideLoading();
       }
     }
 
-    // ===== Submit =====
-    form.addEventListener('submit', async (e)=>{
+    // ===== Alta de reporte =====
+    form.addEventListener('submit', async (e) => {
       e.preventDefault();
       if (!allowedRoles.includes(role)) { blockAccess(); return; }
 
-      msg.className=''; msg.textContent='';
+      msg.className = '';
+      msg.textContent = '';
 
-      const remitente = document.getElementById('remitente').value.trim();
+      const remitente    = document.getElementById('remitente').value.trim();
       const clasificacion = document.getElementById('clasificacion').value;
-      const colonia = document.getElementById('colonia').value;
-      const calle = document.getElementById('calle').value.trim();
-      const detalles = document.getElementById('detalles').value.trim();
+      const colonia      = document.getElementById('colonia').value;
+      const calle        = document.getElementById('calle').value.trim();
+      const detalles     = document.getElementById('detalles').value.trim();
 
-      if(!remitente || !clasificacion || !colonia){
-        msg.className='alert error';
-        msg.textContent='Completa los campos obligatorios';
+      if (!remitente || !clasificacion || !colonia) {
+        msg.className = 'alert error';
+        msg.textContent = 'Completa los campos obligatorios.';
         return;
       }
 
       const btn = form.querySelector('button[type="submit"]');
       btn.disabled = true;
       btn.textContent = 'Agregando…';
+      showLoading();
 
-      try{
-        const now = new Date().toISOString().replace('T',' ').substring(0,19);
+      try {
+        const now = new Date().toISOString().replace('T', ' ').substring(0, 19);
         const payload = {
           remitente,
-          id_clasificacion: parseInt(clasificacion),
-          id_colonia: parseInt(colonia),
+          id_clasificacion: parseInt(clasificacion, 10),
+          id_colonia: parseInt(colonia, 10),
           calle,
           detalles,
           fecha_reporte: now,
@@ -310,34 +372,36 @@
           creado_en: now
         };
 
-        const { error } = await supabase.from('reportes').insert([payload]);
-        if (error) throw error;
+        await restInsert('reportes', [payload]);
 
-        msg.className='alert ok';
-        msg.textContent='¡Reporte agregado correctamente!';
+        msg.className = 'alert ok';
+        msg.textContent = '¡Reporte agregado correctamente!';
         form.reset();
-        setTimeout(()=>location.href='reportes_consultar.html', 1200);
-      }catch(error){
-        msg.className='alert error';
-        msg.textContent=`Error al agregar reporte: ${error.message||'Desconocido'}`;
-      }finally{
-        btn.disabled=false;
-        btn.textContent='Agregar Reporte';
+        setTimeout(() => window.location.href = 'reportes_consultar.html', 1200);
+      } catch (error) {
+        console.error(error);
+        msg.className = 'alert error';
+        msg.textContent = `Error al agregar reporte: ${error.message || 'Desconocido'}`;
+      } finally {
+        hideLoading();
+        btn.disabled = false;
+        btn.textContent = 'Agregar Reporte';
       }
     });
 
+    // Inicializar combos si el rol está autorizado
     if (allowedRoles.includes(role)) loadOptions();
 
     // Logout
-    document.getElementById('logout-link')?.addEventListener('click', e=>{
+    document.getElementById('logout-link')?.addEventListener('click', e => {
       e.preventDefault();
       sessionStorage.removeItem('user');
-      location.href='login.html';
+      window.location.href = 'login.html';
     });
   </script>
 
+  <!-- Ocultar loader global después de unos segundos (fallback visual) -->
   <script>
-    // Ocultar loader global después de 2 segundos
     window.addEventListener("load", () => {
       setTimeout(() => {
         const loader = document.getElementById("loader");

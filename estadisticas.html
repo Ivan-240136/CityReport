@@ -12,7 +12,6 @@
   <link rel="stylesheet" href="css/modals.css">
   <link rel="stylesheet" href="css/stats.css">
 
-  <!-- Unificación de estilo de botones (mismo azul que Consultar/Agregar) -->
   <style>
     :root {
       /* Azul institucional CityReport */
@@ -227,103 +226,196 @@
     </div>
   </main>
 
+  <!-- ================== LÓGICA JS CON REST API ================== -->
   <script type="module">
-    import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
-
     const SUPABASE_URL = 'https://ghywlqpirjqsmmlyomaw.supabase.co';
-    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdoeXdscXBpcmpxc21tbHlvbWF3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTk4MTYwMTYsImV4cCI6MjA3NTM5MjAxNn0.v8fs-lpmWu7cmqM45wKvsFNaHJxcJro4dSxknDWgVGI';
-    const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    const SUPABASE_ANON_KEY =
+      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdoeXdscXBpcmpxc21tbHlvbWF3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTk4MTYwMTYsImV4cCI6MjA3NTM5MjAxNn0.v8fs-lpmWu7cmqM45wKvsFNaHJxcJro4dSxknDWgVGI';
 
-    const FIELDS = { status:'estatus', coloniaId:'id_colonia', clasifId:'id_clasificacion', date:'fecha_reporte' };
+    const FIELDS = {
+      status: 'estatus',
+      coloniaId: 'id_colonia',
+      clasifId: 'id_clasificacion',
+      date: 'fecha_reporte'
+    };
 
-    if (!sessionStorage.getItem('user')) window.location.href='login.html';
+    // Protección de ruta
+    if (!sessionStorage.getItem('user')) window.location.href = 'login.html';
 
-    document.getElementById('dateNow').textContent = new Date().toLocaleString();
+    // Fecha/hora en encabezado
+    document.getElementById('dateNow').textContent = new Date().toLocaleString('es-MX', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
+    });
 
-    async function loadStats() {
-      const { count: totalCount } = await supabase.from('reportes').select('id', { count: 'exact', head: true });
-      const { count: pendCount  } = await supabase.from('reportes').select('id', { count: 'exact', head: true }).eq(FIELDS.status,'Pendiente');
-      const { count: procCount  } = await supabase.from('reportes').select('id', { count: 'exact', head: true }).eq(FIELDS.status,'En Proceso');
-      const { count: resCount   } = await supabase.from('reportes').select('id', { count: 'exact', head: true }).eq(FIELDS.status,'Resuelto');
+    // Loader helpers
+    function showLoading(){
+      const l = document.getElementById('loader');
+      if (l) l.style.display = 'flex';
+    }
+    function hideLoading(){
+      const l = document.getElementById('loader');
+      if (l) l.style.display = 'none';
+    }
 
-      const totalNum = Number(totalCount || 0);
-      const pendNum  = Number(pendCount  || 0);
-      const procNum  = Number(procCount  || 0);
-      const resNum   = Number(resCount   || 0);
+    // Construir URL REST
+    function buildUrl(table, { select='*', filters={}, order, limit } = {}){
+      const url = new URL(SUPABASE_URL + '/rest/v1/' + table);
+      url.searchParams.set('select', select);
+      Object.entries(filters).forEach(([col, cond]) => {
+        if (cond != null && cond !== '') url.searchParams.set(col, cond);
+      });
+      if (order) url.searchParams.set('order', order);
+      if (limit) url.searchParams.set('limit', String(limit));
+      return url;
+    }
 
-      const setAnimatedValue = (id, val) => {
-        const el = document.getElementById(id);
-        if(!el) return;
-        if(typeof window.animateValue === 'function') window.animateValue(el, 0, Number(val||0), 1200);
-        else el.textContent = val;
-      };
-      setAnimatedValue('totalVal', totalNum);
-      setAnimatedValue('pendVal',  pendNum);
-      setAnimatedValue('procVal',  procNum);
-      setAnimatedValue('resVal',   resNum);
+    async function restGet(table, options = {}){
+      const url = buildUrl(table, options);
+      const resp = await fetch(url.toString(), {
+        method: 'GET',
+        headers: {
+          apikey: SUPABASE_ANON_KEY,
+          Authorization: 'Bearer ' + SUPABASE_ANON_KEY,
+          'Content-Type': 'application/json'
+        }
+      });
+      if (!resp.ok){
+        const txt = await resp.text();
+        throw new Error(txt || 'Error HTTP ' + resp.status);
+      }
+      return await resp.json();
+    }
 
-      const { data: reports } = await supabase
-        .from('reportes')
-        .select(`${FIELDS.coloniaId},${FIELDS.clasifId},${FIELDS.date}`)
-        .limit(10000);
+    function setAnimatedValue(id, val){
+      const el = document.getElementById(id);
+      if (!el) return;
+      const n = Number(val || 0);
+      if (typeof window.animateValue === 'function'){
+        window.animateValue(el, 0, n, 1200);
+      } else {
+        el.textContent = n;
+      }
+    }
 
-      document.getElementById('coloniaFreq').textContent       = 'Colonia más frecuente - —';
-      document.getElementById('clasificacionFreq').textContent = 'Reporte más común - —';
-      document.getElementById('picoDia').textContent            = 'Pico de actividad - —';
+    async function loadStats(){
+      showLoading();
+      try {
+        // Traemos todos los datos relevantes de una sola vez
+        const reports = await restGet('reportes', {
+          select: `id,${FIELDS.status},${FIELDS.coloniaId},${FIELDS.clasifId},${FIELDS.date}`,
+          limit: 10000
+        });
 
-      if (reports && reports.length){
-        const colCount={}, clasCount={}, dayCount={};
+        const totalNum = reports.length;
+        let pendNum = 0, procNum = 0, resNum = 0;
+
+        const colCount = {};
+        const clasCount = {};
+        const dayCount  = {};
+
         for (const r of reports){
+          const st = (r[FIELDS.status] || r.estatus || r.estado || r.status || '').trim();
+
+          if (st === 'Pendiente')      pendNum++;
+          else if (st === 'En Proceso') procNum++;
+          else if (st === 'Resuelto')   resNum++;
+
           const colId = r[FIELDS.coloniaId];
-          const claId = r[FIELDS.clasifId];
-          const fecha = r[FIELDS.date];
           if (colId != null) colCount[colId] = (colCount[colId] || 0) + 1;
+
+          const claId = r[FIELDS.clasifId];
           if (claId != null) clasCount[claId] = (clasCount[claId] || 0) + 1;
-          if (fecha) { const d = new Date(fecha).getDay(); dayCount[d] = (dayCount[d] || 0) + 1; }
+
+          const fecha = r[FIELDS.date];
+          if (fecha){
+            const d = new Date(fecha).getDay(); // 0=Domingo ... 6=Sábado
+            dayCount[d] = (dayCount[d] || 0) + 1;
+          }
         }
 
+        // Totales
+        setAnimatedValue('totalVal', totalNum);
+        setAnimatedValue('pendVal',  pendNum);
+        setAnimatedValue('procVal',  procNum);
+        setAnimatedValue('resVal',   resNum);
+
+        // Valores por defecto
+        const coloniaFreqEl       = document.getElementById('coloniaFreq');
+        const clasificacionFreqEl = document.getElementById('clasificacionFreq');
+        const picoDiaEl           = document.getElementById('picoDia');
+
+        coloniaFreqEl.textContent       = '—';
+        clasificacionFreqEl.textContent = '—';
+        picoDiaEl.textContent           = '—';
+
+        // Colonia más frecuente
         const topCol = Object.entries(colCount).sort((a,b)=>b[1]-a[1])[0];
         if (topCol){
           const [colId] = topCol;
-          const { data: col } = await supabase
-            .from('colonias').select('nombre_colonia').eq('id', Number(colId)).limit(1).single();
-          const nombreCol = col?.nombre_colonia || '—';
-          document.getElementById('coloniaFreq').textContent =
-            ` ${nombreCol}`;
+          const colData = await restGet('colonias', {
+            select: 'id,nombre_colonia',
+            filters: { id: 'eq.' + colId },
+            limit: 1
+          });
+          const col = colData && colData[0];
+          const nombreCol = col?.nombre_colonia || `#${colId}`;
+          coloniaFreqEl.textContent = nombreCol;
         }
 
+        // Clasificación más común
         const topClas = Object.entries(clasCount).sort((a,b)=>b[1]-a[1])[0];
         if (topClas){
           const [clasId] = topClas;
-          const { data: cl } = await supabase
-            .from('clasificaciones').select('nombre').eq('id', Number(clasId)).limit(1).single();
-          const plainName = (cl?.nombre || '—').replace(/\(.*?\)/g, '').trim();
-          document.getElementById('clasificacionFreq').textContent =
-            ` ${plainName}`;
+          const clasData = await restGet('clasificaciones', {
+            select: 'id,nombre',
+            filters: { id: 'eq.' + clasId },
+            limit: 1
+          });
+          const cl = clasData && clasData[0];
+          const rawName = cl?.nombre || `#${clasId}`;
+          const plainName = rawName.replace(/\(.*?\)/g, '').trim();
+          clasificacionFreqEl.textContent = plainName;
         }
 
+        // Pico de actividad semanal
         const diasSemana = ['Domingo','Lunes','Martes','Miércoles','Jueves','Viernes','Sábado'];
         const topDay = Object.entries(dayCount).sort((a,b)=>b[1]-a[1])[0];
         if (topDay){
           const idx = Number(topDay[0]);
           const dia = diasSemana[idx] || '—';
-          document.getElementById('picoDia').textContent =
-            ` ${dia}`;
+          picoDiaEl.textContent = dia;
         }
-      }
 
-      const tasa = totalNum ? Math.round((resNum/totalNum)*100) : 0;
-      document.getElementById('tasaRes').textContent = `${tasa}% (${resNum}/${totalNum})`;
+        // Tasa de resolución
+        const tasa = totalNum ? Math.round((resNum / totalNum) * 100) : 0;
+        document.getElementById('tasaRes').textContent = `${tasa}% (${resNum}/${totalNum})`;
+
+      } catch (err){
+        console.error('Error cargando estadísticas:', err);
+        // Si falla, al menos dejamos todo en "—"
+        document.getElementById('totalVal').textContent = '—';
+        document.getElementById('pendVal').textContent  = '—';
+        document.getElementById('procVal').textContent  = '—';
+        document.getElementById('resVal').textContent   = '—';
+      } finally {
+        hideLoading();
+      }
     }
 
     loadStats();
   </script>
+
   <script>
-    window.addEventListener("load", () => { setTimeout(() => {
-      const loader = document.getElementById("loader");
-      if (loader) loader.style.display = "none";
-    }, 2000); //segundos
-  });
+    window.addEventListener("load", () => {
+      setTimeout(() => {
+        const loader = document.getElementById("loader");
+        if (loader) loader.style.display = "none";
+      }, 2000); // segundos
+    });
   </script>
 </body>
 </html>

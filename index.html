@@ -146,13 +146,14 @@
     <div class="contenedor">&copy; <span id="year"></span> CityReport — Todos los derechos reservados</div>
   </footer>
 
-  <!-- ================== SCRIPT =================== -->
-  <script type="module">
-    import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
-
+  <!-- ================== SCRIPT (SIN supabase-js) =================== -->
+  <script>
+    // ========= CONFIG SUPABASE (REST) =========
     const SUPABASE_URL = 'https://ghywlqpirjqsmmlyomaw.supabase.co';
-    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdoeXdscXBpcmpxc21tbHlvbWF3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTk4MTYwMTYsImV4cCI6MjA3NTM5MjAxNn0.v8fs-lpmWu7cmqM45wKvsFNaHJxcJro4dSxknDWgVGI';
-    const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    const SUPABASE_ANON_KEY =
+      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdoeXdscXBpcmpxc21tbHlvbWF3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTk4MTYwMTYsImV4cCI6MjA3NTM5MjAxNn0.v8fs-lpmWu7cmqM45wKvsFNaHJxcJro4dSxknDWgVGI';
+
+    const debugIndex = (...args) => console.log('[INDEX]', ...args);
 
     // ==================== Sesión y roles ====================
     (function roleGate() {
@@ -166,18 +167,19 @@
       const role = Number(u.id_rol);
       document.body.dataset.role = role;
 
+      // Mostrar / ocultar elementos por rol
       document.querySelectorAll('[data-role-allow]').forEach(el => {
         const allow = el.getAttribute('data-role-allow')
           .split(',').map(n => Number(n.trim()));
         if (!allow.includes(role)) el.style.display = 'none';
       });
 
-      // ===== Función de capitalización =====
+      // Función de capitalización
       function toTitleCase(str) {
         return str.toLowerCase().replace(/\b\w/g, l => l.toUpperCase());
       }
 
-      // ===== Saludo personalizado =====
+      // Saludo personalizado
       const h = new Date().getHours();
       let saludo = 'Buenos días';
       if (h >= 12 && h < 19) saludo = 'Buenas tardes';
@@ -207,18 +209,35 @@
       if (el) el.textContent = now.toLocaleDateString('es-MX', opts);
     }
 
-    // ==================== Stats ====================
+    // ==================== Stats por REST ====================
     async function loadDashboardStats() {
       try {
-        const [t, p, r] = await Promise.all([
-          supabase.from('reportes').select('*', { count:'exact', head:true }),
-          supabase.from('reportes').select('*', { count:'exact', head:true }).eq('estatus','Pendiente'),
-          supabase.from('reportes').select('*', { count:'exact', head:true }).eq('estatus','Resuelto'),
-        ]);
+        const url = SUPABASE_URL + '/rest/v1/reportes?select=estatus';
+        const resp = await fetch(url, {
+          method: 'GET',
+          headers: {
+            apikey: SUPABASE_ANON_KEY,
+            Authorization: 'Bearer ' + SUPABASE_ANON_KEY,
+            'Content-Type': 'application/json',
+          },
+        });
 
-        document.getElementById('total-reportes').textContent = t.count ?? 0;
-        document.getElementById('reportes-pendientes').textContent = p.count ?? 0;
-        document.getElementById('reportes-resueltos').textContent = r.count ?? 0;
+        if (!resp.ok) {
+          const txt = await resp.text();
+          console.error('Error HTTP stats:', resp.status, txt);
+          return;
+        }
+
+        const data = await resp.json();
+        debugIndex('Reportes recibidos:', data.length);
+
+        const total      = data.length;
+        const pendientes = data.filter(r => r.estatus === 'Pendiente').length;
+        const resueltos  = data.filter(r => r.estatus === 'Resuelto').length;
+
+        document.getElementById('total-reportes').textContent       = total;
+        document.getElementById('reportes-pendientes').textContent  = pendientes;
+        document.getElementById('reportes-resueltos').textContent   = resueltos;
       } catch (err) {
         console.error('Error stats:', err);
       }
@@ -238,12 +257,15 @@
     setInterval(updateDateTime, 60000);
     loadDashboardStats();
   </script>
+
   <script>
-    window.addEventListener("load", () => { setTimeout(() => {
-      const loader = document.getElementById("loader");
-      if (loader) loader.style.display = "none";
-    }, 2000); //segundos
-  });
+    // Ocultar loader después de un breve tiempo
+    window.addEventListener("load", () => {
+      setTimeout(() => {
+        const loader = document.getElementById("loader");
+        if (loader) loader.style.display = "none";
+      }, 2000);
+    });
   </script>
 </body>
 </html>
