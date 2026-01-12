@@ -1328,3 +1328,25 @@ body.login-page .error{
 @media (max-width:720px){
   .form-grid{grid-template-columns:1fr}
 }
+/* Contenedor de evidencias para mantener tamaño y proporción */
+.evidencia-box {
+    width: 200px;             /* Ancho fijo o ajustable */
+    height: 150px;            /* Alto fijo para todas las imágenes */
+    overflow: hidden;         /* Oculta lo que sobresalga */
+    border-radius: 10px;      /* Bordes redondeados */
+    border: 1px solid #dce6ee; /* Borde sutil */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: #f9fcff;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+}
+
+/* Imagen dentro del contenedor */
+.evidencia-box img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;   /* Mantiene la proporción y evita que se salga */
+    display: block;
+} 
+ 

@@ -34,14 +34,20 @@
       height:16px;
     }
 
-    /* CONTENEDOR DE BÚSQUEDA */
-    .search-container{
-      margin-top:1.5rem;
-      background:#ffffff;
-      padding:16px 20px 14px;
-      border-radius:12px;
-      box-shadow:0 10px 30px rgba(21,40,60,0.06);
-    }
+  /* CONTENEDOR DE BÚSQUEDA */
+  .search-container {
+    margin-top: 1.5rem;
+    margin-bottom: 3rem; /* <--- Agregamos este margen inferior */
+    background: #ffffff;
+    padding: 16px 20px 14px;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(21, 40, 60, 0.06);
+}
+/* TABLA DE RESULTADOS DE BÚSQUEDA */
+.results-table {
+  width: 100%;
+  margin-bottom: 2rem; /* Espacio extra debajo de las filas */
+}
     .search-input-group{
       display:flex;
       gap:.75rem;
@@ -120,7 +126,22 @@
     .btn-select .icon.small{
       width:14px;
       height:14px;
+      
     }
+    /* CONTENEDOR VISUAL DE EVIDENCIAS */
+.evidencia-box {
+  max-width: 100%;
+  max-height: 460px;
+  overflow: hidden;
+  background: #f9fafb;
+  border-radius: 12px;
+  padding: 8px;
+  border: 1px solid #e5e7eb;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
   </style>
 </head>
 <body>
@@ -247,35 +268,6 @@
         </div>
       </div>
 
-      <!-- PANEL DE BÚSQUEDA -->
-      <div id="searchPanel" class="search-container">
-        <div class="search-input-group">
-          <input id="searchInput" class="search-input" type="text"
-                 placeholder="Buscar por ID o remitente...">
-          <button id="searchBtn" class="btn btn-primary btn-hover-lift" type="button">
-            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M21 21l-4.35-4.35"/>
-              <circle cx="11" cy="11" r="6"/>
-            </svg>
-            Buscar
-          </button>
-        </div>
-
-        <div id="resultsTable" class="table-container" style="margin-top:1rem;display:none">
-          <table class="results-table" style="width:100%">
-            <thead>
-              <tr>
-                <th>ID</th>
-                <th>Remitente</th>
-                <th>Clasificación</th>
-                <th>Acción</th>
-              </tr>
-            </thead>
-            <tbody id="searchResults"></tbody>
-          </table>
-        </div>
-      </div>
-
       <!-- RESUMEN DEL REPORTE SELECCIONADO -->
       <div id="summary"
            style="border-left:4px solid #11606a;padding:12px;margin-bottom:12px;background:#fbfdff;border-radius:6px;display:none">
@@ -380,13 +372,44 @@
         </div>
       </form>
 
-      <div id="evidencias" style="margin-top:18px;display:none">
+      <div id="evidencias" class="form-group" style="margin-top:18px;display:none">
         <h3 style="margin:0 0 8px;color:#11606a">Evidencias</h3>
         <div id="evidenciasList" style="display:flex;gap:12px;flex-wrap:wrap"></div>
       </div>
 
       <div id="msg" style="margin-top:10px;color:crimson"></div>
     </div>
+
+          <!-- PANEL DE BÚSQUEDA -->
+           <main style="max-width: 1200px; margin: 0 auto; padding: 0 20px 40px;">
+      <div id="searchPanel" class="search-container">
+        <div class="search-input-group">
+          <input id="searchInput" class="search-input" type="text"
+                 placeholder="Buscar por ID o remitente...">
+          <button id="searchBtn" class="btn btn-primary btn-hover-lift" type="button">
+            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M21 21l-4.35-4.35"/>
+              <circle cx="11" cy="11" r="6"/>
+            </svg>
+            Buscar
+          </button>
+        </div>
+
+        <div id="resultsTable" class="table-container" style="margin-top:1rem;display:none">
+          <table class="results-table" style="width:100%">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Remitente</th>
+                <th>Clasificación</th>
+                <th>Acción</th>
+              </tr>
+            </thead>
+            <tbody id="searchResults"></tbody>
+          </table>
+        </div>
+      </div>
+
   </main>
 
   <!-- ================== LÓGICA JS CON REST API ================== -->
@@ -612,30 +635,38 @@
         window.scrollTo({ top:0, behavior:'smooth' });
 
         // Evidencias
-        const evList = document.getElementById('evidenciasList');
-        evList.innerHTML = '';
+      const evList = document.getElementById('evidenciasList');
+      evList.innerHTML = '';
 
-        if (data.imagen_url) {
+      if (data.imagen_url) {
+          const box = document.createElement('div');
+          box.className = 'evidencia-box';
+
           const img = document.createElement('img');
           img.src = data.imagen_url;
-          img.className = 'thumb';
-          img.style.cursor = 'pointer';
           img.onclick = () => window.open(data.imagen_url, '_blank');
-          evList.appendChild(img);
+
+          box.appendChild(img);
+          evList.appendChild(box);
           document.getElementById('evidencias').style.display = 'block';
-        } else if (data.evidencias && Array.isArray(data.evidencias) && data.evidencias.length) {
-          data.evidencias.forEach(u => {
-            const img = document.createElement('img');
-            img.src = u;
-            img.className = 'thumb';
-            img.style.cursor = 'pointer';
-            img.onclick = () => window.open(u, '_blank');
-            evList.appendChild(img);
+          }
+          else if (data.evidencias && Array.isArray(data.evidencias)) {
+          data.evidencias.forEach(url => {
+              const box = document.createElement('div');
+              box.className = 'evidencia-box';
+
+              const img = document.createElement('img');
+              img.src = url;
+              img.onclick = () => window.open(url, '_blank');
+
+              box.appendChild(img);
+              evList.appendChild(box);
           });
           document.getElementById('evidencias').style.display = 'block';
-        } else {
+      } else {
           document.getElementById('evidencias').style.display = 'none';
-        }
+      }
+
 
         // Mostrar formulario si estaba oculto
         form.style.display = 'block';
@@ -743,17 +774,13 @@
       // Función global para seleccionar reporte
       window.editarReporte = async function(id) {
         await loadById(id);
-        if (panel){
-          panel.classList.remove('animate-in');
-          panel.classList.add('fade-out');
-        }
         const formEl = document.getElementById('formEdit');
         setTimeout(() => {
-          if (panel) panel.style.display = 'none';
           formEl.style.display = 'block';
           formEl.classList.remove('fade-out');
           formEl.classList.add('animate-in');
         }, 180);
+        window.scrollTo({ top: 0, behavior: 'smooth' });
       };
 
       searchBtn.addEventListener('click', performSearch);
